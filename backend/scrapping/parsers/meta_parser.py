@@ -9,11 +9,11 @@ BASE_IMG_URL = os.getenv("BASE_IMG_URL")
 ND_FILENAME = "nd.png"
 
 PLACEHOLDERS = {
-    "NOTEBOOKS": "https://tu-cdn.com/placeholders/notebook.png",
-    "COMPUTADORAS": "https://tu-cdn.com/placeholders/desktop.png",
-    "MONITORES": "https://tu-cdn.com/placeholders/monitor.png",
-    "IMPRESORAS": "https://tu-cdn.com/placeholders/printer.png",
-    "DEFAULT": "https://tu-cdn.com/placeholders/generic.png"
+    "NOTEBOOKS": "https://d2t1xqejof9utc.cloudfront.net/screenshots/pics/23a70a7b019b584ae08b402b5dd4ab2d/large.png",
+    "COMPUTADORAS": "https://cdn-icons-png.freepik.com/512/2330/2330501.png",
+    "MONITORES": "https://www.freepik.com/free-photos-vectors/generic-monitor",
+    "IMPRESORAS": "https://cdn-icons-png.freepik.com/512/5404/5404037.png",
+    "DEFAULT": "https://pngimg.com/d/question_mark_PNG99.png"
 }
 
 def _limpiar_valor(valor: str) -> str:

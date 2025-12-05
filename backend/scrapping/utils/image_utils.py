@@ -47,9 +47,9 @@ def resolver_placeholder(categoria_destino: str, subcategoria_destino: str, marc
     sub = (subcategoria_destino or "").upper()
 
     if "NOTEBOOK" in cat or "LAPTOP" in cat or "NOTEBOOK" in sub:
-        return "https://www.freepik.com/psd/laptop-placeholder"
+        return "https://d2t1xqejof9utc.cloudfront.net/screenshots/pics/23a70a7b019b584ae08b402b5dd4ab2d/large.png"
 
     if any(x in cat for x in ["PC", "COMPUTADORA", "CPU"]):
-        return "http://zen3.weebly.com/cases/on-generic-pc-cases"
+        return "https://cdn-icons-png.freepik.com/512/2330/2330501.png"
 
-    return "https://www.shopify.com/sg/partners/blog/placeholder-images"
+    return "https://pngimg.com/d/question_mark_PNG99.png"
