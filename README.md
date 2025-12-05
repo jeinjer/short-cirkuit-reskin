@@ -2,8 +2,8 @@
 
 ## Estructura
 
-- `backend/` → API Node + Prisma + Mongo
-- `frontend/` → Vite + React (catálogo)
+- `backend/` → Node + Prisma + Mongo
+- `frontend/` → React 
 
 ## Backend
 
