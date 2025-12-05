@@ -17,3 +17,13 @@ npm run dev            # entorno local
 # build + producción:
 npm run build
 npm run start
+```
+
+## Frontend
+```
+cd frontend
+cp .env.example .env   # ajustar VITE_API_URL
+npm install
+npm run dev            # entorno local
+npm run build          # build de producción
+```
