@@ -1,0 +1,62 @@
+// schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+enum Category {
+  NOTEBOOKS
+  COMPUTADORAS
+  MONITORES
+  IMPRESORAS
+}
+
+type ProductSpecs {
+  // Computación (PC/Notebook)
+  cpu             String?
+  ram             String?
+  storage         String? // Mapeado desde 'almacenamiento'
+  gpu             String?
+  os              String? // Mapeado desde 'so'
+  
+  // Pantallas (Notebook/Monitor)
+  screenSize      String? // Mapeado desde 'pulgadas' (String para "15.6" o "24")
+  resolution      String? // Mapeado desde 'resolucion'
+  refreshRate     String? // Mapeado desde 'tasa_refresco'
+  panelType       String? // Mapeado desde 'tipo_panel'
+
+  // Impresoras
+  printType       String? // Mapeado desde 'tipo' (Láser/Tinta)
+  printSpeed      String? // Mapeado desde 'velocidad'
+  connectivity    String? // Mapeado desde 'conectividad'
+  maxPrintSize    String? // Mapeado desde 'formato_maximo' (A3, etc)
+  continuousSystem String? // Mapeado desde 'sistema_continuo'
+}
+
+model Product {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  sku         String   @unique
+  name        String
+  brand       String   @default("Genérico")
+  category    Category
+  
+  priceUsd    Float
+  inStock     Boolean  @default(true) // Scraper devuelve true/false
+  
+  imageUrl    String
+  gallery     String[] // Agregamos soporte para la galería de imágenes
+
+  specs       ProductSpecs
+
+  isActive    Boolean  @default(true)
+  lastScraped DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("products")
+}
