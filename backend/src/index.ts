@@ -9,12 +9,20 @@ import categoriesRouter from './routes/categories.routes';
 import dolarRouter from './routes/dolar.routes';
 
 const app = express();
-const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN
 const PORT = process.env.PORT || 3000;
 
-app.use(cors({
-  origin: FRONTEND_ORIGIN,
-}));
+const rawOrigins = process.env.FRONTEND_ORIGIN || '';
+const allowedOrigins = rawOrigins
+  .split(',')
+  .map(o => o.trim())
+  .filter(Boolean);
+
+app.use(
+  cors({
+    origin: allowedOrigins.length > 0 ? allowedOrigins : '*',
+  })
+);
+
 app.use(express.json());
 
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
