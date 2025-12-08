@@ -1,7 +1,5 @@
 import { PrismaClient, Category } from '@prisma/client';
 
-// En Node 18+ fetch existe globalmente, pero TypeScript se queja.
-// Este alias silencia TS y usa el fetch global de Node.
 const fetchFn: typeof fetch = (globalThis as any).fetch;
 
 const prisma = new PrismaClient();
@@ -11,7 +9,14 @@ if (!URL_LISTADO) {
   throw new Error('URL_LISTADO no está definida en las env vars');
 }
 
-// ========== CONSTANTES DE FILTRO (mismas que en base_catalog_source.py) ==========
+const CATEGORY_IMAGES: Record<string, string> = {
+  "NOTEBOOKS": "https://d2t1xqejof9utc.cloudfront.net/screenshots/pics/23a70a7b019b584ae08b402b5dd4ab2d/large.png",
+  "COMPUTADORAS": "https://cdn-icons-png.freepik.com/512/2330/2330501.png",
+  "MONITORES": "https://admincontent.bimobject.com/public/productimages/b3d36b4b-d397-4b62-a403-959dfd7cd6d4/33014e89-e5cd-4c0e-9b4c-091dba1bb2c0/800722?width=675&height=675&compress=true",
+  "IMPRESORAS": "https://cdn-icons-png.freepik.com/512/8426/8426469.png",
+  "DEFAULT": "https://cdn.creazilla.com/emojis/46760/white-question-mark-emoji-clipart-lg.png"
+};
+
 const PRODUCT_EXCLUSIONS = [
   'CABLE', 'ADAPTADOR', 'CONECTOR', 'FICHA', 'SOPORTE', 'MOCHILA', 'FUNDA', 'MALETIN',
   'TONER', 'CARTUCHO', 'TINTA', 'CINTA', 'RESMA', 'ROLLO', 'RIBBON',
@@ -24,36 +29,35 @@ const PRODUCT_EXCLUSIONS = [
 
 const RUBROS_MAP: Record<string, string[]> = {
   NOTEBOOKS: [
-    '001-0360', // NOTEBOOKS (105)
-    '002-0361', // NOTEBOOKS CX (16)
+    '001-0360', // NOTEBOOKS 
+    '002-0361', // NOTEBOOKS CX
   ],
 
   COMPUTADORAS: [
-    '001-1261', // ALL IN ONE (4)
-    '002-1262', // ALL IN ONE CX (4)
-    '002-0015', // COMPUTADORAS CX (77)
-    '002-1616', // MINI PC (19)
-    '001-1616', // MINI PC (14)
+    '001-1261', // ALL IN ONE
+    '002-1262', // ALL IN ONE CX
+    '002-0015', // COMPUTADORAS CX
+    '002-1616', // MINI PC
+    '001-1616', // MINI PC 2
   ],
 
   MONITORES: [
-    '001-0320', // MONITORES (57)
-    '002-0320', // MONITORES CX (27)
+    '001-0320', // MONITORES
+    '002-0320', // MONITORES CX
   ],
 
   IMPRESORAS: [
-    '001-0607', // IMP C/SIST. CONT. (3)
-    '001-0601', // IMP INKJET (3)
-    '001-0604', // IMP LASER COLOR (4)
-    '001-0605', // IMP LASER NEGRO (14)
-    '001-0606', // IMP MF C/SIST. CONT. (29)
-    '001-0600', // IMP MF INKJET (6)
-    '001-0602', // IMP MF LASER COLOR (5)
-    '001-0603', // IMP MF LASER NEGRO (13)
+    '001-0607', // IMP C/SIST. CONT. 
+    '001-0601', // IMP INKJET
+    '001-0604', // IMP LASER COLOR
+    '001-0605', // IMP LASER NEGRO
+    '001-0606', // IMP MF C/SIST. CONT.
+    '001-0600', // IMP MF INKJET
+    '001-0602', // IMP MF LASER COLOR
+    '001-0603', // IMP MF LASER NEGRO
   ],
 };
 
-// ========== Tipos según lo que devuelve la API de listado ==========
 type VendorPrecio = {
   lista?: number;
 };
@@ -85,15 +89,12 @@ type Specs = {
   printType?: string;
 };
 
-// ========== Utilidades que portas desde Python ==========
 
-// mismos filtros que en base_catalog_source.py
 function debeExcluir(nombre: string): boolean {
   const upper = nombre.toUpperCase();
   return PRODUCT_EXCLUSIONS.some((bad) => upper.includes(bad));
 }
 
-// _limpiar_marca de catalog_scraper.py :contentReference[oaicite:2]{index=2}
 function limpiarMarca(marcaRaw: string | undefined): string {
   if (!marcaRaw) return 'GENERICO';
   const m = marcaRaw.toUpperCase().trim();
@@ -108,7 +109,6 @@ function limpiarMarca(marcaRaw: string | undefined): string {
     if (m.includes(marca)) return marca;
   }
 
-  // Title case básico
   return marcaRaw
     .toLowerCase()
     .split(' ')
@@ -116,7 +116,6 @@ function limpiarMarca(marcaRaw: string | undefined): string {
     .join(' ');
 }
 
-// _limpiar_nombre_display de catalog_scraper.py :contentReference[oaicite:3]{index=3}
 function limpiarNombreDisplay(nombreRaw: string): string {
   let nombre = nombreRaw.trim();
 
@@ -133,12 +132,10 @@ function limpiarNombreDisplay(nombreRaw: string): string {
   return nombre;
 }
 
-// versión simplificada de _extraer_desde_titulo de meta_parser.py :contentReference[oaicite:4]{index=4}
 function extraerSpecsDesdeTitulo(titulo: string, categoria: string): Specs {
   const specs: Specs = {};
   const txt = titulo.toUpperCase().replace(/  +/g, ' ');
 
-  // RAM (4–128 GB)
   const ramMatch = txt.match(/(?<!\d)(\d{1,3})\s*(G|GB)(?!\w|BITS)/);
   if (ramMatch) {
     const val = parseInt(ramMatch[1], 10);
@@ -147,7 +144,6 @@ function extraerSpecsDesdeTitulo(titulo: string, categoria: string): Specs {
     }
   }
 
-  // almacenamiento (SSD) -> storage
   let storageStr: string | null = null;
 
   let m = txt.match(/(?<!\d)(\d+)\s*(T|TB)/);
@@ -172,7 +168,6 @@ function extraerSpecsDesdeTitulo(titulo: string, categoria: string): Specs {
     specs.storage = storageStr;
   }
 
-  // pulgadas (notebooks / monitores)
   if (categoria === 'NOTEBOOKS' || categoria === 'MONITORES') {
     let mScreen =
       txt.match(/(?<!\d)(1[1-8](?:\.\d)?)\s*("|PULG|INCH|’| )/) ??
@@ -184,7 +179,6 @@ function extraerSpecsDesdeTitulo(titulo: string, categoria: string): Specs {
     }
   }
 
-  // CPU muy simplificada (no replico todo el regex de meta_parser, pero sirve)
   if (/I[3579]/.test(txt) || /RYZEN/.test(txt) || /CELERON/.test(txt) || /PENTIUM/.test(txt)) {
     const cpuMatchIntelI = txt.match(/I([3579])[- ]?([A-Z0-9]+)/);
     const cpuMatchRyzen = txt.match(/RYZEN\s*(\d)\s*([A-Z0-9]*)/);
@@ -195,7 +189,6 @@ function extraerSpecsDesdeTitulo(titulo: string, categoria: string): Specs {
     }
   }
 
-  // Monitores: tasa de refresco y tipo de panel
   if (categoria === 'MONITORES') {
     const hzMatch = txt.match(/(\d{2,3})\s*HZ/);
     if (hzMatch) specs.refreshRate = `${hzMatch[1]} Hz`;
@@ -204,7 +197,6 @@ function extraerSpecsDesdeTitulo(titulo: string, categoria: string): Specs {
     else if (txt.includes('VA')) specs.panelType = 'VA';
   }
 
-  // Impresoras: tipo básico
   if (categoria === 'IMPRESORAS') {
     if (txt.includes('LASER') || txt.includes('LED')) specs.printType = 'Láser';
     else if (txt.includes('INK') || txt.includes('TINTA')) specs.printType = 'Inyección de Tinta';
@@ -213,7 +205,6 @@ function extraerSpecsDesdeTitulo(titulo: string, categoria: string): Specs {
   return specs;
 }
 
-// ========== Fetch por rubro (similar a _fetch_rubro_safe) ==========
 async function fetchRubro(categoria: string, rubroId: string): Promise<VendorItem[]> {
   const payload = {
     rubro: rubroId,
@@ -248,7 +239,6 @@ async function fetchRubro(categoria: string, rubroId: string): Promise<VendorIte
         if (!sku) continue;
         if (debeExcluir(nombre)) continue;
 
-        // tu regla especial de notebooks del Python
         if (
           categoria === 'NOTEBOOKS' &&
           !(
@@ -272,8 +262,6 @@ async function fetchRubro(categoria: string, rubroId: string): Promise<VendorIte
   return itemsLimpios;
 }
 
-// ========== Sync principal ==========
-
 export async function syncCatalogFromVendor() {
   console.log('🟦 [SYNC] Iniciando sincronización con proveedor');
 
@@ -281,7 +269,6 @@ export async function syncCatalogFromVendor() {
   let created = 0;
   let updated = 0;
 
-  // 1) Traer todos los productos base (similar a obtener_todos_los_productos) :contentReference[oaicite:5]{index=5}
   const tareas: Promise<VendorItem[]>[] = [];
 
   for (const [categoria, rubros] of Object.entries(RUBROS_MAP)) {
@@ -295,7 +282,6 @@ export async function syncCatalogFromVendor() {
 
   console.log(`🟦 [SYNC] Productos base LIMPIOS: ${productosBase.length}`);
 
-  // 2) Transformar cada item a tu esquema (similar a _procesar_producto_worker) :contentReference[oaicite:6]{index=6}
   for (const p of productosBase) {
     const sku = p.codiart;
     if (!sku || vistos.has(sku)) continue;
@@ -306,41 +292,34 @@ export async function syncCatalogFromVendor() {
 
     const nombreOriginal = p.descart || '';
     const nombreDisplay = limpiarNombreDisplay(nombreOriginal);
-    const rubroNombre = p.rubro?.name || '';
     const marcaRaw = p.grupo?.name || '';
 
     const brand = limpiarMarca(marcaRaw);
     const priceUsd = p.precio?.lista ?? 0;
 
-    // specs básicas desde el título + categoría
-    const specsFromTitle = extraerSpecsDesdeTitulo(nombreOriginal, categoriaRaw);
+    const assignedImage = CATEGORY_IMAGES[categoriaEnum] || CATEGORY_IMAGES['DEFAULT'];
 
-    const specs: Specs = {};
-    if (specsFromTitle.ram) specs.ram = specsFromTitle.ram;
-    if (specsFromTitle.storage) specs.storage = specsFromTitle.storage;
-    if (specsFromTitle.cpu) specs.cpu = specsFromTitle.cpu;
-    if (specsFromTitle.screenSize) specs.screenSize = specsFromTitle.screenSize;
-    if (specsFromTitle.panelType) specs.panelType = specsFromTitle.panelType;
-    if (specsFromTitle.refreshRate) specs.refreshRate = specsFromTitle.refreshRate;
-    if (specsFromTitle.printType) specs.printType = specsFromTitle.printType;
-
-    // 3) Upsert en Prisma
     const existing = await prisma.product.findUnique({ where: { sku } });
 
     if (existing) {
       await prisma.product.update({
         where: { sku },
         data: {
-          name: nombreDisplay,
-          brand,
           priceUsd,
-          category: categoriaEnum,
-          specs,
-          imageUrl: '',
         },
       });
       updated++;
     } else {
+      const specsFromTitle = extraerSpecsDesdeTitulo(nombreOriginal, categoriaRaw);
+      const specs: Specs = {};
+      if (specsFromTitle.ram) specs.ram = specsFromTitle.ram;
+      if (specsFromTitle.storage) specs.storage = specsFromTitle.storage;
+      if (specsFromTitle.cpu) specs.cpu = specsFromTitle.cpu;
+      if (specsFromTitle.screenSize) specs.screenSize = specsFromTitle.screenSize;
+      if (specsFromTitle.panelType) specs.panelType = specsFromTitle.panelType;
+      if (specsFromTitle.refreshRate) specs.refreshRate = specsFromTitle.refreshRate;
+      if (specsFromTitle.printType) specs.printType = specsFromTitle.printType;
+
       await prisma.product.create({
         data: {
           sku,
@@ -349,7 +328,7 @@ export async function syncCatalogFromVendor() {
           priceUsd,
           category: categoriaEnum,
           specs,
-          imageUrl: '',
+          imageUrl: assignedImage, // Aquí sí asignamos la imagen por defecto
         },
       });
       created++;
@@ -357,6 +336,6 @@ export async function syncCatalogFromVendor() {
   }
 
   console.log(
-    `🟩 [SYNC] Finalizado. Nuevos: ${created}, Actualizados: ${updated}, SKUs únicos: ${vistos.size}`,
+    `🟩 [SYNC] Finalizado. Nuevos: ${created}, Actualizados (precio): ${updated}, SKUs únicos: ${vistos.size}`,
   );
 }
