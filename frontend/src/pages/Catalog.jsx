@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Filter, X, ChevronLeft, ChevronRight, ArrowDownUp, Grip, Monitor, Printer, Cpu, Database } from 'lucide-react';
+import { Filter, X, ChevronLeft, ChevronRight, ArrowDownUp, Grip, Monitor, Printer } from 'lucide-react';
 import { fetchProducts, fetchDynamicFilters } from '../api/config';
 import ProductCard from '../components/ui/ProductCard';
 import SkeletonProduct from '../components/ui/SkeletonProduct';
@@ -17,7 +17,6 @@ export default function Catalog() {
   const [localMaxPrice, setLocalMaxPrice] = useState("");
   const [pageInput, setPageInput] = useState("1");
   
-  // Ya no guardamos minPrice/maxPrice dinámicos
   const [filtersData, setFiltersData] = useState({ 
       brands: [], specs: { cpu: [], ram: [] }
   });
@@ -44,7 +43,6 @@ export default function Catalog() {
     loadFilters();
   }, [category, search, selectedBrand]);
 
-  // Carga Productos
   useEffect(() => {
     const loadData = async () => {
       setLoading(true);
@@ -63,7 +61,6 @@ export default function Catalog() {
     loadData();
   }, [searchParams]);
 
-  // Handlers
   const handleFilterChange = (key, value) => {
       const newParams = new URLSearchParams(searchParams);
       if (value === searchParams.get(key)) newParams.delete(key);
@@ -98,10 +95,10 @@ export default function Catalog() {
   };
 
   const CATEGORIES = [
-      { id: 'NOTEBOOKS', label: 'Notebooks', icon: <Monitor size={14}/> },
-      { id: 'COMPUTADORAS', label: 'Computadoras', icon: <Grip size={14}/> },
-      { id: 'MONITORES', label: 'Monitores', icon: <Monitor size={14}/> },
-      { id: 'IMPRESORAS', label: 'Impresoras', icon: <Printer size={14}/> },
+      { id: 'NOTEBOOKS', label: 'NOTEBOOKS', icon: <Monitor size={14}/> },
+      { id: 'COMPUTADORAS', label: 'COMPUTADORAS', icon: <Grip size={14}/> },
+      { id: 'MONITORES', label: 'MONITORES', icon: <Monitor size={14}/> },
+      { id: 'IMPRESORAS', label: 'IMPRESORAS', icon: <Printer size={14}/> },
   ];
 
   const renderFilterList = (items, activeVal, keyName) => {
@@ -135,7 +132,6 @@ export default function Catalog() {
     <div className="min-h-screen bg-[#050507] pt-24 pb-12 px-4 font-sans">
       <div className="container mx-auto flex flex-col lg:flex-row gap-8">
         
-        {/* SIDEBAR */}
         <aside className="w-full lg:w-64 shrink-0 space-y-6">
             <div className="flex items-center gap-2 text-white font-bold mb-4 pb-4 border-b border-white/10">
                 <Filter size={20} className="text-cyan-500"/> FILTROS
@@ -147,7 +143,6 @@ export default function Catalog() {
                 )}
             </div>
 
-            {/* 1. Categorías */}
             <div className="bg-[#13131a] rounded-xl border border-white/5 overflow-hidden">
                 <div className="px-4 py-2 border-b border-white/5 bg-white/2">
                     <h3 className="text-gray-300 text-[10px] font-bold uppercase tracking-wider">Tipo de Producto</h3>
@@ -157,7 +152,7 @@ export default function Catalog() {
                         <button 
                             key={cat.id}
                             onClick={() => handleFilterChange('category', cat.id)}
-                            className={`flex items-center gap-2 px-2 py-1.5 rounded text-xs transition-colors w-full text-left
+                            className={`cursor-pointer flex items-center gap-2 px-2 py-1.5 rounded text-xs transition-colors w-full text-left
                                 ${category === cat.id ? 'bg-cyan-900/20 text-cyan-100 border border-cyan-500/30' : 'text-gray-400 hover:bg-white/5 hover:text-white border border-transparent'}`}
                         >
                             <div className={`w-1.5 h-1.5 rounded-full ${category === cat.id ? 'bg-cyan-400' : 'bg-gray-600'}`} />
@@ -167,12 +162,10 @@ export default function Catalog() {
                 </div>
             </div>
 
-            {/* 2. Marcas */}
             {filtersData.brands?.length > 0 && (
                 <div className="bg-[#13131a] rounded-xl border border-white/5 overflow-hidden animate-in fade-in slide-in-from-left-4">
                     <div className="px-4 py-2 border-b border-white/5 bg-white/2 flex justify-between items-center">
-                        <h3 className="text-gray-300 text-[10px] font-bold uppercase tracking-wider">Marca</h3>
-                        <Monitor size={14} className="text-cyan-500"/>
+                        <h3 className="text-gray-300 text-[1px] font-bold uppercase tracking-wider">Marca</h3>
                     </div>
                     <div className="p-2 flex flex-col gap-0.5 max-h-56 overflow-y-auto custom-scrollbar">
                         {renderFilterList(filtersData.brands, selectedBrand, 'brand')}
@@ -181,7 +174,7 @@ export default function Catalog() {
             )}
 
             <div className="bg-[#13131a] p-4 rounded-xl border border-white/5">
-                <h3 className="text-gray-300 text-xs font-bold uppercase tracking-wider mb-3">Precio (ARS)</h3>
+                <h3 className="text-gray-300 text-xs font-bold uppercase tracking-wider mb-3">Rango de precio</h3>
                 
                 <div className="flex items-center gap-2 mb-2">
                     <input 

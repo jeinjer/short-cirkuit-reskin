@@ -9,13 +9,15 @@ import 'swiper/css/pagination';
 import 'swiper/css/effect-fade';
 
 const heroImages = [
-  "https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&w=1200&q=80",
-  "https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&w=1200&q=80",
+  "public/hero/gabinete.png",
+  "public/hero/monitor.png",
+  "public/hero/notebook.png",
+  "public/hero/impresora.png",
 ];
 
 export default function HeroCarousel() {
   return (
-    <div className="relative h-[500px] lg:h-[600px] w-full rounded-2xl overflow-hidden border border-cyan-500/20 shadow-[0_0_30px_rgba(6,182,212,0.1)] group bg-[#050507]">
+    <div className="hidden md:block relative h-[500px] lg:h-[600px] w-full rounded-2xl overflow-hidden border border-cyan-500/20 shadow-[0_0_30px_rgba(6,182,212,0.1)] group bg-[#050507]">
       
       <Swiper
         modules={[Autoplay, Navigation, Pagination, EffectFade]}

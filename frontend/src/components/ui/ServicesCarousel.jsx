@@ -64,10 +64,10 @@ export default function ServicesCarousel() {
                 </div>
                 
                 <div className="relative z-10 subpixel-antialiased transform-gpu">
-                  <h3 className="text-white font-bold font-mono text-lg uppercase tracking-tight">
+                  <h3 className="text-white font-bold font-mono text-xl uppercase tracking-tight">
                     {service.title}
                   </h3>
-                  <p className="text-gray-500 text-xs font-mono mt-1">
+                  <p className="text-gray-500 text-medium font-mono mt-1">
                     {service.desc}
                   </p>
                 </div>
