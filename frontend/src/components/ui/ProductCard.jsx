@@ -5,7 +5,6 @@ import { useCurrency } from '../../context/CurrencyContext';
 
 export default function ProductCard({ product }) {
   const { formatPrice } = useCurrency();
-  const specsToShow = Object.values(product.specs || {}).filter(Boolean).slice(0, 3);
 
   return (
     <Link 
