@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Search, Loader, ChevronRight } from 'lucide-react';
-import { useNavigate, Link } from 'react-router-dom'; // Importamos Link
+import { useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { fetchProducts } from '../../api/config';
 import { useCurrency } from '../../context/CurrencyContext';
@@ -46,7 +46,7 @@ export default function SearchBar() {
 
   const handleViewAll = () => {
     setIsOpen(false);
-    navigate(`/catalog?search=${query}`);
+    navigate(`/catalogo?search=${query}`);
   };
 
   const handleKeyDown = (e) => {

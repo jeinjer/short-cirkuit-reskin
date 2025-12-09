@@ -1,11 +1,9 @@
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
 export const fetchProducts = async (params = {}) => {
   try {
     const url = new URL(`${API_URL}/products`);
-    if (typeof params === 'string') {
-        if (params) url.searchParams.append('category', params);
-    } else if (typeof params === 'object') {
+    if (typeof params === 'object') {
         Object.keys(params).forEach(key => {
             if (params[key]) url.searchParams.append(key, params[key]);
         });
@@ -23,12 +21,25 @@ export const fetchProducts = async (params = {}) => {
 export const fetchDynamicFilters = async (params = {}) => {
     try {
         const url = new URL(`${API_URL}/filters`);
+        
         if (params.category) url.searchParams.append('category', params.category);
         if (params.search) url.searchParams.append('search', params.search);
+        
+        if (params.brand) {
+            url.searchParams.append('brand', params.brand);
+        }
+
+        if (params.minPrice) url.searchParams.append('minPrice', params.minPrice);
+        if (params.maxPrice) url.searchParams.append('maxPrice', params.maxPrice);
 
         const res = await fetch(url.toString());
-        return await res.json();
+        if (!res.ok) throw new Error('Error fetching filters');
+
+        const json = await res.json();
+        return json;
+        
     } catch (error) {
+        console.error("Filter Error:", error);
         return { brands: [], minPrice: 0, maxPrice: 0 };
     }
 };
