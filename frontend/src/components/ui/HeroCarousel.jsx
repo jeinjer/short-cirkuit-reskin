@@ -9,10 +9,10 @@ import 'swiper/css/pagination';
 import 'swiper/css/effect-fade';
 
 const heroImages = [
-  "public/hero/gabinete.png",
-  "public/hero/monitor.png",
-  "public/hero/notebook.png",
-  "public/hero/impresora.png",
+  "https://i.ibb.co/27rZvgYH/gabinete.png",
+  "https://i.ibb.co/rRqSXYph/notebook.png",
+  "https://i.ibb.co/sJWL7HY0/monitor.png",
+  "https://i.ibb.co/sdGyktwT/impresora.png",
 ];
 
 export default function HeroCarousel() {
