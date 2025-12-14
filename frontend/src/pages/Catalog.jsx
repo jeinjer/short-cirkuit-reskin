@@ -165,7 +165,7 @@ export default function Catalog() {
             {filtersData.brands?.length > 0 && (
                 <div className="bg-[#13131a] rounded-xl border border-white/5 overflow-hidden animate-in fade-in slide-in-from-left-4">
                     <div className="px-4 py-2 border-b border-white/5 bg-white/2 flex justify-between items-center">
-                        <h3 className="text-gray-300 text-[1px] font-bold uppercase tracking-wider">Marca</h3>
+                        <h3 className="text-gray-300 text-[10px] font-bold uppercase tracking-wider">Marca</h3>
                     </div>
                     <div className="p-2 flex flex-col gap-0.5 max-h-56 overflow-y-auto custom-scrollbar">
                         {renderFilterList(filtersData.brands, selectedBrand, 'brand')}

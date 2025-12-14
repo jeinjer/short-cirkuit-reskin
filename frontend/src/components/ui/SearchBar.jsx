@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, Loader, ChevronRight } from 'lucide-react';
+import { Search, Loader, ChevronRight, AlertCircle } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { fetchProducts } from '../../api/config';
@@ -18,13 +18,14 @@ export default function SearchBar() {
     const delayDebounceFn = setTimeout(async () => {
       if (query.trim().length > 1) { 
         setLoading(true);
-        setIsOpen(true);
         try {
           const res = await fetchProducts({ search: query });
           setResults(res.data || []);
+          setIsOpen(true);
         } catch (error) {
           console.error(error);
           setResults([]);
+          setIsOpen(true);
         } finally {
           setLoading(false);
         }
@@ -53,8 +54,8 @@ export default function SearchBar() {
     if (e.key === 'Enter') handleViewAll();
   };
 
-  const containerVariants = { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.1 } } };
-  const itemVariants = { hidden: { opacity: 0, x: -20, filter: 'blur(10px)' }, visible: { opacity: 1, x: 0, filter: 'blur(0px)', transition: { type: 'spring', stiffness: 300, damping: 24 } } };
+  const containerVariants = { hidden: { opacity: 0, y: -10 }, visible: { opacity: 1, y: 0 } };
+  const itemVariants = { hidden: { opacity: 0, x: -10 }, visible: { opacity: 1, x: 0 } };
 
   return (
     <div ref={containerRef} className="relative w-full max-w-xl mx-auto z-50">
@@ -68,53 +69,64 @@ export default function SearchBar() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={handleKeyDown}
-          onFocus={() => query.length > 1 && setIsOpen(true)}
+          onFocus={() => query.length > 1 && !loading && setIsOpen(true)}
         />
         {loading && <Loader className="w-4 h-4 text-cyan-500 animate-spin ml-2"/>}
       </div>
 
       <AnimatePresence>
-        {isOpen && results.length > 0 && (
+        {isOpen && query.trim().length > 1 && !loading && (
           <motion.div 
             initial="hidden" animate="visible" exit="hidden" variants={containerVariants}
             className="absolute top-full left-0 right-0 mt-2 bg-[#0a0a0f]/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl overflow-hidden flex flex-col"
           >
-            {results.slice(0, 5).map((product) => (
-              <motion.div key={product.id || product._id} variants={itemVariants}>
-                <Link 
-                    to={`/producto/${product.sku}`}
-                    onClick={() => setIsOpen(false)}
-                    className="flex items-center gap-4 p-3 border-b border-white/5 hover:bg-white/5 transition-colors group relative"
-                >
-                    <div className="w-12 h-12 bg-white/5 rounded-md overflow-hidden shrink-0 border border-white/5 group-hover:border-cyan-500/50 transition-colors">
-                    <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover" />
-                    </div>
+            {results.length > 0 ? (
+              <>
+                {results.slice(0, 5).map((product) => (
+                  <motion.div key={product.id || product._id} variants={itemVariants}>
+                    <Link 
+                        to={`/producto/${product.sku}`}
+                        onClick={() => setIsOpen(false)}
+                        className="flex items-center gap-4 p-3 border-b border-white/5 hover:bg-white/5 transition-colors group relative"
+                    >
+                        <div className="w-12 h-12 bg-white/5 rounded-md overflow-hidden shrink-0 border border-white/5 group-hover:border-cyan-500/50 transition-colors">
+                        <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover" />
+                        </div>
 
-                    <div className="flex-1 flex flex-col justify-center min-w-0">
-                    <span className="text-white font-bold text-xs uppercase tracking-wide truncate group-hover:text-cyan-100">
-                        {product.name}
-                    </span>
-                    <span className="text-cyan-400 font-mono text-sm font-bold">
-                        {formatPrice(product.priceUsd)}
-                    </span>
-                    </div>
-                    
-                    <ChevronRight size={14} className="text-gray-600 group-hover:text-cyan-400 opacity-0 group-hover:opacity-100 transition-all" />
-                </Link>
-              </motion.div>
-            ))}
+                        <div className="flex-1 flex flex-col justify-center min-w-0">
+                        <span className="text-white font-bold text-xs uppercase tracking-wide truncate group-hover:text-cyan-100">
+                            {product.name}
+                        </span>
+                        <span className="text-cyan-400 font-mono text-sm font-bold">
+                            {formatPrice(product.priceUsd)}
+                        </span>
+                        </div>
+                        
+                        <ChevronRight size={14} className="text-gray-600 group-hover:text-cyan-400 opacity-0 group-hover:opacity-100 transition-all" />
+                    </Link>
+                  </motion.div>
+                ))}
 
-            {results.length > 5 && (
-              <motion.div variants={itemVariants}>
-                  <button 
-                    onClick={handleViewAll}
-                    className="w-full p-3 bg-cyan-900/20 text-center cursor-pointer hover:bg-cyan-900/40 transition-colors flex items-center justify-center gap-2 group"
-                  >
-                    <span className="text-xs font-bold text-cyan-400 uppercase tracking-widest group-hover:text-white transition-colors">
-                    Ver los {results.length} resultados
-                    </span>
-                    <ChevronRight size={12} className="text-cyan-400 group-hover:text-white" />
-                  </button>
+                {results.length > 5 && (
+                  <motion.div variants={itemVariants}>
+                      <button 
+                        onClick={handleViewAll}
+                        className="w-full p-3 bg-cyan-900/20 text-center cursor-pointer hover:bg-cyan-900/40 transition-colors flex items-center justify-center gap-2 group"
+                      >
+                        <span className="text-xs font-bold text-cyan-400 uppercase tracking-widest group-hover:text-white transition-colors">
+                        Ver todos los resultados
+                        </span>
+                        <ChevronRight size={12} className="text-cyan-400 group-hover:text-white" />
+                      </button>
+                  </motion.div>
+                )}
+              </>
+            ) : (
+              <motion.div variants={itemVariants} className="p-6 flex flex-col items-center justify-center text-center">
+                  <span className="text-gray-400 text-sm font-medium">
+                    No encontramos nada para <span className="text-cyan-400">"{query}"</span>
+                  </span>
+                  <p className="text-gray-600 text-xs mt-1">Intenta con términos más generales.</p>
               </motion.div>
             )}
           </motion.div>

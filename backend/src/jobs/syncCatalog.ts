@@ -328,7 +328,7 @@ export async function syncCatalogFromVendor() {
           priceUsd,
           category: categoriaEnum,
           specs,
-          imageUrl: assignedImage, // Aquí sí asignamos la imagen por defecto
+          imageUrl: assignedImage,
         },
       });
       created++;

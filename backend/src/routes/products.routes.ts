@@ -29,26 +29,40 @@ router.get('/', async (req, res) => {
     }
 
     if (brand) {
+      const brandStr = (Array.isArray(brand) ? brand[0] : brand) as string;
       whereClause.brand = {
-        equals: brand as string,
+        equals: brandStr.trim(),
         mode: 'insensitive',
       };
     }
 
     if (minPrice || maxPrice) {
       whereClause.priceUsd = {};
-      if (minPrice) whereClause.priceUsd.gte = parseFloat(minPrice as string);
-      if (maxPrice) whereClause.priceUsd.lte = parseFloat(maxPrice as string);
+      
+      if (minPrice) {
+        const parsedMin = parseFloat(minPrice as string);
+        if (!isNaN(parsedMin)) whereClause.priceUsd.gte = parsedMin;
+      }
+      
+      if (maxPrice) {
+        const parsedMax = parseFloat(maxPrice as string);
+        if (!isNaN(parsedMax)) whereClause.priceUsd.lte = parsedMax;
+      }
+      
+      if (Object.keys(whereClause.priceUsd).length === 0) {
+        delete whereClause.priceUsd;
+      }
     }
 
     if (search) {
+      const searchStr = (search as string).trim();
       whereClause.OR = [
-        { name: { contains: search as string, mode: 'insensitive' } },
-        { brand: { contains: search as string, mode: 'insensitive' } },
+        { name: { contains: searchStr, mode: 'insensitive' } },
+        { brand: { contains: searchStr, mode: 'insensitive' } },
       ];
     }
 
-    let orderBy: any = { priceUsd: 'asc' }; // Default
+    let orderBy: any = { priceUsd: 'asc' };
     switch (sort) {
       case 'price_desc': orderBy = { priceUsd: 'desc' }; break;
       case 'price_asc': orderBy = { priceUsd: 'asc' }; break;
@@ -75,20 +89,10 @@ router.get('/', async (req, res) => {
       data: cleanedProducts,
       meta: { total, page, last_page: Math.ceil(total / limit) },
     });
+
   } catch (error) {
     console.error('Error en /api/products:', error);
     res.status(500).json({ error: 'Error al obtener productos' });
-  }
-});
-
-router.get('/:sku', async (req, res) => {
-  const { sku } = req.params;
-  try {
-    const product = await prisma.product.findUnique({ where: { sku } });
-    if (!product) return res.status(404).json({ error: 'Producto no encontrado' });
-    res.json({ ...product, specs: removeNullSpecs(product.specs) });
-  } catch (error) {
-    res.status(500).json({ error: 'Error interno' });
   }
 });
 
