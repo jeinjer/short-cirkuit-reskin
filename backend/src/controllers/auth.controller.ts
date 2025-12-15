@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { OAuth2Client } from 'google-auth-library';
 import crypto from 'crypto';
+import jwt from 'jsonwebtoken';
 
 import { generateToken, hashPassword, comparePassword } from '../utils/auth';
 import { sendResetEmail } from '../utils/mailer';
@@ -163,5 +164,31 @@ export const resetPassword = async (req: Request, res: Response) => {
   } catch (error: any) {
     if (error.errors) return res.status(400).json({ errors: error.errors });
     res.status(500).json({ error: "Error al restablecer contraseña" });
+  }
+};
+
+export const verifyToken = async (req: Request, res: Response) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (!token) return res.status(401).json({ error: "Acceso denegado" });
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { id: string };
+
+    const user = await prisma.user.findUnique({ where: { id: decoded.id } });
+
+    if (!user) return res.status(404).json({ error: "Usuario no encontrado" });
+
+    res.json({
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        avatar: user.avatar
+    });
+
+  } catch (error) {
+    return res.status(401).json({ error: "Token inválido o expirado" });
   }
 };

@@ -1,34 +1,57 @@
 import nodemailer from 'nodemailer';
 
-// CONFIGURACIÓN (Pon esto en tus variables de entorno .env)
-// EMAIL_HOST=smtp.gmail.com
-// EMAIL_PORT=587
-// EMAIL_USER=tuemail@gmail.com
-// EMAIL_PASS=tupasswordgenerado
-
 const transporter = nodemailer.createTransport({
-  host: process.env.EMAIL_HOST || "smtp.ethereal.email",
+  host: "smtp.gmail.com",
   port: 587,
   secure: false, 
   auth: {
-    user: process.env.EMAIL_USER || "test@test.com",
-    pass: process.env.EMAIL_PASS || "pass",
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
   },
 });
 
 export const sendResetEmail = async (email: string, token: string) => {
-  // En producción, cambia esta URL por la de tu Frontend (React)
-  const resetLink = `http://localhost:5173/reset-password?token=${token}`;
+  const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+  const resetLink = `${frontendUrl}/reset-password?token=${token}`;
 
-  await transporter.sendMail({
-    from: '"Soporte Tech" <no-reply@tudominio.com>',
-    to: email,
-    subject: "Recuperar Contraseña",
-    html: `
-      <h1>Recuperación de contraseña</h1>
-      <p>Has solicitado restablecer tu contraseña. Haz clic en el enlace de abajo:</p>
-      <a href="${resetLink}" style="background-color: #00bcd4; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Restablecer Contraseña</a>
-      <p>Este enlace expira en 1 hora.</p>
-    `,
-  });
+  try {
+    await transporter.verify(); 
+
+    await transporter.sendMail({
+      from: '"Soporte Short Cirkuit" <' + process.env.EMAIL_USER + '>', 
+      // --------------------------
+      to: email,
+      subject: "Restablecer tu contraseña ⚡",
+      replyTo: "no-reply@shortcirkuit.com", 
+      html: `
+        <div style="font-family: 'Arial', sans-serif; background-color: #050507; color: #ffffff; padding: 40px; border-radius: 10px;">
+          <div style="max-width: 500px; margin: 0 auto; background-color: #13131a; padding: 30px; border-radius: 15px; border: 1px solid #333;">
+            
+            <h2 style="color: #06b6d4; text-align: center; margin-bottom: 30px; font-weight: 900; text-transform: uppercase;">
+              ⚡ Short Cirkuit
+            </h2>
+            
+            <p style="color: #d1d5db; font-size: 16px; line-height: 1.5;">Hola,</p>
+            <p style="color: #d1d5db; font-size: 16px; line-height: 1.5;">
+              Recibimos una solicitud para restablecer tu contraseña. Si fuiste tú, haz clic en el botón de abajo:
+            </p>
+            
+            <div style="text-align: center; margin: 40px 0;">
+              <a href="${resetLink}" style="background-color: #06b6d4; color: #ffffff; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block; box-shadow: 0 0 15px rgba(6,182,212,0.4);">
+                Restablecer Contraseña
+              </a>
+            </div>
+            
+            <p style="color: #6b7280; font-size: 12px; text-align: center; margin-top: 30px;">
+              Si no solicitaste este cambio, ignora este mensaje. El enlace expirará en 1 hora.
+            </p>
+            
+          </div>
+        </div>
+      `,
+    });
+  } catch (error) {
+    console.error("Error enviando correo:", error);
+    throw new Error("No se pudo enviar el correo");
+  }
 };

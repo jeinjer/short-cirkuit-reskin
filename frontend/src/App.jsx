@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
+import { Toaster } from 'sonner';
 
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
@@ -14,6 +15,8 @@ import RegisterPage from './pages/RegisterPage';
 import Catalog from './pages/Catalog';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
+
+import NotFoundPage from './pages/NotFoundPage';
 
 import { CurrencyProvider } from './context/CurrencyContext';
 import { AuthProvider } from './context/AuthContext';
@@ -43,6 +46,7 @@ export default function App() {
               <Route path="/registro" element={<RegisterPage />} />
               <Route path="/forgot-password" element={<ForgotPasswordPage />} />
               <Route path="/reset-password" element={<ResetPasswordPage />} />
+              <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </div>
           
@@ -60,6 +64,19 @@ export default function App() {
         </div>
       </Router>
     </CurrencyProvider>
+    <Toaster 
+         richColors 
+         toastOptions={{
+            style: {
+              width: 'fit-content',   
+              minWidth: 'auto',        
+              paddingRight: '30px',
+            },
+          }}
+         position="bottom-right" 
+         theme="dark" 
+         closeButton
+    />
   </AuthProvider>
   );
 }

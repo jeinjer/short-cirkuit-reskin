@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { GoogleLogin } from '@react-oauth/google';
 import { Mail, Lock, Zap, AlertCircle, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { toast } from 'sonner';
 
 export default function LoginPage() {
   const { register, handleSubmit, formState: { errors: formErrors } } = useForm();
@@ -15,9 +16,13 @@ export default function LoginPage() {
     if (isAuthenticated) navigate('/catalogo');
   }, [isAuthenticated, navigate]);
 
-  const onSubmit = handleSubmit((data) => {
-    signin(data);
-  });
+  const onSubmit = handleSubmit(async (data) => {
+  try {
+    await signin(data);
+    toast.success('¡Bienvenido!');
+  } catch (error) {
+  }
+});
 
   return (
     <div className="min-h-screen bg-[#050507] flex items-center justify-center p-4 relative overflow-hidden">
@@ -33,10 +38,10 @@ export default function LoginPage() {
         <div className="text-center mb-8">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-cyan-500/30 bg-cyan-900/10 text-cyan-400 text-xs font-mono mb-4 shadow-[0_0_10px_rgba(6,182,212,0.1)]">
                 <Zap size={12} className="fill-cyan-400" /> 
-                <span className="tracking-widest font-bold">ACCESO SEGURO</span>
+                <span className="tracking-widest font-bold">Short Cirkuit</span>
             </div>
-            <h1 className="text-3xl font-black text-white tracking-tight">
-                BIENVENIDO A <span className="text-cyan-400 drop-shadow-[0_0_10px_rgba(34,211,238,0.3)]">SC</span>
+            <h1 className="text-3xl font-black text-white tracking-tight uppercase">
+                Inicio de sesión
             </h1>
             <p className="text-gray-500 text-sm mt-2">Ingresa tus credenciales para continuar</p>
         </div>
@@ -85,7 +90,7 @@ export default function LoginPage() {
 
             <button 
                 type="submit"
-                className="w-full py-3 bg-cyan-600 hover:bg-cyan-500 text-white font-bold rounded-xl transition-all shadow-[0_0_20px_rgba(6,182,212,0.2)] hover:shadow-[0_0_30px_rgba(6,182,212,0.4)] flex items-center justify-center gap-2 group"
+                className="cursor-pointer w-full py-3 bg-cyan-600 hover:bg-cyan-500 text-white font-bold rounded-xl transition-all shadow-[0_0_20px_rgba(6,182,212,0.2)] hover:shadow-[0_0_30px_rgba(6,182,212,0.4)] flex items-center justify-center gap-2 group"
             >
                 INICIAR SESIÓN
                 <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />

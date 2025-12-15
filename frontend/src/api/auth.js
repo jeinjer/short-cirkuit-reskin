@@ -1,14 +1,25 @@
 import axios from 'axios';
 
-const VITE_API_URL = import.meta.env.VITE_API_URL;
+const API_URL_PRD = import.meta.env.VITE_API_URL; 
+const API_URL_DEV = 'http://localhost:3000/api'; 
+
+const baseURL = import.meta.env.DEV ? API_URL_DEV : API_URL_PRD;
 
 const api = axios.create({
-  baseURL: VITE_API_URL,
+  baseURL: baseURL,
+  withCredentials: true 
 });
 
-export const registerRequest = (user) => api.post(`/register`, user);
-export const loginRequest = (user) => api.post(`/login`, user);
-export const googleLoginRequest = (token) => api.post(`/google`, { token });
-export const verifyTokenRequest = () => api.get(`/me`);
-export const forgotPasswordRequest = (email) => api.post(`/forgot-password`, { email });
-export const resetPasswordRequest = (token, newPassword) => api.post(`/reset-password`, { token, newPassword });
+export const registerRequest = (user) => api.post(`/auth/register`, user);
+export const loginRequest = (user) => api.post(`/auth/login`, user);
+export const googleLoginRequest = (token) => api.post(`/auth/google`, { token });
+export const forgotPasswordRequest = (email) => api.post(`/auth/forgot-password`, { email });
+export const resetPasswordRequest = (token, newPassword) => api.post(`/auth/reset-password`, { token, newPassword });
+
+export const verifyTokenRequest = async (token) => {
+    return await api.post('/auth/verify-token', {}, {
+        headers: {
+            Authorization: `Bearer ${token}` 
+        }
+    });
+};

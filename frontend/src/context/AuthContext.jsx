@@ -1,5 +1,5 @@
 import { createContext, useState, useContext, useEffect } from 'react';
-import { loginRequest, registerRequest, googleLoginRequest } from '../api/auth';
+import { loginRequest, registerRequest, googleLoginRequest, verifyTokenRequest } from '../api/auth'; 
 import { GoogleOAuthProvider } from '@react-oauth/google';
 
 const AuthContext = createContext();
@@ -16,6 +16,7 @@ export const AuthProvider = ({ children }) => {
   const [errors, setErrors] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  
   useEffect(() => {
     if (errors.length > 0) {
       const timer = setTimeout(() => setErrors([]), 5000);
@@ -23,15 +24,50 @@ export const AuthProvider = ({ children }) => {
     }
   }, [errors]);
 
+  useEffect(() => {
+    async function checkLogin() {
+
+      const token = localStorage.getItem('token');
+
+      if (!token) {
+        setIsAuthenticated(false);
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const res = await verifyTokenRequest(token); 
+        if (!res.data) { 
+           setIsAuthenticated(false);
+           setLoading(false);
+           return;
+        }
+        
+        setIsAuthenticated(true);
+        setUser(res.data);
+        setLoading(false);
+
+      } catch (error) {
+        setIsAuthenticated(false);
+        setUser(null);
+        setLoading(false);
+        localStorage.removeItem('token');
+      }
+    }
+    
+    checkLogin();
+  }, []);
+
   const signup = async (user) => {
     try {
       const res = await registerRequest(user);
       setUser(res.data.user);
       setIsAuthenticated(true);
-      localStorage.setItem('token', res.data.token);
+      localStorage.setItem('token', res.data.token); 
     } catch (error) {
       setErrors(error.response?.data?.errors || [error.response?.data?.error]);
     }
+    throw error;
   };
 
   const signin = async (user) => {
@@ -41,8 +77,23 @@ export const AuthProvider = ({ children }) => {
       setIsAuthenticated(true);
       localStorage.setItem('token', res.data.token);
     } catch (error) {
-      setErrors(error.response?.data?.errors || [error.response?.data?.error]);
+      if (error.response?.data?.errors) {
+         setErrors(error.response.data.errors);
+      } else if (error.response?.data?.error) {
+         setErrors([error.response.data.error]);
+      } else {
+         setErrors(["Error en el servidor"]);
+      }
+      throw error;
     }
+  };
+
+  const logout = () => {
+    localStorage.removeItem('token');
+    setUser(null);
+    setIsAuthenticated(false);
+    setErrors([]);
+    window.location.href = "/";
   };
 
   const loginWithGoogle = async (credential) => {
@@ -56,17 +107,12 @@ export const AuthProvider = ({ children }) => {
       }
   }
 
-  const logout = () => {
-    localStorage.removeItem('token');
-    setUser(null);
-    setIsAuthenticated(false);
-  };
-
-  // Aquí podrías agregar un useEffect para verificar el token al cargar la app
-
   return (
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
-        <AuthContext.Provider value={{ signup, signin, loginWithGoogle, logout, user, isAuthenticated, errors, loading }}>
+        <AuthContext.Provider value={{ 
+            signup, signin, loginWithGoogle, logout, 
+            user, isAuthenticated, errors, loading 
+        }}>
         {children}
         </AuthContext.Provider>
     </GoogleOAuthProvider>

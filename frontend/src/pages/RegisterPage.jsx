@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { GoogleLogin } from '@react-oauth/google';
 import { Mail, Lock, Zap, AlertCircle, ArrowRight, User } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { toast } from 'sonner';
 
 export default function RegisterPage() {
   const { register, handleSubmit, formState: { errors: formErrors } } = useForm();
@@ -16,8 +17,12 @@ export default function RegisterPage() {
   }, [isAuthenticated, navigate]);
 
   const onSubmit = handleSubmit(async (data) => {
+  try {
     await signup(data);
-  });
+    toast.success('¡Cuenta creada con éxito!');
+  } catch (error) {
+  }
+});
 
   return (
     <div className="min-h-screen bg-[#050507] flex items-center justify-center p-4 relative overflow-hidden">

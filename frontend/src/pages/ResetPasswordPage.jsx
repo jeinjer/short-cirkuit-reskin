@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { Lock, ArrowRight, CheckCircle, AlertCircle, KeyRound } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { resetPasswordRequest } from '../api/auth';
+import { toast } from 'sonner';
 
 export default function ResetPasswordPage() {
   const [searchParams] = useSearchParams();
@@ -16,7 +17,7 @@ export default function ResetPasswordPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!token) setServerError("Token no válido o no encontrado.");
+    if (!token) setServerError("Enlace no válido o incompleto.");
   }, [token]);
 
   const onSubmit = async (data) => {
@@ -25,9 +26,11 @@ export default function ResetPasswordPage() {
     try {
       await resetPasswordRequest(token, data.password);
       setSuccess(true);
+      toast.success('¡Contraseña actualizada correctamente!');
       setTimeout(() => navigate('/login'), 3000);
     } catch (error) {
-      setServerError(error.response?.data?.error || "El token ha expirado o es inválido.");
+      const errorMsg = error.response?.data?.error || "Error al restablecer";
+      setServerError(errorMsg);
     } finally {
       setLoading(false);
     }
@@ -60,7 +63,7 @@ export default function ResetPasswordPage() {
 
             {!token ? (
                <div className="text-center">
-                  <p className="text-gray-400 text-sm mb-4">Enlace inválido.</p>
+                  <p className="text-gray-400 text-sm mb-4">El enlace de recuperación es inválido.</p>
                   <Link to="/login" className="text-cyan-400 font-bold hover:underline">Volver al inicio</Link>
                </div>
             ) : (
@@ -72,7 +75,8 @@ export default function ResetPasswordPage() {
                     <input 
                         type="password"
                         {...register("password", { required: true, minLength: 6 })}
-                        className="w-full bg-[#0a0a0f] border border-white/10 rounded-xl py-3 pl-10 pr-4 text-white text-sm focus:outline-none focus:border-cyan-500/50 focus:bg-cyan-900/5 transition-all placeholder:text-gray-700"
+                        disabled={loading}
+                        className="w-full bg-[#0a0a0f] border border-white/10 rounded-xl py-3 pl-10 pr-4 text-white text-sm focus:outline-none focus:border-cyan-500/50 focus:bg-cyan-900/5 transition-all placeholder:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
                         placeholder="••••••••"
                     />
                     </div>
@@ -89,7 +93,8 @@ export default function ResetPasswordPage() {
                             required: true, 
                             validate: (val) => val === watch('password') || "Las contraseñas no coinciden"
                         })}
-                        className="w-full bg-[#0a0a0f] border border-white/10 rounded-xl py-3 pl-10 pr-4 text-white text-sm focus:outline-none focus:border-cyan-500/50 focus:bg-cyan-900/5 transition-all placeholder:text-gray-700"
+                        disabled={loading}
+                        className="w-full bg-[#0a0a0f] border border-white/10 rounded-xl py-3 pl-10 pr-4 text-white text-sm focus:outline-none focus:border-cyan-500/50 focus:bg-cyan-900/5 transition-all placeholder:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
                         placeholder="••••••••"
                     />
                     </div>
@@ -99,7 +104,8 @@ export default function ResetPasswordPage() {
                 <button 
                     type="submit"
                     disabled={loading}
-                    className="w-full py-3 bg-cyan-600 hover:bg-cyan-500 disabled:bg-gray-700 text-white font-bold rounded-xl transition-all shadow-[0_0_20px_rgba(6,182,212,0.2)] hover:shadow-[0_0_30px_rgba(6,182,212,0.4)] flex items-center justify-center gap-2 group"
+                    // AQUÍ TAMBIÉN: Bloqueo visual y funcional
+                    className="w-full py-3 bg-cyan-600 hover:bg-cyan-500 disabled:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold rounded-xl transition-all shadow-[0_0_20px_rgba(6,182,212,0.2)] hover:shadow-[0_0_30px_rgba(6,182,212,0.4)] flex items-center justify-center gap-2 group"
                 >
                     {loading ? 'ACTUALIZANDO...' : 'CAMBIAR CONTRASEÑA'}
                     {!loading && <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />}

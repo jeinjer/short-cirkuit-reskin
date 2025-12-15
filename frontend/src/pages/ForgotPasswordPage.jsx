@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { Mail, ArrowLeft, Send, CheckCircle, AlertCircle, Zap } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { forgotPasswordRequest } from '../api/auth';
+import { toast } from 'sonner';
 
 export default function ForgotPasswordPage() {
   const { register, handleSubmit, formState: { errors } } = useForm();
@@ -17,8 +18,10 @@ export default function ForgotPasswordPage() {
     try {
       await forgotPasswordRequest(data.email);
       setSuccess(true);
+      toast.success('Correo de recuperación enviado');
     } catch (error) {
-      setServerError(error.response?.data?.error || "Error al enviar el correo");
+      const errorMsg = error.response?.data?.error || "Error al enviar el correo";
+      setServerError(errorMsg);
     } finally {
       setLoading(false);
     }
@@ -59,7 +62,8 @@ export default function ForgotPasswordPage() {
                   <input 
                     type="email"
                     {...register("email", { required: true })}
-                    className="w-full bg-[#0a0a0f] border border-white/10 rounded-xl py-3 pl-10 pr-4 text-white text-sm focus:outline-none focus:border-cyan-500/50 focus:bg-cyan-900/5 transition-all placeholder:text-gray-700"
+                    disabled={loading}
+                    className="w-full bg-[#0a0a0f] border border-white/10 rounded-xl py-3 pl-10 pr-4 text-white text-sm focus:outline-none focus:border-cyan-500/50 focus:bg-cyan-900/5 transition-all placeholder:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
                     placeholder="usuario@ejemplo.com"
                   />
                 </div>
@@ -69,9 +73,9 @@ export default function ForgotPasswordPage() {
               <button 
                 type="submit"
                 disabled={loading}
-                className="w-full py-3 bg-cyan-600 hover:bg-cyan-500 disabled:bg-gray-700 text-white font-bold rounded-xl transition-all shadow-[0_0_20px_rgba(6,182,212,0.2)] hover:shadow-[0_0_30px_rgba(6,182,212,0.4)] flex items-center justify-center gap-2 group"
+                className="cursor-pointer w-full py-3 bg-cyan-600 hover:bg-cyan-500 disabled:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold rounded-xl transition-all shadow-[0_0_20px_rgba(6,182,212,0.2)] hover:shadow-[0_0_30px_rgba(6,182,212,0.4)] flex items-center justify-center gap-2 group"
               >
-                {loading ? 'ENVIANDO...' : 'ENVIAR ENLACE'}
+                {loading ? 'ENVIANDO...' : 'RECUPERAR CONTRASEÑA'}
                 {!loading && <Send size={16} className="group-hover:translate-x-1 transition-transform" />}
               </button>
             </form>
@@ -82,11 +86,11 @@ export default function ForgotPasswordPage() {
                <CheckCircle size={32} />
             </div>
             <h2 className="text-xl font-bold text-white mb-2">¡Correo Enviado!</h2>
-            <p className="text-gray-400 text-sm mb-8 px-4">
-               Revisa tu bandeja de entrada (y spam). Hemos enviado las instrucciones a tu correo.
+            <p className="text-gray-400 text-sm mb-4 px-4">
+              Si el correo existe, recibirás las instrucciones.
             </p>
             <div className="p-3 bg-cyan-900/10 border border-cyan-500/20 rounded-lg text-xs text-cyan-200 font-mono mb-4">
-                El enlace expirará en 1 hora.
+                El enlace expira en 1 hora.
             </div>
           </motion.div>
         )}
