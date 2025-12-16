@@ -26,6 +26,7 @@ export const register = async (req: Request, res: Response) => {
         email: data.email,
         password: hashedPassword,
         role: 'USER',
+        googleId: null,
       },
     });
 

@@ -6,7 +6,8 @@ const passwordError = "La contraseña debe tener entre 6 y 16 caracteres, una ma
 export const registerSchema = z.object({
   name: z.string().min(2, "El nombre debe tener al menos 2 caracteres"),
   email: z.email("Email inválido"),
-  password: z.string().regex(passwordRegex, passwordError)
+  password: z.string().regex(passwordRegex, passwordError),
+  googleId: z.string().optional().or(z.literal('')).transform(val => val === '' ? undefined : val),
 });
 
 export const loginSchema = z.object({

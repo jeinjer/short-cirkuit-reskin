@@ -71,8 +71,8 @@ model User {
   name      String
   role      Role     @default(USER)
   
-  googleId        String?   @unique // Para login con Google
-  avatar          String?   // Foto de perfil (Google o subida)
+  googleId        String?   
+  avatar          String?   
   
   resetToken      String?   
   resetTokenExpiry DateTime?
