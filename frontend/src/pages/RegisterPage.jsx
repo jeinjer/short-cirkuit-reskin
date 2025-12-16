@@ -1,141 +1,207 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { GoogleLogin } from '@react-oauth/google';
-import { Mail, Lock, Zap, AlertCircle, ArrowRight, User } from 'lucide-react';
+import { Mail, Lock, Zap, AlertCircle, ArrowRight, User, Eye, EyeOff, Check, X } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
 
 export default function RegisterPage() {
-  const { register, handleSubmit, formState: { errors: formErrors } } = useForm();
+  const { register, handleSubmit, watch, formState: { errors: formErrors } } = useForm();
   const { signup, loginWithGoogle, isAuthenticated, errors: authErrors } = useAuth();
   const navigate = useNavigate();
+  
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const name = watch('name', '');
+  const email = watch('email', '');
+  const password = watch('password', '');
+  const confirmPassword = watch('confirmPassword', '');
+
+  const validations = [
+    { label: "Mínimo 6 caracteres", valid: password.length >= 6 },
+    { label: "Máximo 16 caracteres", valid: password.length <= 16 && password.length > 0 },
+    { label: "Al menos 1 mayúscula", valid: /[A-Z]/.test(password) },
+    { label: "Al menos 1 número", valid: /[0-9]/.test(password) },
+    { label: "Al menos 1 símbolo", valid: /[^A-Za-z0-9]/.test(password) },
+  ];
+
+  const lengthValidations = validations.slice(0, 2);
+  const typeValidations = validations.slice(2);
+
+  const allRequirementsMet = validations.every(v => v.valid);
+  const passwordsMatch = password === confirmPassword && password.length > 0;
+  const isFormValid = name && email && allRequirementsMet && passwordsMatch;
 
   useEffect(() => {
     if (isAuthenticated) navigate('/catalogo');
   }, [isAuthenticated, navigate]);
 
   const onSubmit = handleSubmit(async (data) => {
-  try {
-    await signup(data);
-    toast.success('¡Cuenta creada con éxito!');
-  } catch (error) {
-  }
-});
+    if (!isFormValid) return; 
+    setLoading(true);
+    try {
+      await signup(data);
+      toast.success('¡Cuenta creada con éxito!');
+    } catch (error) {
+    } finally {
+        setLoading(false);
+    }
+  });
 
   return (
-    <div className="min-h-screen bg-[#050507] flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-[calc(100dvh-4rem)] bg-[#050507] flex items-start md:items-center justify-center px-3 pt-8 pb-8 md:p-4 relative overflow-hidden">
       <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(ellipse_at_top_right,var(--tw-gradient-stops))] from-[#1a1a2e] via-[#050507] to-[#050507] opacity-60 z-0"></div>
-      <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-cyan-500/10 blur-[120px] rounded-full pointer-events-none"></div>
 
       <motion.div 
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="w-full max-w-md bg-[#13131a] border border-white/10 rounded-2xl p-8 shadow-[0_0_50px_rgba(0,0,0,0.5)] relative z-10 backdrop-blur-sm"
+        initial={{ opacity: 0, y: 30 }} 
+        animate={{ opacity: 1, y: 0 }} 
+        className="w-full max-w-md bg-[#13131a] border border-white/10 rounded-2xl p-5 md:p-8 shadow-2xl relative z-10 backdrop-blur-sm"
       >
-        <div className="text-center mb-8">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-cyan-500/30 bg-cyan-900/10 text-cyan-400 text-xs font-mono mb-4 shadow-[0_0_10px_rgba(6,182,212,0.1)]">
-                <Zap size={12} className="fill-cyan-400" /> 
-                <span className="tracking-widest font-bold">Short Cirkuit</span>
+        
+        <div className="text-center mb-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-cyan-500/30 bg-cyan-900/10 text-cyan-400 text-xs font-mono mb-2">
+                <Zap size={12} className="fill-cyan-400" /> <span className="tracking-widest font-bold">Short Cirkuit</span>
             </div>
-            <h1 className="text-3xl font-black text-white tracking-tight uppercase">
-                Registro
-            </h1>
-            <p className="text-gray-500 text-sm mt-2">Completa los campos para crear tu cuenta</p>
+            <h1 className="text-2xl font-black text-white uppercase">Registro</h1>
         </div>
 
         {authErrors.map((error, i) => (
-          <motion.div 
-            key={i} 
-            initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
-            className="bg-red-500/10 border border-red-500/20 text-red-400 p-3 rounded-lg mb-4 text-sm flex items-center gap-2"
-          >
+          <div key={i} className="bg-red-500/10 border border-red-500/20 text-red-400 p-2 rounded-lg mb-3 text-xs flex items-center justify-center gap-2">
             <AlertCircle size={14} /> {error}
-          </motion.div>
+          </div>
         ))}
 
-        <form onSubmit={onSubmit} className="space-y-5">
-            <div className="space-y-1">
-                <label className="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">Nombre Completo</label>
+        <form onSubmit={onSubmit} className="space-y-3">
+            <div className="space-y-0.5">
+                <label className="text-[10px] font-bold text-gray-400 uppercase ml-1">Nombre</label>
                 <div className="relative group">
-                    <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-cyan-400 transition-colors" size={18} />
+                    <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-cyan-400 transition-colors" size={16} />
                     <input 
-                        type="text"
-                        {...register("name", { required: true, minLength: 2 })}
-                        className="w-full bg-[#0a0a0f] border border-white/10 rounded-xl py-3 pl-10 pr-4 text-white text-sm focus:outline-none focus:border-cyan-500/50 focus:bg-cyan-900/5 transition-all placeholder:text-gray-700"
-                        placeholder="Tu nombre"
+                        type="text" 
+                        {...register("name", { required: true })} 
+                        autoComplete="name"
+                        className="w-full bg-[#0a0a0f] border border-white/10 rounded-xl py-2 pl-9 pr-4 text-white text-sm focus:border-cyan-500/50 outline-none" 
+                        placeholder="Tu nombre" 
                     />
                 </div>
-                {formErrors.name && <span className="text-red-500 text-[10px] ml-1">El nombre es requerido</span>}
             </div>
 
-            <div className="space-y-1">
-                <label className="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">Email</label>
+            <div className="space-y-0.5">
+                <label className="text-[10px] font-bold text-gray-400 uppercase ml-1">Email</label>
                 <div className="relative group">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-cyan-400 transition-colors" size={18} />
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-cyan-400 transition-colors" size={16} />
                     <input 
-                        type="email"
-                        {...register("email", { required: true })}
-                        className="w-full bg-[#0a0a0f] border border-white/10 rounded-xl py-3 pl-10 pr-4 text-white text-sm focus:outline-none focus:border-cyan-500/50 focus:bg-cyan-900/5 transition-all placeholder:text-gray-700"
-                        placeholder="usuario@ejemplo.com"
+                        type="email" 
+                        {...register("email", { required: true })} 
+                        autoComplete="email"
+                        className="w-full bg-[#0a0a0f] border border-white/10 rounded-xl py-2 pl-9 pr-4 text-white text-sm focus:border-cyan-500/50 outline-none" 
+                        placeholder="usuario@ejemplo.com" 
                     />
                 </div>
-                {formErrors.email && <span className="text-red-500 text-[10px] ml-1">El email es requerido</span>}
             </div>
 
-            <div className="space-y-1">
-                <label className="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">Contraseña</label>
+            <div className="space-y-0.5">
+                <label className="text-[10px] font-bold text-gray-400 uppercase ml-1">Contraseña</label>
                 <div className="relative group">
-                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-cyan-400 transition-colors" size={18} />
+                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-cyan-400 transition-colors" size={16} />
                     <input 
-                        type="password"
-                        {...register("password", { required: true, minLength: 6 })}
-                        className="w-full bg-[#0a0a0f] border border-white/10 rounded-xl py-3 pl-10 pr-4 text-white text-sm focus:outline-none focus:border-cyan-500/50 focus:bg-cyan-900/5 transition-all placeholder:text-gray-700"
+                        type={showPassword ? "text" : "password"} 
+                        {...register("password", { required: true })}
+                        autoComplete="new-password"
+                        className="w-full bg-[#0a0a0f] border border-white/10 rounded-xl py-2 pl-9 pr-9 text-white text-sm focus:border-cyan-500/50 outline-none"
                         placeholder="••••••••"
                     />
+                    <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white cursor-pointer">
+                        {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                    </button>
                 </div>
-                {formErrors.password && <span className="text-red-500 text-[10px] ml-1">Mínimo 6 caracteres</span>}
+
+                {password.length > 0 && (
+                    <div className="bg-[#0a0a0f]/50 p-2 rounded-lg border border-white/5 grid grid-cols-2 gap-x-2 sm:gap-x-4 gap-y-1">
+                        <div className="space-y-0.5">
+                            {typeValidations.map((val, index) => (
+                                <div key={index} className={`flex items-center gap-1.5 text-[11px] ${val.valid ? 'text-cyan-400' : 'text-red-400'}`}>
+                                    {val.valid ? <Check size={10} /> : <X size={10} />}
+                                    <span className={val.valid ? 'font-bold' : ''}>{val.label}</span>
+                                </div>
+                            ))}
+                        </div>
+
+                        <div className="space-y-0.5 border-l border-white/5 pl-2 sm:pl-4">
+                            {lengthValidations.map((val, index) => (
+                                <div key={index} className={`flex items-center gap-1.5 text-[11px] ${val.valid ? 'text-cyan-400' : 'text-red-400'}`}>
+                                    {val.valid ? <Check size={10} /> : <X size={10} />}
+                                    <span className={val.valid ? 'font-bold' : ''}>{val.label}</span>
+                                </div>
+                            ))}
+                        </div>
+
+                    </div>
+                )}
+            </div>
+
+            <div className="space-y-0.5">
+                <label className="text-[10px] font-bold text-gray-400 uppercase ml-1">Confirmar Contraseña</label>
+                <div className="relative group">
+                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-cyan-400 transition-colors" size={16} />
+                    <input 
+                        type={showConfirmPassword ? "text" : "password"} 
+                        {...register("confirmPassword", { 
+                            required: true,
+                            validate: val => val === password || "Las contraseñas no coinciden"
+                        })}
+                        autoComplete="new-password"
+                        className={`w-full bg-[#0a0a0f] border rounded-xl py-2 pl-9 pr-9 text-white text-sm focus:outline-none transition-all
+                             ${!passwordsMatch && confirmPassword.length > 0 ? 'border-red-500/50 focus:border-red-500' : 'border-white/10 focus:border-cyan-500/50'}
+                        `}
+                        placeholder="••••••••"
+                    />
+                    <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white cursor-pointer">
+                        {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                    </button>
+                </div>
+                {!passwordsMatch && confirmPassword.length > 0 && (
+                    <span className="text-red-500 text-[11px] ml-1 flex items-center gap-1">
+                        <X size={10} /> Las contraseñas no coinciden
+                    </span>
+                )}
             </div>
 
             <button 
-                type="submit"
-                className="w-full py-3 bg-cyan-600 hover:bg-cyan-500 text-white font-bold rounded-xl transition-all shadow-[0_0_20px_rgba(6,182,212,0.2)] hover:shadow-[0_0_30px_rgba(6,182,212,0.4)] flex items-center justify-center gap-2 group cursor-pointer"
+                type="submit" 
+                disabled={!isFormValid || loading}
+                className="w-full py-2.5 bg-cyan-600 hover:bg-cyan-500 disabled:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold rounded-xl shadow-[0_0_20px_rgba(6,182,212,0.2)] hover:shadow-[0_0_30px_rgba(6,182,212,0.4)] flex items-center justify-center gap-2 group transition-all mt-4 cursor-pointer"
             >
-                REGISTRARSE
-                <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                {loading ? 'REGISTRANDO...' : 'REGISTRARSE'}
+                {!loading && <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" /> }
             </button>
         </form>
 
-        <div className="my-6 flex items-center gap-4">
+        <div className="my-3 flex items-center gap-4">
             <div className="h-px bg-white/10 flex-1"></div>
-            <span className="text-gray-600 text-xs font-mono uppercase">o registrate con</span>
+            <span className="text-gray-600 text-[12px] font-mono uppercase">o registrarse con</span>
             <div className="h-px bg-white/10 flex-1"></div>
         </div>
 
         <div className="flex justify-center">
-            <div className="overflow-hidden rounded-lg border border-white/10 hover:border-white/30 transition-colors">
+            <div className="rounded-xl p-1 transition-colors cursor-pointer hover:scale-105 transform duration-200">
                  <GoogleLogin
-                    onSuccess={(credentialResponse) => {
-                        loginWithGoogle(credentialResponse.credential);
-                    }}
-                    onError={() => {
-                        console.log('Register Failed');
-                    }}
+                    onSuccess={(r) => loginWithGoogle(r.credential)}
+                    onError={() => console.log('Error')}
+                    type="icon"
                     theme="filled_black"
-                    shape="rectangular"
-                    width="300"
-                    text="signup_with" 
+                    shape="circle"
+                    size="large"
                 />
             </div>
         </div>
 
-        <p className="mt-8 text-center text-gray-500 text-xs">
-            ¿Ya tienes cuenta?{' '}
-            <Link to="/login" className="text-cyan-400 font-bold hover:text-cyan-300 transition-colors underline">
-                Iniciar sesión
-            </Link>
+        <p className="mt-3 text-center text-gray-500 text-xs">
+            ¿Ya tenés cuenta? <Link to="/login" className="text-cyan-400 font-bold hover:text-cyan-300 underline">Iniciar sesión</Link>
         </p>
 
       </motion.div>

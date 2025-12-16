@@ -118,7 +118,7 @@ export const forgotPassword = async (req: Request, res: Response) => {
     if (!user) return res.status(404).json({ error: "Usuario no encontrado" });
 
     const resetToken = crypto.randomBytes(32).toString('hex');
-    const resetTokenExpiry = new Date(Date.now() + 3600000);
+    const resetTokenExpiry = new Date(Date.now() + 600000); 
 
     await prisma.user.update({
       where: { id: user.id },

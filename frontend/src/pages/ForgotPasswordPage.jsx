@@ -28,7 +28,8 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#050507] flex items-center justify-center p-4 relative overflow-hidden">
+    // Alineación superior en móvil, centrada en desktop
+    <div className="min-h-[calc(100dvh-4rem)] bg-[#050507] flex items-start md:items-center justify-center px-3 pt-8 pb-8 md:p-4 relative overflow-hidden">
       <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,var(--tw-gradient-stops))] from-[#0a0a0f] via-[#050507] to-[#050507] z-0"></div>
       <div className="absolute bottom-[-10%] left-[-5%] w-[400px] h-[400px] bg-cyan-500/5 blur-[100px] rounded-full pointer-events-none"></div>
 
@@ -36,7 +37,7 @@ export default function ForgotPasswordPage() {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-md bg-[#13131a] border border-white/10 rounded-2xl p-8 shadow-2xl relative z-10 backdrop-blur-sm"
+        className="w-full max-w-md bg-[#13131a] border border-white/10 rounded-2xl p-5 md:p-8 shadow-2xl relative z-10 backdrop-blur-sm"
       >
         {!success ? (
           <>
@@ -45,7 +46,7 @@ export default function ForgotPasswordPage() {
                 <Zap size={24} />
               </div>
               <h1 className="text-2xl font-black text-white tracking-tight uppercase">Recuperar Acceso</h1>
-              <p className="text-gray-500 text-xs mt-2">Te enviaremos un enlace seguro para restablecer tu clave.</p>
+              <p className="text-gray-500 text-xs mt-2">Te enviaremos un enlace a tu correo para restablecer tu clave.</p>
             </div>
 
             {serverError && (
@@ -90,14 +91,14 @@ export default function ForgotPasswordPage() {
               Si el correo existe, recibirás las instrucciones.
             </p>
             <div className="p-3 bg-cyan-900/10 border border-cyan-500/20 rounded-lg text-xs text-cyan-200 font-mono mb-4">
-                El enlace expira en 1 hora.
+                El enlace expirará en 10 minutos.
             </div>
           </motion.div>
         )}
 
         <div className="mt-8 text-center">
           <Link to="/login" className="inline-flex items-center gap-2 text-xs font-bold text-gray-500 hover:text-white transition-colors">
-            <ArrowLeft size={14} /> VOLVER AL LOGIN
+            <ArrowLeft size={14} /> Volver
           </Link>
         </div>
       </motion.div>

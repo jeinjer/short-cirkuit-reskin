@@ -39,7 +39,7 @@ export default function Header({ onOpenCart }) {
                 className="hidden sm:flex items-center gap-3 bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 px-3 py-2 rounded-lg transition-all group cursor-pointer h-[42px]"
             >
                 <div className="flex flex-col items-end leading-none">
-                    <span className="text-[10px] font-medium text-gray-200 uppercase tracking-wider">
+                    <span className="text-[12px] font-medium text-gray-200 uppercase tracking-wider">
                     Ingresar
                     </span>
                 </div>
@@ -108,7 +108,7 @@ export default function Header({ onOpenCart }) {
             className="flex items-center gap-2 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 px-4 py-2 h-[42px] rounded-lg transition-all group border border-cyan-500/20 cursor-pointer"
           >
             <ShoppingCart size={18} />
-            <span className="font-bold text-sm hidden sm:block">CARRITO</span>
+            <span className="font-bold text-[12px] text-sm hidden sm:block">CARRITO</span>
           </button>
         </div>
       </div>

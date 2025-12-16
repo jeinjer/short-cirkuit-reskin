@@ -2,8 +2,8 @@ import nodemailer from 'nodemailer';
 
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
-  port: 587,
-  secure: false, 
+  port: 465,
+  secure: true, 
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
@@ -18,8 +18,7 @@ export const sendResetEmail = async (email: string, token: string) => {
     await transporter.verify(); 
 
     await transporter.sendMail({
-      from: '"Soporte Short Cirkuit" <' + process.env.EMAIL_USER + '>', 
-      // --------------------------
+      from: '"Short Cirkuit" <' + process.env.EMAIL_USER + '>', 
       to: email,
       subject: "Restablecer tu contraseña ⚡",
       replyTo: "no-reply@shortcirkuit.com", 
@@ -43,7 +42,7 @@ export const sendResetEmail = async (email: string, token: string) => {
             </div>
             
             <p style="color: #6b7280; font-size: 12px; text-align: center; margin-top: 30px;">
-              Si no solicitaste este cambio, ignora este mensaje. El enlace expirará en 1 hora.
+              Si no solicitaste este cambio, ignora este mensaje. El enlace expirará en 10 minutos.
             </p>
             
           </div>
