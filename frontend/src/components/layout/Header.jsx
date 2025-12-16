@@ -59,7 +59,7 @@ export default function Header({ onOpenCart }) {
                             Hola,
                         </span>
                         <span className="text-[12px] font-bold text-cyan-100 uppercase tracking-wide truncate max-w-[100px]">
-                            {user?.name?.split(' ')[0] || 'Usuario'} 
+                            {user?.name?.split(' ')[0]?.slice(0, 15) || 'Usuario'} 
                         </span>
                     </div>
                     
