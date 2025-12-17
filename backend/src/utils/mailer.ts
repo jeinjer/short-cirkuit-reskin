@@ -3,11 +3,16 @@ import nodemailer from 'nodemailer';
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
   port: 465,
-  secure: true, 
+  secure: true,
   auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS,
   },
+  logger: true,        // Muestra logs detallados en la consola de Render
+  debug: true,         // Incluye el tráfico SMTP en los logs
+  connectionTimeout: 10000, // Esperar máx 10 seg para conectar
+  greetingTimeout: 5000,    // Esperar máx 5 seg el saludo del servidor
+  socketTimeout: 10000      // Si no hay datos en 10 seg, cortar
 });
 
 export const sendResetEmail = async (email: string, token: string) => {
