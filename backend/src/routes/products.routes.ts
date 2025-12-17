@@ -4,6 +4,31 @@ import { Category, PrismaClient } from '@prisma/client';
 const router = Router();
 const prisma = new PrismaClient();
 
+router.get('/:sku', async (req, res) => {
+  const { sku } = req.params;
+
+  try {
+    const product = await prisma.product.findUnique({
+      where: { sku: sku },
+    });
+
+    if (!product) {
+      return res.status(404).json({ error: 'Producto no encontrado' });
+    }
+
+    const cleanedProduct = {
+      ...product,
+      specs: removeNullSpecs(product.specs),
+    };
+
+    res.json(cleanedProduct);
+  } catch (error) {
+    console.error(`Error al obtener producto con SKU ${sku}:`, error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
+
 const removeNullSpecs = (specs: any) => {
   if (!specs || typeof specs !== 'object') return {};
   return Object.fromEntries(

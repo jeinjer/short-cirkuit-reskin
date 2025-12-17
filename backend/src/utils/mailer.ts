@@ -13,7 +13,7 @@ export const sendResetEmail = async (email: string, token: string) => {
     const { data, error } = await resend.emails.send({
       from: 'Short Cirkuit <onboarding@resend.dev>',
       to: [email],
-      subject: "Restablecer tu contraseña ⚡",
+      subject: "Restablecer tu contraseña",
       html: `
         <div style="font-family: 'Arial', sans-serif; background-color: #050507; color: #ffffff; padding: 40px; border-radius: 10px;">
           <div style="max-width: 500px; margin: 0 auto; background-color: #13131a; padding: 30px; border-radius: 15px; border: 1px solid #333;">
@@ -43,15 +43,11 @@ export const sendResetEmail = async (email: string, token: string) => {
     });
 
     if (error) {
-      console.error("Error devuelto por Resend:", error);
       throw new Error(error.message);
     }
-
-    console.log("Correo enviado con éxito:", data);
     return data;
 
   } catch (error) {
-    console.error("Error enviando correo:", error);
     throw new Error("No se pudo enviar el correo");
   }
 };
