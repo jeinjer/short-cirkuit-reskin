@@ -12,16 +12,22 @@ export default function LoginPage() {
   const { signin, loginWithGoogle, isAuthenticated, errors: authErrors } = useAuth();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (isAuthenticated) navigate('/');
   }, [isAuthenticated, navigate]);
 
   const onSubmit = handleSubmit(async (data) => {
+    setLoading(true);
     try {
       await signin(data);
       toast.success('¡Bienvenido!');
-    } catch (error) {}
+    } catch (error) {
+    } finally {
+      setLoading(false);
+    }
   });
 
   const googleLogin = useGoogleLogin({
@@ -90,8 +96,13 @@ export default function LoginPage() {
                 </div>
             </div>
 
-            <button type="submit" className="cursor-pointer w-full py-2.5 bg-cyan-600 hover:bg-cyan-500 text-white font-bold rounded-xl shadow-[0_0_20px_rgba(6,182,212,0.2)] hover:shadow-[0_0_30px_rgba(6,182,212,0.4)] flex items-center justify-center gap-2 group transition-all">
-                INICIAR SESIÓN <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+            <button 
+                type="submit" 
+                disabled={loading}
+                className="cursor-pointer w-full py-2.5 bg-cyan-600 hover:bg-cyan-500 disabled:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold rounded-xl shadow-[0_0_20px_rgba(6,182,212,0.2)] hover:shadow-[0_0_30px_rgba(6,182,212,0.4)] flex items-center justify-center gap-2 group transition-all"
+            >
+                {loading ? 'INICIANDO...' : 'INICIAR SESIÓN'}
+                {!loading && <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />}
             </button>
         </form>
 
