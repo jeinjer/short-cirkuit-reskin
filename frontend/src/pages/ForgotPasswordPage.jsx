@@ -28,7 +28,6 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    // Alineación superior en móvil, centrada en desktop
     <div className="min-h-[calc(100dvh-4rem)] bg-[#050507] flex items-start md:items-center justify-center px-3 pt-8 pb-8 md:p-4 relative overflow-hidden">
       <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,var(--tw-gradient-stops))] from-[#0a0a0f] via-[#050507] to-[#050507] z-0"></div>
       <div className="absolute bottom-[-10%] left-[-5%] w-[400px] h-[400px] bg-cyan-500/5 blur-[100px] rounded-full pointer-events-none"></div>
@@ -89,6 +88,9 @@ export default function ForgotPasswordPage() {
             <h2 className="text-xl font-bold text-white mb-2">¡Correo Enviado!</h2>
             <p className="text-gray-400 text-sm mb-4 px-4">
               Si el correo existe, recibirás las instrucciones.
+            </p>
+            <p className="text-gray-500 text-sm mb-4 px-4">
+              Revisa tu bandeja de entrada y la carpeta de spam.
             </p>
             <div className="p-3 bg-cyan-900/10 border border-cyan-500/20 rounded-lg text-xs text-cyan-200 font-mono mb-4">
                 El enlace expirará en 10 minutos.
