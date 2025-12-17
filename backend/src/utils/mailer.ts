@@ -8,12 +8,9 @@ const transporter = nodemailer.createTransport({
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS,
   },
-  logger: true,        // Muestra logs detallados en la consola de Render
-  debug: true,         // Incluye el tráfico SMTP en los logs
-  connectionTimeout: 10000, // Esperar máx 10 seg para conectar
-  greetingTimeout: 5000,    // Esperar máx 5 seg el saludo del servidor
-  socketTimeout: 10000      // Si no hay datos en 10 seg, cortar
-});
+  family: 4,
+  connectionTimeout: 10000,
+} as any);
 
 export const sendResetEmail = async (email: string, token: string) => {
   const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
