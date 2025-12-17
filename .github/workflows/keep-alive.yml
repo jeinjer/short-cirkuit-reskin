@@ -1,0 +1,13 @@
+name: Keep Render Alive
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+
+jobs:
+  ping_backend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping al Backend
+        run: curl -I https://tu-proyecto-en-render.onrender.com/health

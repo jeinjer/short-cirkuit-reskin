@@ -9,6 +9,7 @@ import categoriesRouter from './routes/categories.routes';
 import dolarRouter from './routes/dolar.routes';
 import internalRouter from './routes/internal.routes';
 import authRouter from './routes/auth.routes';
+import aliveRouter from './routes/alive.routes';
 
 const app = express();
 
@@ -47,6 +48,7 @@ app.use('/api/filters', filtersRouter);
 app.use('/api/categories', categoriesRouter);
 app.use('/api/dolar', dolarRouter);
 app.use('/internal', internalRouter);
+app.use('/alive', aliveRouter);
 
 app.listen(PORT, () => {
   console.log(`Servidor corriendo`);

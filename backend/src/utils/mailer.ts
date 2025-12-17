@@ -1,29 +1,19 @@
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 
-const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 465,
-  secure: true,
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  },
-  family: 4,
-  connectionTimeout: 10000,
-} as any);
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const sendResetEmail = async (email: string, token: string) => {
   const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
   const resetLink = `${frontendUrl}/reset-password?token=${token}`;
 
   try {
-    await transporter.verify(); 
+    // cambiar el 'from'
+    // a algo como 'soporte@shortcirkuit.com'.
 
-    await transporter.sendMail({
-      from: '"Short Cirkuit" <' + process.env.EMAIL_USER + '>', 
-      to: email,
+    const { data, error } = await resend.emails.send({
+      from: 'Short Cirkuit <onboarding@resend.dev>',
+      to: [email],
       subject: "Restablecer tu contraseña ⚡",
-      replyTo: "no-reply@shortcirkuit.com", 
       html: `
         <div style="font-family: 'Arial', sans-serif; background-color: #050507; color: #ffffff; padding: 40px; border-radius: 10px;">
           <div style="max-width: 500px; margin: 0 auto; background-color: #13131a; padding: 30px; border-radius: 15px; border: 1px solid #333;">
@@ -51,6 +41,15 @@ export const sendResetEmail = async (email: string, token: string) => {
         </div>
       `,
     });
+
+    if (error) {
+      console.error("Error devuelto por Resend:", error);
+      throw new Error(error.message);
+    }
+
+    console.log("Correo enviado con éxito:", data);
+    return data;
+
   } catch (error) {
     console.error("Error enviando correo:", error);
     throw new Error("No se pudo enviar el correo");
