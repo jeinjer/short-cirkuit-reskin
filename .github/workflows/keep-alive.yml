@@ -10,4 +10,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Ping al Backend
-        run: curl -I https://tu-proyecto-en-render.onrender.com/health
+        run: curl -I https://short-cirkuit-reskin.onrender.com/api/alive
