@@ -3,7 +3,7 @@ import { syncCatalogFromVendor } from '../jobs/syncCatalog';
 
 export const router = Router();
 
-router.post('/internal/sync-catalog', async (req, res) => {
+router.post('/sync-catalog', async (req, res) => {
   const token = req.headers['x-sync-token'];
   if (token !== process.env.SYNC_TOKEN) {
      return res.status(401).json({ error: 'Unauthorized' });
