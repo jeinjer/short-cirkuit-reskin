@@ -38,7 +38,7 @@ app.use(express.json());
 
 
 app.use('/api/auth', authRouter);
-app.use('/internal', internalRouter);
+app.use('/api/internal', internalRouter);
 app.use('/api/dolar', dolarRouter);
 
 app.use('/api/products', productsRouter);
