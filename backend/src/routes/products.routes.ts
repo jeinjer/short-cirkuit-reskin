@@ -16,25 +16,13 @@ router.get('/:sku', async (req, res) => {
       return res.status(404).json({ error: 'Producto no encontrado' });
     }
 
-    const cleanedProduct = {
-      ...product,
-      specs: removeNullSpecs(product.specs),
-    };
+    res.json(product);
 
-    res.json(cleanedProduct);
   } catch (error) {
     console.error(`Error al obtener producto con SKU ${sku}:`, error);
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 });
-
-
-const removeNullSpecs = (specs: any) => {
-  if (!specs || typeof specs !== 'object') return {};
-  return Object.fromEntries(
-    Object.entries(specs).filter(([_, v]) => v !== null && v !== undefined)
-  );
-};
 
 router.get('/', async (req, res) => {
   const page = Number(req.query.page) || 1;
@@ -105,13 +93,8 @@ router.get('/', async (req, res) => {
       prisma.product.count({ where: whereClause }),
     ]);
 
-    const cleanedProducts = products.map((p) => ({
-      ...p,
-      specs: removeNullSpecs(p.specs),
-    }));
-
     res.json({
-      data: cleanedProducts,
+      data: products,
       meta: { total, page, last_page: Math.ceil(total / limit) },
     });
 

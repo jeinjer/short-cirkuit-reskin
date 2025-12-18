@@ -19,25 +19,6 @@ enum Role {
   ADMIN
 }
 
-type ProductSpecs {
-  cpu             String?
-  ram             String?
-  storage         String?
-  gpu             String?
-  os              String?
-  
-  screenSize      String? 
-  resolution      String? 
-  refreshRate     String? 
-  panelType       String? 
-
-  printType       String?
-  printSpeed      String? 
-  connectivity    String? 
-  maxPrintSize    String? 
-  continuousSystem String? 
-}
-
 model Product {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
   sku         String   @unique
@@ -46,12 +27,11 @@ model Product {
   category    Category
   
   priceUsd    Float
+  costPrice   Float?
   inStock     Boolean  @default(true)
   
   imageUrl    String
   gallery     String[]
-
-  specs       ProductSpecs
 
   isActive    Boolean  @default(true)
   lastScraped DateTime @default(now())

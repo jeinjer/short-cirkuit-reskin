@@ -8,29 +8,6 @@ interface CategoryResult {
   count: number;
 }
 
-/**
- * @openapi
- * /api/categories:
- *   get:
- *     summary: Obtener categorías con conteo de productos
- *     tags:
- *       - Categorías
- *     responses:
- *       200:
- *         description: Lista de categorías con cantidad de productos
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/CategoryCount'
- *       500:
- *         description: Error al obtener categorías
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
- */
 router.get('/', async (_req, res) => {
   try {
     const categories = await prisma.product.groupBy({

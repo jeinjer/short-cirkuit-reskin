@@ -1,15 +1,12 @@
 import express from 'express';
 import cors from 'cors';
-import swaggerUi from 'swagger-ui-express';
 
-import { swaggerSpec } from './swagger/swagger';
 import productsRouter from './routes/products.routes';
 import filtersRouter from './routes/filters.routes';
 import categoriesRouter from './routes/categories.routes';
 import dolarRouter from './routes/dolar.routes';
-import internalRouter from './routes/internal.routes';
+import internalRouter from './routes/sync.routes';
 import authRouter from './routes/auth.routes';
-import aliveRouter from './routes/alive.routes';
 
 const app = express();
 
@@ -39,16 +36,14 @@ app.use(
 
 app.use(express.json());
 
-app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use('/api/auth', authRouter);
+app.use('/internal', internalRouter);
+app.use('/api/dolar', dolarRouter);
 
 app.use('/api/products', productsRouter);
 app.use('/api/filters', filtersRouter);
 app.use('/api/categories', categoriesRouter);
-app.use('/api/dolar', dolarRouter);
-app.use('/internal', internalRouter);
-app.use('/alive', aliveRouter);
 
 app.listen(PORT, () => {
   console.log(`Servidor corriendo`);
