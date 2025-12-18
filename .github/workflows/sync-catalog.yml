@@ -1,7 +1,7 @@
 name: Sync Catalog
 
 on:
-  # Todos los días a las 08:00 (Argentina, UTC-3)
+  # Todos los días a las 11:00 (Argentina, UTC-3)
   schedule:
     - cron: '0 14 * * *'
   workflow_dispatch:
