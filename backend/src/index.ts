@@ -7,6 +7,7 @@ import categoriesRouter from './routes/categories.routes';
 import dolarRouter from './routes/dolar.routes';
 import internalRouter from './routes/sync.routes';
 import authRouter from './routes/auth.routes';
+import statsRouter from './routes/stats.routes';
 
 const app = express();
 
@@ -40,6 +41,7 @@ app.use(express.json());
 app.use('/api/auth', authRouter);
 app.use('/api/internal', internalRouter);
 app.use('/api/dolar', dolarRouter);
+app.use('/api/stats', statsRouter);
 
 app.use('/api/products', productsRouter);
 app.use('/api/filters', filtersRouter);

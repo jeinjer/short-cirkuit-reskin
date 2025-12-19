@@ -1,38 +1,136 @@
 import { Router } from 'express';
 import { Category, PrismaClient } from '@prisma/client';
+import jwt from 'jsonwebtoken';
 
 const router = Router();
 const prisma = new PrismaClient();
+
+const productSelect = {
+  id: true,
+  sku: true,
+  name: true,
+  brand: true,
+  category: true,
+  imageUrl: true,
+  inStock: true,
+  gallery: true,
+  isActive: true,
+  costPrice: true,
+  priceUsd: true
+};
+
+const isAdminUser = (req: any): boolean => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader) return false;
+
+  try {
+    const token = authHeader.split(' ')[1];
+    const decoded: any = jwt.verify(token, process.env.JWT_SECRET || 'secret');
+    return decoded.role === 'ADMIN';
+  } catch (error) {
+    return false;
+  }
+};
+
+const formatProduct = (product: any, isAdmin: boolean) => {
+  if (isAdmin) {
+    return {
+      ...product,
+      price: product.costPrice,
+      quantity: product.quantity,
+      costPrice: product.costPrice,
+      priceUsd: product.priceUsd
+    };
+  }
+
+  return {
+    id: product.id,
+    sku: product.sku,
+    name: product.name,
+    brand: product.brand,
+    category: product.category,
+    imageUrl: product.imageUrl,
+    inStock: product.inStock,
+    gallery: product.gallery,
+    isActive: product.isActive,
+    quantity: product.quantity,
+    price: product.priceUsd,
+    costPrice: undefined,
+    priceUsd: undefined 
+  };
+};
+
 
 router.get('/:sku', async (req, res) => {
   const { sku } = req.params;
 
   try {
-    const product = await prisma.product.findUnique({
+    const rawProduct = await prisma.product.findUnique({
       where: { sku: sku },
+      select: productSelect
     });
 
-    if (!product) {
+    if (!rawProduct) {
       return res.status(404).json({ error: 'Producto no encontrado' });
     }
 
-    res.json(product);
+    const isAdmin = isAdminUser(req);
+
+    if (!isAdmin && !rawProduct.isActive) {
+        return res.status(404).json({ error: 'Producto no disponible' });
+    }
+
+    const productDTO = formatProduct(rawProduct, isAdmin);
+    res.json(productDTO);
 
   } catch (error) {
-    console.error(`Error al obtener producto con SKU ${sku}:`, error);
-    res.status(500).json({ error: 'Error interno del servidor' });
+    console.error(`Error al obtener producto ${sku}:`, error);
+    res.status(500).json({ error: 'Error interno' });
   }
+});
+
+
+router.put('/:sku', async (req, res) => {
+    const { sku } = req.params;
+    const { isActive, gallery, imageUrl } = req.body;
+
+    if (!isAdminUser(req)) {
+        return res.status(403).json({ error: 'No tienes permisos de administrador' });
+    }
+  
+    try {
+      const updated = await prisma.product.update({
+        where: { sku },
+        data: {
+          isActive: isActive !== undefined ? isActive : undefined,
+          gallery: gallery !== undefined ? gallery : undefined,
+          imageUrl: imageUrl !== undefined ? imageUrl : undefined
+        },
+        select: productSelect
+      });
+
+      res.json(updated);
+
+    } catch (error) {
+      console.error(`Error al actualizar producto ${sku}:`, error);
+      res.status(500).json({ error: 'Error al actualizar producto' });
+    }
 });
 
 router.get('/', async (req, res) => {
   const page = Number(req.query.page) || 1;
-  const limit = 20;
+  const limit = Number(req.query.limit) || 20;
   const skip = (page - 1) * limit;
 
   const { category, search, minPrice, maxPrice, sort, brand } = req.query;
 
   try {
+    const isAdmin = isAdminUser(req);
     const whereClause: any = {};
+
+    if (!isAdmin) {
+        whereClause.isActive = true;
+    }
 
     if (category && typeof category === 'string') {
       const catUpper = category.toUpperCase();
@@ -51,17 +149,14 @@ router.get('/', async (req, res) => {
 
     if (minPrice || maxPrice) {
       whereClause.priceUsd = {};
-      
       if (minPrice) {
         const parsedMin = parseFloat(minPrice as string);
         if (!isNaN(parsedMin)) whereClause.priceUsd.gte = parsedMin;
       }
-      
       if (maxPrice) {
         const parsedMax = parseFloat(maxPrice as string);
         if (!isNaN(parsedMax)) whereClause.priceUsd.lte = parsedMax;
       }
-      
       if (Object.keys(whereClause.priceUsd).length === 0) {
         delete whereClause.priceUsd;
       }
@@ -72,6 +167,7 @@ router.get('/', async (req, res) => {
       whereClause.OR = [
         { name: { contains: searchStr, mode: 'insensitive' } },
         { brand: { contains: searchStr, mode: 'insensitive' } },
+        { sku: { contains: searchStr, mode: 'insensitive' } }
       ];
     }
 
@@ -83,18 +179,21 @@ router.get('/', async (req, res) => {
       case 'name_desc': orderBy = { name: 'desc' }; break;
     }
 
-    const [products, total] = await Promise.all([
+    const [rawProducts, total] = await Promise.all([
       prisma.product.findMany({
         where: whereClause,
         take: limit,
         skip,
         orderBy,
+        select: productSelect,
       }),
       prisma.product.count({ where: whereClause }),
     ]);
 
+    const cleanProducts = rawProducts.map(p => formatProduct(p, isAdmin));
+
     res.json({
-      data: products,
+      data: cleanProducts,
       meta: { total, page, last_page: Math.ceil(total / limit) },
     });
 

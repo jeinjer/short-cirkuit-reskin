@@ -7,6 +7,7 @@ import ServicesCarousel from '../components/ui/ServicesCarousel';
 import HeroCarousel from '../components/ui/HeroCarousel';
 import CategorySelector from '../components/ui/CategorySelector';
 import CircuitLoader from '../components/ui/CircuitLoader';
+import { useAuth } from '../context/AuthContext';
 
 export default function Home() {
   const [products, setProducts] = useState([]);
@@ -15,6 +16,7 @@ export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [searchParams] = useSearchParams();
   const searchTerm = searchParams.get('search'); 
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     const loadData = async () => {
@@ -42,7 +44,7 @@ export default function Home() {
         }
     };
     loadData();
-  }, [searchTerm, selectedCategory]);
+  }, [searchTerm, selectedCategory, isAuthenticated]);
 
   return (
     <main className="min-h-screen bg-[#050507]">

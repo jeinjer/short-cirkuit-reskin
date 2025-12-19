@@ -3,8 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ShoppingCart, ArrowLeft, Shield, Truck } from 'lucide-react';
 import { useCurrency } from '../context/CurrencyContext';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+import api from '../api/axios';
 
 export default function ProductDetail() {
   const { sku } = useParams();
@@ -12,16 +11,14 @@ export default function ProductDetail() {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   
-  const { formatPrice, dolarRate } = useCurrency();
+  const { formatPrice } = useCurrency();
 
   useEffect(() => {
     if (!sku) return;
     const fetchProduct = async () => {
       try {
-        const res = await fetch(`${API_URL}/products/${sku}`);
-        if (!res.ok) throw new Error('Producto no encontrado');
-        const data = await res.json();
-        setProduct(data);
+        const res = await api.get(`/products/${sku}`);
+        setProduct(res.data);
       } catch (err) {
         console.error("Error:", err);
       } finally {
@@ -42,8 +39,6 @@ export default function ProductDetail() {
       Producto no encontrado
     </div>
   );
-
-  const specs = Object.entries(product.specs || {}).filter(([_, v]) => v !== null && v !== '');
 
   return (
     <div className="min-h-screen bg-[#050507] pt-24 pb-12 px-4 font-sans">
@@ -88,7 +83,7 @@ export default function ProductDetail() {
                 <div className="flex flex-col mb-4">
                    <div className="flex flex-wrap items-end gap-3">
                        <span className="text-4xl font-bold text-white tracking-tight">
-                           {formatPrice(product.priceUsd)} 
+                           {formatPrice(product.price)} 
                        </span>
                    </div>
                 </div>
@@ -98,17 +93,6 @@ export default function ProductDetail() {
                    Stock disponible
                 </div>
              </div>
-
-             {specs.length > 0 && (
-               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
-                  {specs.map(([key, value]) => (
-                     <div key={key} className="bg-[#13131a] p-3 rounded-xl border border-white/5 hover:border-white/10 transition-colors">
-                         <span className="text-gray-500 text-[10px] uppercase font-mono block mb-1 tracking-wider">{key}</span>
-                         <span className="text-gray-200 text-sm font-medium truncate block" title={value}>{value}</span>
-                     </div>
-                  ))}
-               </div>
-             )}
 
              <div className="mt-auto space-y-4">
                 <button className="w-full py-4 bg-cyan-600 hover:bg-cyan-500 text-white font-bold rounded-xl flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(6,182,212,0.3)] hover:shadow-[0_0_30px_rgba(6,182,212,0.5)] cursor-pointer active:scale-[0.98]">
