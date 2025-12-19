@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { Mail, ArrowLeft, Send, CheckCircle, AlertCircle, Zap } from 'lucide-react';
+import { Mail, ArrowLeft, Send, CheckCircle, AlertCircle, Zap, PanelLeftDashedIcon } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { forgotPasswordRequest } from '../api/auth';
 import { toast } from 'sonner';
+import BackToHomeButton from '../components/ui/BackToHomeButton';
 
 export default function ForgotPasswordPage() {
   const { register, handleSubmit, formState: { errors } } = useForm();
@@ -28,7 +29,10 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="min-h-[calc(100dvh-4rem)] bg-[#050507] flex items-start md:items-center justify-center px-3 pt-8 pb-8 md:p-4 relative overflow-hidden">
+    <div className="min-h-[calc(100dvh-4rem)] bg-[#050507] flex items-start md:items-center justify-center px-3 pt-24 pb-8 md:p-4 relative overflow-hidden">
+      
+      <BackToHomeButton/>
+
       <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,var(--tw-gradient-stops))] from-[#0a0a0f] via-[#050507] to-[#050507] z-0"></div>
       <div className="absolute bottom-[-10%] left-[-5%] w-[400px] h-[400px] bg-cyan-500/5 blur-[100px] rounded-full pointer-events-none"></div>
 

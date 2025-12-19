@@ -50,7 +50,7 @@ export default function App() {
               <Route path="/reset-password" element={<ResetPasswordPage />} />
 
               <Route element={<AdminRoute />}>
-                <Route path="/admin/dashboard" element={<AdminDashboard />} />
+                <Route path="/admin" element={<AdminDashboard />} />
               </Route>
               
               <Route path="*" element={<NotFoundPage />} />

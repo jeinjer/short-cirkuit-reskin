@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { Lock, ArrowRight, CheckCircle, AlertCircle, KeyRound, Eye, EyeOff, Check, X, Zap } from 'lucide-react';
+import { Lock, ArrowRight, CheckCircle, AlertCircle, KeyRound, Eye, EyeOff, Check, X, Zap, Home } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { resetPasswordRequest } from '../api/auth';
 import { toast } from 'sonner';
+import BackToHomeButton from '../components/ui/BackToHomeButton';
 
 export default function ResetPasswordPage() {
   const [searchParams] = useSearchParams();
@@ -60,8 +61,10 @@ export default function ResetPasswordPage() {
   };
 
   return (
-    // Alineación superior en móvil, centrada en desktop
-    <div className="min-h-[calc(100dvh-4rem)] bg-[#050507] flex items-start md:items-center justify-center px-3 pt-8 pb-8 md:p-4 relative overflow-hidden">
+    <div className="min-h-[calc(100dvh-4rem)] bg-[#050507] flex items-start md:items-center justify-center px-3 pt-24 pb-8 md:p-4 relative overflow-hidden">
+      
+      <BackToHomeButton/>
+
       <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-[#13132b] via-[#050507] to-[#050507] z-0"></div>
       
       <motion.div 
