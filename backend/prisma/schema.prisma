@@ -29,6 +29,7 @@ model Product {
   priceUsd    Float
   costPrice   Float?
   inStock     Boolean  @default(true)
+  quantity    Int      @default(0)
   
   imageUrl    String
   gallery     String[]

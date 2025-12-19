@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShoppingCart, Star } from 'lucide-react';
+import { ShoppingCart } from 'lucide-react';
 import { Link } from 'react-router-dom'; 
 import { useCurrency } from '../../context/CurrencyContext';
 
@@ -39,7 +39,7 @@ export default function ProductCard({ product }) {
             <span className="block text-[10px] text-gray-500 font-mono uppercase">Contado</span>
             
             <span className="text-xl font-bold text-white tracking-tight block">
-              {formatPrice(product.priceUsd)}
+              {formatPrice(product.price)}
             </span>
           </div>
           

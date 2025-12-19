@@ -5,6 +5,7 @@ import { fetchProducts, fetchDynamicFilters } from '../api/config';
 import ProductCard from '../components/ui/ProductCard';
 import SkeletonProduct from '../components/ui/SkeletonProduct';
 import { useCurrency } from '../context/CurrencyContext';
+import { useAuth } from '../context/AuthContext';
 
 export default function Catalog() {
   const [products, setProducts] = useState([]);
@@ -16,9 +17,11 @@ export default function Catalog() {
   const [localMinPrice, setLocalMinPrice] = useState("");
   const [localMaxPrice, setLocalMaxPrice] = useState("");
   const [pageInput, setPageInput] = useState("1");
+
+  const { isAuthenticated } = useAuth();
   
   const [filtersData, setFiltersData] = useState({ 
-      brands: [], specs: { cpu: [], ram: [] }
+      brands: []
   });
 
   const category = searchParams.get('category') || '';
@@ -36,7 +39,6 @@ export default function Catalog() {
             setFiltersData(prev => ({
                 ...prev,
                 brands: data.brands || [],
-                specs: data.specs || { cpu: [], ram: [] }
             }));
         }
     };
@@ -59,7 +61,7 @@ export default function Catalog() {
       }
     };
     loadData();
-  }, [searchParams]);
+  }, [searchParams, isAuthenticated]);
 
   const handleFilterChange = (key, value) => {
       const newParams = new URLSearchParams(searchParams);

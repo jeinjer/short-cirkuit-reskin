@@ -39,7 +39,7 @@ export async function syncCatalogFromVendor() {
 
   let created = 0;
   let updated = 0;
-  let deleted = 0;
+  let deactivated = 0;
   let skipped = 0;
 
   for (const line of dataLines) {
@@ -56,6 +56,7 @@ export async function syncCatalogFromVendor() {
       if (!categoriaEnum) { skipped++; continue; }
 
       const stockCba = parseInt(cols[7], 10);
+      const realStock = (!isNaN(stockCba) && stockCba > 0) ? stockCba : 0;
       const hasStockCba = !isNaN(stockCba) && stockCba > 0;
 
       const existing = await prisma.product.findUnique({ where: { sku } });
@@ -79,6 +80,7 @@ export async function syncCatalogFromVendor() {
               category: categoriaEnum,
               inStock: true,
               isActive: true,
+              quantity: realStock,
           };
 
           if (existing) {
@@ -104,18 +106,28 @@ export async function syncCatalogFromVendor() {
           }
       } else {
           if (existing) {
-              await prisma.product.delete({ where: { sku } });
-              deleted++;
+              if (existing.isActive || existing.inStock) {
+                  await prisma.product.update({
+                      where: { sku },
+                      data: {
+                          inStock: false,
+                          isActive: false,
+                          quantity: 0,
+                          updatedAt: new Date()
+                      }
+                  });
+                  deactivated++;
+              }
           }
       }
   }
 
-  const mensaje = `[SYNC] Fin. Nuevos: ${created}, Actualizados: ${updated}, Borrados: ${deleted}, Ignorados: ${skipped}`;
+  const mensaje = `[SYNC] Fin. Nuevos: ${created}, Actualizados: ${updated}, Desactivados: ${deactivated}, Ignorados: ${skipped}`;
   console.log(mensaje);
   
   return {
     success: true,
     message: mensaje,
-    stats: { created, updated, deleted }
+    stats: { created, updated, deactivated }
   };
 }

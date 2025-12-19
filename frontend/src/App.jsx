@@ -7,6 +7,7 @@ import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 import SidePanel from './components/ui/SidePanel';
 import ScrollToTop from './components/utils/ScrollToTop';
+import AdminRoute from './components/utils/AdminRoute';
 
 import Home from './pages/Home';
 import ProductDetail from './pages/ProductDetail';
@@ -15,6 +16,7 @@ import RegisterPage from './pages/RegisterPage';
 import Catalog from './pages/Catalog';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import AdminDashboard from './pages/AdminDashboard';
 
 import NotFoundPage from './pages/NotFoundPage';
 
@@ -46,6 +48,11 @@ export default function App() {
               <Route path="/registro" element={<RegisterPage />} />
               <Route path="/forgot-password" element={<ForgotPasswordPage />} />
               <Route path="/reset-password" element={<ResetPasswordPage />} />
+
+              <Route element={<AdminRoute />}>
+                <Route path="/admin/dashboard" element={<AdminDashboard />} />
+              </Route>
+              
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </div>
