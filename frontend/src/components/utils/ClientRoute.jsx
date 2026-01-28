@@ -2,7 +2,7 @@ import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import CircuitLoader from '../others/CircuitLoader';
 
-const AdminRoute = () => {
+const ClientRoute = () => {
   const { user, isAuthenticated, loading } = useAuth();
 
   if (loading) return (
@@ -11,10 +11,10 @@ const AdminRoute = () => {
     </div>
   );
 
-  if (!isAuthenticated || !user || user.role !== 'ADMIN') {
-    return <Navigate to="/" replace />;
+  if (!isAuthenticated || !user || (user.role !== 'CLIENTE' && user.role !== 'ADMIN')) {
+    return <Navigate to="/login" replace />;
   }
   return <Outlet />;
 };
 
-export default AdminRoute;
+export default ClientRoute;

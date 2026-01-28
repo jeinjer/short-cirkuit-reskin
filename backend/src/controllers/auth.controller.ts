@@ -25,7 +25,7 @@ export const register = async (req: Request, res: Response) => {
         name: data.name,
         email: data.email,
         password: hashedPassword,
-        role: 'USER',
+        role: 'CLIENTE',
         googleId: null,
       },
     });
@@ -87,7 +87,7 @@ export const googleLogin = async (req: Request, res: Response) => {
           name: payload.name || "Usuario Google",
           avatar: payload.picture,
           googleId: payload.sub,
-          role: 'USER',
+          role: 'CLIENTE',
           password: null
         }
       });

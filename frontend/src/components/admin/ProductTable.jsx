@@ -1,6 +1,6 @@
 import React from 'react';
 import { Eye, Edit, Power } from 'lucide-react';
-import CircuitLoader from '../ui/CircuitLoader';
+import CircuitLoader from '../others/CircuitLoader';
 
 export default function ProductTable({ products, loading, onView, onEdit, onToggle }) {
   

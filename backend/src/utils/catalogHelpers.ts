@@ -27,7 +27,7 @@ export function detectarMarca(descripcion: string): string {
     for (const marca of conocidas) {
         if (new RegExp(`\\b${marca}\\b`).test(upper)) return marca;
     }
-    return 'GENERICO';
+    return 'Otros';
 }
 
 export function limpiarNombreDisplay(nombreRaw: string): string {

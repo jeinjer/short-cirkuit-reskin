@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { Category, PrismaClient } from '@prisma/client';
 import jwt from 'jsonwebtoken';
+import { getDolarRate } from '../utils/dolar';
 
 const router = Router();
 const prisma = new PrismaClient();
@@ -32,14 +33,15 @@ const isAdminUser = (req: any): boolean => {
   }
 };
 
-const formatProduct = (product: any, isAdmin: boolean) => {
+const formatProduct = (product: any, isAdmin: boolean, exchangeRate: number) => {
   if (isAdmin) {
     return {
       ...product,
-      price: product.costPrice,
-      quantity: product.quantity,
+      price: Math.ceil((product.costPrice || 0) * exchangeRate),
+      
       costPrice: product.costPrice,
-      priceUsd: product.priceUsd
+      priceUsd: product.priceUsd,
+      quantity: product.quantity,
     };
   }
 
@@ -54,21 +56,35 @@ const formatProduct = (product: any, isAdmin: boolean) => {
     gallery: product.gallery,
     isActive: product.isActive,
     quantity: product.quantity,
-    price: product.priceUsd,
+    
+    price: Math.ceil((product.priceUsd || 0) * exchangeRate), 
+    
     costPrice: undefined,
-    priceUsd: undefined 
+    priceUsd: undefined
   };
 };
 
 
-router.get('/:sku', async (req, res) => {
-  const { sku } = req.params;
+router.get('/:term', async (req, res) => {
+  const { term } = req.params;
 
   try {
-    const rawProduct = await prisma.product.findUnique({
-      where: { sku: sku },
-      select: productSelect
-    });
+    let rawProduct;
+    const isMongoId = /^[0-9a-fA-F]{24}$/.test(term);
+
+    if (isMongoId) {
+      rawProduct = await prisma.product.findUnique({
+        where: { id: term },
+        select: productSelect
+      });
+    }
+
+    if (!rawProduct) {
+      rawProduct = await prisma.product.findUnique({
+        where: { sku: term },
+        select: productSelect
+      });
+    }
 
     if (!rawProduct) {
       return res.status(404).json({ error: 'Producto no encontrado' });
@@ -80,15 +96,16 @@ router.get('/:sku', async (req, res) => {
         return res.status(404).json({ error: 'Producto no disponible' });
     }
 
-    const productDTO = formatProduct(rawProduct, isAdmin);
+    const currentRate = await getDolarRate();
+
+    const productDTO = formatProduct(rawProduct, isAdmin, currentRate);
     res.json(productDTO);
 
   } catch (error) {
-    console.error(`Error al obtener producto ${sku}:`, error);
+    console.error(`Error al obtener producto ${term}:`, error);
     res.status(500).json({ error: 'Error interno' });
   }
 });
-
 
 router.put('/:sku', async (req, res) => {
     const { sku } = req.params;
@@ -108,7 +125,7 @@ router.put('/:sku', async (req, res) => {
         },
         select: productSelect
       });
-
+      
       res.json(updated);
 
     } catch (error) {
@@ -190,7 +207,9 @@ router.get('/', async (req, res) => {
       prisma.product.count({ where: whereClause }),
     ]);
 
-    const cleanProducts = rawProducts.map(p => formatProduct(p, isAdmin));
+    const currentRate = await getDolarRate();
+
+    const cleanProducts = rawProducts.map(p => formatProduct(p, isAdmin, currentRate));
 
     res.json({
       data: cleanProducts,
