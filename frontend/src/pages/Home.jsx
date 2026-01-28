@@ -1,179 +1,163 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams, Link } from 'react-router-dom'; 
-import { ArrowRight, Zap } from 'lucide-react'; 
+import { Search, ChevronRight } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { fetchProducts } from '../api/config';
-import ProductCard from '../components/ui/ProductCard';
-import ServicesCarousel from '../components/ui/ServicesCarousel';
-import HeroCarousel from '../components/ui/HeroCarousel';
-import CategorySelector from '../components/ui/CategorySelector';
-import CircuitLoader from '../components/ui/CircuitLoader';
-import { useAuth } from '../context/AuthContext';
+
+
+import HomeProductCard from '../components/products/cards/HomeProductCard'; 
+import Hero from '../components/hero/HeroCarousel'; 
+import CircuitLoader from '../components/others/CircuitLoader';
+import ServicesCarousel from '../components/services/ServicesCarousel';
+import CategorySelector from '../components/categories/CategorySelector'; 
 
 export default function Home() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [isExiting, setIsExiting] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [searchParams] = useSearchParams();
   const searchTerm = searchParams.get('search'); 
-  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     const loadData = async () => {
         setLoading(true);
-        setIsExiting(false);
-
         try {
             const filters = { 
                 search: searchTerm,
                 ...(selectedCategory && { category: selectedCategory }) 
             };
-            
             const res = await fetchProducts(filters);
             setProducts(res.data || []);
-            
-            setIsExiting(true);
-            setTimeout(() => {
-                setLoading(false);
-                setIsExiting(false);
-            }, 500);
-
         } catch (e) {
             console.error("Error cargando productos:", e);
+        } finally {
             setLoading(false);
         }
     };
     loadData();
-  }, [searchTerm, selectedCategory, isAuthenticated]);
+  }, [searchTerm, selectedCategory]);
+
+  const sectionVariants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: { duration: 0.8, ease: "easeOut" }
+    }
+  };
 
   return (
-    <main className="min-h-screen bg-[#050507]">
-      <style>{`
-        /* Animación de entrada desde arriba */
-        @keyframes slideInDown {
-          0% { opacity: 0; transform: translateY(-30px); }
-          100% { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Animación de destello sin movimiento (para el badge interno) */
-        @keyframes electric-glitch {
-          0% { filter: brightness(1); }
-          20% { filter: brightness(1.2) drop-shadow(0 0 5px #22d3ee); }
-          40% { filter: brightness(1.2) drop-shadow(0 0 5px #22d3ee); }
-          60% { filter: brightness(1); }
-          80% { filter: brightness(0.8); }
-          100% { filter: brightness(1); }
-        }
-      `}</style>
-
+    <main className="min-h-screen bg-[#020203] text-white font-sans selection:bg-cyan-500/30 selection:text-cyan-100 overflow-hidden relative">
+      <div className="fixed inset-0 bg-[linear-gradient(to_right,#111_1px,transparent_1px),linear-gradient(to_bottom,#111_1px,transparent_1px)] bg-size-[4rem_4rem] mask-[radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none z-0" />
+      
       {!searchTerm && (
-        <>
-          <section className="relative min-h-[70vh] lg:min-h-[80vh] w-full flex items-center overflow-hidden bg-[radial-gradient(ellipse_at_top_right,var(--tw-gradient-stops))] from-[#1a1a2e] via-[#050507] to-[#050507] py-10 lg:py-20">
-              <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-cyan-500/10 blur-[120px] rounded-full pointer-events-none"></div>
-              <div className="container mx-auto px-4 relative z-20 h-full">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 lg:gap-12 items-center h-full">
-                    <div className="w-full flex flex-col justify-center items-center text-center lg:items-start lg:text-left h-full">
-                        <div className="opacity-0 animate-[slideInDown_0.6s_ease-out_forwards]" style={{ animationDelay: '0ms' }}>
-                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-cyan-500/50 bg-cyan-900/10 text-cyan-400 text-sm font-mono mb-6 shadow-[0_0_10px_rgba(6,182,212,0.2)] animate-[electric-glitch_2.5s_infinite]">
-                                <Zap size={16} className="fill-cyan-400 text-cyan-400" /> 
-                                <span className="tracking-widest font-bold">VILLA CARLOS PAZ</span>
-                            </div>
-                        </div>
-
-                        <h1 
-                            className="text-6xl sm:text-7xl lg:text-8xl font-black text-white mb-8 lg:mb-6 leading-none tracking-tight opacity-0 animate-[slideInDown_0.6s_ease-out_forwards]"
-                            style={{ animationDelay: '300ms' }}
-                        >
-                          SHORT <br/> <span className="text-cyan-400 drop-shadow-[0_0_15px_rgba(34,211,238,0.3)]">CIRKUIT</span>
-                        </h1>
-                        <p 
-                            className="text-gray-300 text-xl lg:text-2xl mb-0 lg:mb-8 leading-relaxed max-w-lg font-bold uppercase opacity-0 animate-[slideInDown_0.6s_ease-out_forwards]"
-                            style={{ animationDelay: '1000ms' }}
-                        >
-                            Servicio técnico informático
-                        </p>
-
-                    </div>
-                    <div className="hidden lg:flex w-full h-full items-center justify-center">
-                       <HeroCarousel />
-                    </div>
-
-                </div>
-              </div>
-          </section>
-
-          <section className="border-y border-white/5 bg-[#0a0a0f] overflow-hidden">
-             <ServicesCarousel />
-          </section>
-        </>
+        <motion.div 
+          initial={{ opacity: 0 }} 
+          animate={{ opacity: 1 }} 
+          transition={{ duration: 1 }}
+          className="relative z-10"
+        >
+          <Hero />
+        </motion.div>
       )}
 
-      <section className="py-24 bg-[#050507]">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between mb-12">
-            <h2 className="text-3xl font-bold text-white flex items-center gap-3">
-              <span className="w-1.5 h-8 bg-cyan-500 block rounded-full shadow-[0_0_10px_#06b6d4]"></span>
-              {searchTerm ? `RESULTADOS: "${searchTerm.toUpperCase()}"` : 'NUESTROS PRODUCTOS'}
-            </h2>
-          </div>
+      {!searchTerm && (
+        <motion.div 
+          id="services-section" 
+          className="scroll-mt-32 relative z-10"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={sectionVariants}
+        >
+           <ServicesCarousel />
+        </motion.div>
+      )}
 
-          {!searchTerm && (
-             <CategorySelector 
-                selectedCategory={selectedCategory} 
-                onSelectCategory={setSelectedCategory} 
-             />
-          )}
+      <motion.section 
+        id="catalogo-section" 
+        className="py-24 relative min-h-screen scroll-mt-32 z-10"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-50px" }}
+        variants={sectionVariants}
+      >
+        
+        <div className="container mx-auto px-4 relative z-10">
+          
+            <div className="flex flex-col items-center mb-16 text-center">
+                <h2 className="text-4xl md:text-6xl font-black font-cyber text-white mb-4 uppercase tracking-tight">
+                    {searchTerm ? `Resultados: "${searchTerm}"` : 'Nuestro catálogo'}
+                </h2>
+                <div className="h-1.5 w-32 bg-linear-to-r from-cyan-600 to-blue-700 rounded-full shadow-[0_0_15px_rgba(6,182,212,0.5)]" />
+                <p className="mt-4 text-gray-400 text-lg max-w-2xl">
+                    {searchTerm 
+                        ? 'Buscando productos...' 
+                        : 'Selecciona una categoría para filtrar los resultados.'}
+                </p>
+            </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 min-h-[300px] relative">
-            {loading ? (
-              <div className={`
-                  col-span-full flex flex-col justify-center items-center py-12
-                  transition-all duration-500 ease-in-out transform
-                  ${isExiting ? 'opacity-0 scale-95 blur-sm' : 'opacity-100 scale-100 blur-0'}
-              `}>
-                 <CircuitLoader />
-              </div>
-            ) : (
-              <>
-                  {products.length > 0 ? (
-                    products.slice(0, 8).map((product, index) => (
-                      <div 
-                        key={product.id || product._id}
-                        className="opacity-0 animate-[slideInDown_0.6s_ease-out_forwards]"
-                        style={{ animationDelay: `${index * 100}ms` }}
-                      >
-                        <ProductCard product={product} />
-                      </div>
-                    ))
-                  ) : (
-                    <div className="col-span-full text-center py-20 text-gray-500 flex flex-col items-center">
-                        <p className="text-xl mb-4">No encontramos productos en esta selección.</p>
-                        {selectedCategory && (
-                            <button onClick={() => setSelectedCategory(null)} className="text-cyan-400 hover:underline">
-                                Ver todo
-                            </button>
-                        )}
-                    </div>
-                  )}
-              </>
+            {!searchTerm && (
+                 <CategorySelector 
+                    selectedCategory={selectedCategory} 
+                    onSelectCategory={setSelectedCategory} 
+                 />
             )}
-          </div>
 
-          {!loading && products.length > 0 && (
-             <div className="flex justify-center mt-12 opacity-0 animate-[slideInDown_0.6s_ease-out_forwards]" style={{ animationDelay: '900ms' }}>
-                <Link 
-                  to={`/catalogo${selectedCategory ? `?category=${selectedCategory.toUpperCase()+'&page=1'}` : ''}`}
-                  className="group flex items-center gap-2 px-8 py-3 bg-[#0f0f13] border border-cyan-500/30 text-cyan-400 rounded-full font-semibold hover:bg-cyan-500 hover:text-white hover:border-cyan-500 transition-all duration-300 shadow-lg shadow-cyan-900/10"
-                >
-                  {selectedCategory 
-                    ? `VER MÁS ${selectedCategory.toUpperCase()}` 
-                    : 'VER TODO EL CATÁLOGO'}
-                  <ArrowRight size={18} />
-                </Link>
-             </div>
-          )}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                {loading ? (
+                  <div className="col-span-full flex flex-col justify-center items-center h-96 gap-4">
+                     <CircuitLoader />
+                  </div>
+                ) : (
+                  <>
+                      {products.length > 0 ? (
+                        products.slice(0, 8).map((product) => (
+                          <HomeProductCard key={product.id || product._id} product={product} />
+                        ))
+                      ) : (
+                        <div className="col-span-full py-32 flex flex-col items-center justify-center text-center bg-white/5 rounded-3xl border border-dashed border-white/10">
+                            <Search size={64} className="text-gray-700 mb-6" />
+                            <p className="text-2xl font-cyber font-bold text-white mb-2">Sin Resultados</p>
+                            <p className="text-gray-400 mb-8 font-mono text-lg">No encontramos items en esta categoría.</p>
+                            {selectedCategory && (
+                                <button 
+                                    onClick={() => setSelectedCategory(null)} 
+                                    className="px-8 py-3 bg-cyan-600 hover:bg-cyan-500 text-white font-bold rounded-lg transition-colors shadow-lg shadow-cyan-900/50"
+                                >
+                                    Ver Todo el Catálogo
+                                </button>
+                            )}
+                        </div>
+                      )}
+                  </>
+                )}
+            </div>
+
+            {!loading && products.length > 0 && (
+                 <div className="flex justify-center mt-24">
+                    <Link 
+                      to={`/catalogo${selectedCategory ? `?category=${selectedCategory}` : ''}`}
+                      className="group relative inline-flex items-center justify-center px-12 py-5 bg-[#050505] text-white font-black font-cyber tracking-widest uppercase overflow-hidden transition-all duration-300"
+                      style={{ clipPath: 'polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%)' }}
+                    >
+                      <div className="absolute inset-0 bg-cyan-600 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out z-0" />
+                      
+                      <div className="absolute inset-0 border border-white/20 group-hover:border-cyan-400 z-10 transition-colors duration-300" 
+                           style={{ clipPath: 'polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%)' }} 
+                      />
+
+                      <span className="cursor-pointer relative z-20 flex items-center gap-4 group-hover:text-black transition-colors duration-300">
+                        {selectedCategory ? `VER ${selectedCategory.toUpperCase().replace('_', ' ')}` : 'VER CATÁLOGO'}
+                        <div className="bg-white group-hover:bg-black text-black group-hover:text-cyan-500 p-1 rounded-full transition-colors duration-300">
+                            <ChevronRight size={16} strokeWidth={4} />
+                        </div>
+                      </span>
+                    </Link>
+                 </div>
+            )}
         </div>
-      </section>
+      </motion.section>
     </main>
   );
 }

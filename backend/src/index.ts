@@ -8,6 +8,7 @@ import dolarRouter from './routes/dolar.routes';
 import internalRouter from './routes/sync.routes';
 import authRouter from './routes/auth.routes';
 import statsRouter from './routes/stats.routes';
+import inquiriesRouter from './routes/inquiries.routes'
 
 const app = express();
 
@@ -42,6 +43,7 @@ app.use('/api/auth', authRouter);
 app.use('/api/internal', internalRouter);
 app.use('/api/dolar', dolarRouter);
 app.use('/api/stats', statsRouter);
+app.use('/api/inquiries', inquiriesRouter);
 
 app.use('/api/products', productsRouter);
 app.use('/api/filters', filtersRouter);

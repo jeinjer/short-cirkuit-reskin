@@ -1,0 +1,38 @@
+import React from 'react';
+import CatalogProductCard from '../products/cards/CatalogProductCard';
+import SkeletonProduct from '../others/SkeletonProduct';
+
+export default function CatalogGrid({ 
+  loading, 
+  products, 
+  viewMode, 
+  onClearFilters 
+}) {
+  
+  if (loading) {
+    return (
+      <div className={viewMode === 'grid' ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" : "flex flex-col gap-6"}>
+          {[...Array(8)].map((_, i) => <SkeletonProduct key={i} viewMode={viewMode} />)}
+      </div>
+    );
+  }
+
+  if (products.length === 0) {
+    return (
+      <div className="py-24 text-center border border-dashed border-white/10 rounded-xl bg-[#0a0a0f]/30 flex flex-col items-center justify-center gap-4">
+          <p className="text-gray-400 text-lg font-mono">No se encontraron productos con estos filtros.</p>
+          <button onClick={onClearFilters} className="px-6 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-cyan-400 text-sm font-bold transition-all">
+              Limpiar búsqueda
+          </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className={viewMode === 'grid' ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" : "flex flex-col gap-6"}>
+        {products.map(p => (
+            <CatalogProductCard key={p.id} product={p} viewMode={viewMode} />
+        ))}
+    </div>
+  );
+}

@@ -3,22 +3,24 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import { Toaster } from 'sonner';
 
-import Header from './components/layout/Header';
-import Footer from './components/layout/Footer';
-import SidePanel from './components/ui/SidePanel';
+import Header from './components/header/Header';
+import Footer from './components/footer/Footer';
+import SidePanel from './components/others/SidePanel';
 import ScrollToTop from './components/utils/ScrollToTop';
 import AdminRoute from './components/utils/AdminRoute';
+import ClientRoute from './components/utils/ClientRoute';
 
 import Home from './pages/Home';
 import ProductDetail from './pages/ProductDetail';
-import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
+import LoginPage from './pages/Login';
+import RegisterPage from './pages/Register';
 import Catalog from './pages/Catalog';
-import ResetPasswordPage from './pages/ResetPasswordPage';
-import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import ContactPage from './pages/Contact';
+import ResetPasswordPage from './pages/ResetPassword';
+import ForgotPasswordPage from './pages/ForgotPassword';
 import AdminDashboard from './pages/AdminDashboard';
 
-import NotFoundPage from './pages/NotFoundPage';
+import NotFoundPage from './pages/404';
 
 import { CurrencyProvider } from './context/CurrencyContext';
 import { AuthProvider } from './context/AuthContext';
@@ -48,6 +50,10 @@ export default function App() {
               <Route path="/registro" element={<RegisterPage />} />
               <Route path="/forgot-password" element={<ForgotPasswordPage />} />
               <Route path="/reset-password" element={<ResetPasswordPage />} />
+
+              <Route element={<ClientRoute />}>
+                <Route path="/contacto" element={<ContactPage />} />
+              </Route>
 
               <Route element={<AdminRoute />}>
                 <Route path="/admin" element={<AdminDashboard />} />
