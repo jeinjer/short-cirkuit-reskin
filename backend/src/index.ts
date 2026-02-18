@@ -16,19 +16,31 @@ import ordersRouter from './routes/orders.routes';
 
 const app = express();
 
-const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN || 'http://localhost:5173';
+const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN || '';
+const FRONTEND_ORIGINS = process.env.FRONTEND_ORIGINS || '';
 const PORT = process.env.PORT || 3000;
+
+const normalizeOrigin = (value: string) => value.trim().replace(/^['"]|['"]$/g, '').replace(/\/$/, '');
+
+const parseOrigins = (raw: string) =>
+  raw
+    .split(',')
+    .map((origin) => normalizeOrigin(origin))
+    .filter(Boolean);
+
+const ACCEPTED_ORIGINS = [
+  'http://localhost:5173',
+  'http://127.0.0.1:5173',
+  ...parseOrigins(FRONTEND_ORIGIN),
+  ...parseOrigins(FRONTEND_ORIGINS)
+];
 
 app.use(
   cors({
     origin: (origin, callback) => {
-      const ACCEPTED_ORIGINS = [
-        'http://localhost:5173',
-        'http://127.0.0.1:5173',
-        FRONTEND_ORIGIN
-      ];
+      const normalizedRequestOrigin = origin ? normalizeOrigin(origin) : '';
 
-      if (!origin || ACCEPTED_ORIGINS.includes(origin)) {
+      if (!origin || ACCEPTED_ORIGINS.includes(normalizedRequestOrigin)) {
         return callback(null, true);
       }
       
