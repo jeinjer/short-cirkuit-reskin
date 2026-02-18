@@ -29,6 +29,7 @@ export default function ProductDetail() {
 
   const isAdmin = user?.role === 'ADMIN';
   const isCliente = user?.role === 'CLIENTE';
+  const trimmedInquiryMessage = inquiryMessage.trim();
   
 
   const formatPrice = (price) => {
@@ -94,12 +95,16 @@ export default function ProductDetail() {
   const submitInquiry = async (e) => {
     e.preventDefault();
     if (!product?.id) return;
+    if (!trimmedInquiryMessage) {
+      toast.error('Debes escribir un mensaje para enviar la consulta');
+      return;
+    }
 
     try {
       setInquirySubmitting(true);
       await api.post('/inquiries', {
         productId: product.id,
-        message: inquiryMessage.trim() || null
+        message: trimmedInquiryMessage
       });
       setInquiryMessage('');
       askedProductSkus.add(product.sku);
@@ -158,22 +163,20 @@ export default function ProductDetail() {
           <section ref={inquiryRef} className="mt-12 max-w-3xl mx-auto rounded-2xl border border-cyan-500/20 bg-cyan-500/5 p-6">
             <h2 className="text-xl font-black font-cyber uppercase tracking-wider text-cyan-200">Consulta por este producto</h2>
             <p className="text-sm text-gray-300 mt-2">
-              Tu consulta quedará vinculada a <span className="text-white font-semibold">{product.name}</span> ({product.sku}) y la respuesta se verá en tu perfil.
+              Tu consulta quedará visible en la sección de "Mis consultas" en "Mi perfil".
             </p>
 
             {inquirySubmitted ? (
               <div className="mt-4 rounded-lg border border-emerald-500/30 bg-emerald-500/10 p-4">
                 <p className="text-sm text-emerald-200 font-semibold">Consulta enviada correctamente.</p>
-                <p className="text-xs text-gray-300 mt-1">
-                  Para este producto no volveremos a mostrar el formulario hasta que recargues la página.
-                </p>
               </div>
             ) : (
               <form onSubmit={submitInquiry} className="mt-4 space-y-3">
                 <textarea
                   value={inquiryMessage}
                   onChange={(e) => setInquiryMessage(e.target.value)}
-                  placeholder="Escribe tu consulta (opcional)"
+                  placeholder="Escribe tu consulta"
+                  required
                   className="w-full h-32 p-3 rounded-lg bg-black/50 border border-white/15 focus:border-cyan-500/40 outline-none"
                 />
                 <div className="flex flex-col sm:flex-row gap-2">
@@ -182,14 +185,14 @@ export default function ProductDetail() {
                     onClick={() => navigate(-1)}
                     className="h-11 px-4 rounded-lg border border-white/20 bg-white/5 hover:bg-white/10 font-semibold"
                   >
-                    Volver atrás
+                    Cerrar
                   </button>
                   <button
                     type="submit"
-                    disabled={inquirySubmitting}
+                    disabled={inquirySubmitting || !trimmedInquiryMessage}
                     className="h-11 px-4 rounded-lg bg-cyan-600 hover:bg-cyan-500 disabled:opacity-60 font-bold"
                   >
-                    {inquirySubmitting ? 'Enviando...' : 'Enviar consulta'}
+                    {inquirySubmitting ? 'Enviando...' : 'Enviar'}
                   </button>
                 </div>
               </form>

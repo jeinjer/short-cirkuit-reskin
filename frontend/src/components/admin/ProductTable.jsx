@@ -72,7 +72,7 @@ export default function ProductTable({ products, loading, onView, onEdit, onTogg
             {products.map((p) => (
               <tr key={p.id} className="hover:bg-white/2 transition-colors group">
                 <td className="p-4">
-                  <div className="w-12 h-12 bg-white rounded-lg overflow-hidden flex items-center justify-center p-1 border border-white/5">
+                  <div className="w-12 h-12 bg-[#050507] rounded-lg overflow-hidden flex items-center justify-center p-1 border border-cyan-500/20">
                     <img src={p.imageUrl} alt="" className="max-h-full object-contain" />
                   </div>
                 </td>
@@ -104,7 +104,7 @@ export default function ProductTable({ products, loading, onView, onEdit, onTogg
       <div className="md:hidden flex flex-col gap-4 p-4">
         {products.map((p) => (
           <div key={p.id} className="bg-white/5 p-4 rounded-xl border border-white/5 flex gap-4 shadow-sm">
-            <div className="w-20 h-20 bg-white rounded-lg p-1 shrink-0 flex items-center justify-center border border-white/10">
+            <div className="w-20 h-20 bg-[#050507] rounded-lg p-1 shrink-0 flex items-center justify-center border border-cyan-500/20">
               <img src={p.imageUrl} alt="" className="max-h-full object-contain" />
             </div>
             <div className="flex-1 min-w-0">

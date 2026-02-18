@@ -29,7 +29,6 @@ enum OrderStatus {
 
 enum PaymentMethod {
   LOCAL
-  MERCADO_PAGO
 }
 
 enum PaymentStatus {
@@ -131,15 +130,13 @@ model Order {
   user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   status         OrderStatus   @default(PENDING_PAYMENT)
   paymentMethod  PaymentMethod
-  paymentStatus  PaymentStatus @default(PENDING)
+  paymentStatus  PaymentStatus?
   subtotalUsd    Float
   subtotalArs    Float
   exchangeRate   Float
   phone          String
   notes          String?
   whatsappUrl    String?
-  mpPreferenceId String?
-  mpInitPoint    String?
   stockDiscounted Boolean      @default(false)
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt

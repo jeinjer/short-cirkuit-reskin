@@ -1,19 +1,29 @@
 import React from 'react';
-import { CheckCircle2, XCircle, Clock3, Eye, MessageSquare } from 'lucide-react';
+import { Eye } from 'lucide-react';
 import CircuitLoader from '../others/CircuitLoader';
 
 const statusLabel = {
-  PENDING_PAYMENT: 'Pendiente pago',
-  PENDING_PICKUP: 'Pendiente retiro',
+  PENDING_PAYMENT: 'Pendiente',
+  PENDING_PICKUP: 'Pendiente',
   CONFIRMED: 'Confirmado',
   CANCELLED: 'Cancelado'
 };
 
-const paymentStatusLabel = {
-  PENDING: 'Pendiente',
-  APPROVED: 'Aprobado',
-  REJECTED: 'Rechazado'
+const getPaymentLabel = (paymentStatus) => {
+  if (!paymentStatus) return '-';
+  return paymentStatus === 'APPROVED' ? 'Realizado' : 'Pendiente';
 };
+
+const statusOptions = [
+  { value: 'PENDING_PAYMENT', label: 'Pendiente' },
+  { value: 'CONFIRMED', label: 'Confirmado' },
+  { value: 'CANCELLED', label: 'Cancelado' }
+];
+
+const paymentOptions = [
+  { value: 'PENDING', label: 'Pendiente' },
+  { value: 'APPROVED', label: 'Realizado' }
+];
 
 export default function OrderTable({ orders, loading, onQuickUpdate, onView }) {
   if (loading) return <div className="bg-[#13131a] p-12 flex justify-center border-x border-white/5"><CircuitLoader /></div>;
@@ -45,61 +55,38 @@ export default function OrderTable({ orders, loading, onQuickUpdate, onView }) {
                   <p className="text-gray-500 text-xs">{o.user?.email}</p>
                 </td>
                 <td className="p-4">
-                  <p className="text-gray-200">{o.paymentMethod === 'LOCAL' ? 'En local' : 'Mercado Pago'}</p>
-                  <p className={`text-xs ${o.paymentStatus === 'APPROVED' ? 'text-emerald-400' : o.paymentStatus === 'REJECTED' ? 'text-red-400' : 'text-yellow-400'}`}>
-                    {paymentStatusLabel[o.paymentStatus] || o.paymentStatus}
-                  </p>
+                  <select
+                    value={o.paymentStatus || ''}
+                    disabled={o.status === 'CANCELLED'}
+                    onChange={(e) => onQuickUpdate(o, { paymentStatus: e.target.value || null })}
+                    className="h-9 min-w-[150px] px-2 rounded-lg bg-black/40 border border-white/20 text-sm text-white disabled:opacity-60 disabled:cursor-not-allowed"
+                  >
+                    <option value="">-</option>
+                    {paymentOptions.map((opt) => (
+                      <option key={opt.value} value={opt.value}>{opt.label}</option>
+                    ))}
+                  </select>
                 </td>
                 <td className="p-4">
-                  <span className={`text-xs px-2 py-1 rounded border ${
-                    o.status === 'CONFIRMED' ? 'border-emerald-500/40 text-emerald-400' :
-                    o.status === 'CANCELLED' ? 'border-red-500/40 text-red-400' :
-                    'border-yellow-500/40 text-yellow-400'
-                  }`}>
-                    {statusLabel[o.status] || o.status}
-                  </span>
+                  <select
+                    value={o.status === 'PENDING_PICKUP' ? 'PENDING_PAYMENT' : o.status}
+                    onChange={(e) => onQuickUpdate(o, { status: e.target.value })}
+                    className="h-9 min-w-[170px] px-2 rounded-lg bg-black/40 border border-white/20 text-sm text-white"
+                  >
+                    {statusOptions.map((opt) => (
+                      <option key={opt.value} value={opt.value}>{opt.label}</option>
+                    ))}
+                  </select>
                 </td>
                 <td className="p-4 text-right font-bold text-white">${Number(o.subtotalArs || 0).toLocaleString('es-AR')}</td>
                 <td className="p-4 text-right">
-                  <div className="flex justify-end gap-2">
+                  <div className="flex justify-end">
                     <button
                       onClick={() => onView(o)}
                       className="p-2 rounded-lg bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 border border-cyan-500/30"
                       title="Ver detalle"
                     >
                       <Eye size={16} />
-                    </button>
-                    {o.whatsappUrl && (
-                      <a
-                        href={o.whatsappUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="p-2 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
-                        title="Abrir WhatsApp"
-                      >
-                        <MessageSquare size={16} />
-                      </a>
-                    )}
-                    <button
-                      onClick={() => onQuickUpdate(o, { status: 'PENDING_PICKUP' })}
-                      className="p-2 rounded-lg bg-yellow-500/10 hover:bg-yellow-500/20 text-yellow-300 border border-yellow-500/30"
-                      title="Pendiente retiro"
-                    >
-                      <Clock3 size={16} />
-                    </button>
-                    <button
-                      onClick={() => onQuickUpdate(o, { status: 'CONFIRMED', paymentStatus: o.paymentStatus === 'APPROVED' ? 'APPROVED' : o.paymentStatus })}
-                      className="p-2 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
-                      title="Confirmar"
-                    >
-                      <CheckCircle2 size={16} />
-                    </button>
-                    <button
-                      onClick={() => onQuickUpdate(o, { status: 'CANCELLED' })}
-                      className="p-2 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-300 border border-red-500/30"
-                      title="Cancelar"
-                    >
-                      <XCircle size={16} />
                     </button>
                   </div>
                 </td>
@@ -119,13 +106,30 @@ export default function OrderTable({ orders, loading, onQuickUpdate, onView }) {
               <span className="text-gray-400">{statusLabel[o.status] || o.status}</span>
               <span className="text-cyan-300">${Number(o.subtotalArs || 0).toLocaleString('es-AR')}</span>
             </div>
+            <div className="mt-3 grid grid-cols-2 gap-2">
+              <select
+                value={o.paymentStatus || ''}
+                disabled={o.status === 'CANCELLED'}
+                onChange={(e) => onQuickUpdate(o, { paymentStatus: e.target.value || null })}
+                className="h-10 px-2 rounded-lg bg-black/40 border border-white/20 text-xs text-white disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+                <option value="">{getPaymentLabel(o.paymentStatus)}</option>
+                {paymentOptions.map((opt) => (
+                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                ))}
+              </select>
+              <select
+                value={o.status === 'PENDING_PICKUP' ? 'PENDING_PAYMENT' : o.status}
+                onChange={(e) => onQuickUpdate(o, { status: e.target.value })}
+                className="h-10 px-2 rounded-lg bg-black/40 border border-white/20 text-xs text-white"
+              >
+                {statusOptions.map((opt) => (
+                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                ))}
+              </select>
+            </div>
             <div className="mt-3 flex gap-2">
               <button onClick={() => onView(o)} className="flex-1 py-2 rounded-lg bg-cyan-500/15 text-cyan-300 text-xs font-bold border border-cyan-500/30">Detalle</button>
-              {o.whatsappUrl && <a href={o.whatsappUrl} target="_blank" rel="noreferrer" className="flex-1 py-2 rounded-lg bg-emerald-500/15 text-emerald-300 text-xs font-bold border border-emerald-500/30 text-center">WhatsApp</a>}
-            </div>
-            <div className="mt-2 flex gap-2">
-              <button onClick={() => onQuickUpdate(o, { status: 'CONFIRMED' })} className="flex-1 py-2 rounded-lg bg-emerald-500/15 text-emerald-300 text-xs font-bold border border-emerald-500/30">Confirmar</button>
-              <button onClick={() => onQuickUpdate(o, { status: 'CANCELLED' })} className="flex-1 py-2 rounded-lg bg-red-500/15 text-red-300 text-xs font-bold border border-red-500/30">Cancelar</button>
             </div>
           </div>
         ))}

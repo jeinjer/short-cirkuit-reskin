@@ -38,42 +38,50 @@ export default function SidePanel({ onClose, title }) {
         animate="visible"
         exit="exit"
         transition={{ type: 'tween', duration: 0.3, ease: 'easeOut' }}
-        className="fixed right-0 top-0 h-full w-[90%] sm:w-[430px] bg-[#0a0a0e] border-l border-white/10 z-70 shadow-2xl flex flex-col"
+        className="fixed right-0 top-0 h-full w-[92%] sm:w-[440px] bg-[#06070b] border-l border-cyan-500/20 z-70 shadow-2xl flex flex-col"
       >
-        <div className="p-5 border-b border-white/10 flex justify-between items-center bg-[#0a0a0e]">
-          <h2 className="text-white font-bold flex items-center gap-2">
-            <ShoppingCart size={18} className="text-cyan-500" /> {title}
+        <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(to_right,rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.04)_1px,transparent_1px)] bg-[size:2.8rem_2.8rem] opacity-25" />
+        <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_top,rgba(6,182,212,0.15),transparent_55%)]" />
+
+        <div className="relative p-5 border-b border-cyan-500/20 flex justify-between items-center bg-[#090b11]/90 backdrop-blur-sm">
+          <h2 className="text-white font-black font-cyber uppercase tracking-wide flex items-center gap-2">
+            <ShoppingCart size={18} className="text-cyan-400" /> {title}
           </h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-white cursor-pointer p-2 hover:bg-white/5 rounded-full transition-colors">
+          <button onClick={onClose} className="text-gray-400 hover:text-white cursor-pointer p-2 hover:bg-white/10 rounded-lg transition-colors border border-white/10 hover:border-cyan-500/30">
             <X size={20} />
           </button>
         </div>
 
         {!isAuthenticated ? (
-          <div className="flex-1 p-5 text-gray-500 flex flex-col items-center justify-center gap-4">
-            <ShoppingCart size={40} className="opacity-20" />
-            <p>Inicia sesión para usar el carrito</p>
+          <div className="relative flex-1 p-6 text-gray-500 flex flex-col items-center justify-center gap-4">
+            <ShoppingCart size={44} className="opacity-30 text-cyan-500" />
+            <p className="text-sm text-gray-300">Inicia sesión para usar el carrito</p>
             <button
               onClick={() => {
                 onClose();
                 navigate('/login');
               }}
-              className="text-cyan-400 text-sm hover:underline cursor-pointer"
+              className="h-11 px-4 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-sm font-bold cursor-pointer"
             >
               Ir a login
             </button>
           </div>
         ) : items.length === 0 ? (
-          <div className="flex-1 p-5 text-gray-500 flex flex-col items-center justify-center gap-4">
-            <ShoppingCart size={40} className="opacity-20" />
-            <p>Tu carrito está vacío</p>
-            <button onClick={onClose} className="text-cyan-400 text-sm hover:underline cursor-pointer">
-              Seguir comprando
-            </button>
+          <div className="relative flex-1 p-6 text-gray-500 flex flex-col items-center justify-center gap-4 text-center">
+            <ShoppingCart size={44} className="opacity-35 text-cyan-500" />
+            <p className="text-gray-200 font-semibold">Todavía no agregaste productos al carrito.</p>
+            <p className="text-xs text-gray-400 max-w-[260px]">Explora el catálogo y suma los productos que quieras cotizar o comprar.</p>
+            <Link
+              to="/catalogo"
+              onClick={onClose}
+              className="h-11 px-4 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-sm font-black uppercase tracking-wider inline-flex items-center gap-2"
+            >
+              Ir al catálogo <ArrowRight size={15} />
+            </Link>
           </div>
         ) : (
           <>
-            <div className="flex-1 overflow-y-auto p-4 space-y-3">
+            <div className="relative flex-1 overflow-y-auto p-4 space-y-3">
               {items.map((item) => (
                 <div
                   key={item.id}
@@ -86,12 +94,12 @@ export default function SidePanel({ onClose, title }) {
                       goToProduct(item.product.sku);
                     }
                   }}
-                  className="bg-[#111118] border border-white/10 rounded-xl p-3 cursor-pointer hover:border-cyan-500/30 transition-colors"
+                  className="bg-[#0f121a]/95 border border-white/10 rounded-xl p-3 cursor-pointer hover:border-cyan-500/35 hover:bg-[#111622] transition-colors"
                 >
                   <div className="flex gap-3">
-                    <img src={item.product.imageUrl} alt={item.product.name} className="w-16 h-16 object-contain bg-white rounded-lg p-1 shrink-0" />
+                    <img src={item.product.imageUrl} alt={item.product.name} className="w-16 h-16 object-contain bg-white rounded-lg p-1 shrink-0 border border-cyan-500/20" />
                     <div className="flex-1 min-w-0">
-                      <p className="font-mono text-[11px] text-cyan-500">{item.product.sku}</p>
+                      <p className="font-mono text-[11px] text-cyan-400">{item.product.sku}</p>
                       <p className="text-sm text-white leading-tight line-clamp-2">{item.product.name}</p>
                       <p className="text-xs text-gray-400 mt-1">${Number(item.unitPriceArs || 0).toLocaleString('es-AR')}</p>
                     </div>
@@ -123,7 +131,7 @@ export default function SidePanel({ onClose, title }) {
                     </div>
 
                     <div className="flex items-center gap-2">
-                      <span className="text-cyan-400 font-bold text-sm">${Number(item.subtotalArs || 0).toLocaleString('es-AR')}</span>
+                      <span className="text-cyan-300 font-bold text-sm">${Number(item.subtotalArs || 0).toLocaleString('es-AR')}</span>
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
@@ -139,7 +147,7 @@ export default function SidePanel({ onClose, title }) {
               ))}
             </div>
 
-            <div className="p-4 border-t border-white/10 bg-[#0a0a0e] space-y-3">
+            <div className="relative p-4 border-t border-cyan-500/20 bg-[#090b11]/95 backdrop-blur-sm space-y-3">
               <div className="flex items-center justify-between text-sm">
                 <span className="text-gray-400">Items</span>
                 <span className="font-mono text-white">{summary.totalItems}</span>
@@ -152,7 +160,7 @@ export default function SidePanel({ onClose, title }) {
               <div className="flex gap-2">
                 <button
                   onClick={clearCart}
-                  className="flex-1 h-11 rounded-lg border border-white/10 hover:border-white/20 bg-white/5 text-gray-300 hover:text-white text-sm font-bold cursor-pointer"
+                  className="flex-1 h-11 rounded-lg border border-white/15 hover:border-white/30 bg-white/5 text-gray-300 hover:text-white text-sm font-bold cursor-pointer"
                 >
                   Vaciar
                 </button>
@@ -161,7 +169,7 @@ export default function SidePanel({ onClose, title }) {
                   onClick={onClose}
                   className="flex-1 h-11 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-sm font-black flex items-center justify-center gap-2"
                 >
-                  Checkout <ArrowRight size={16} />
+                  Finalizar <ArrowRight size={16} />
                 </Link>
               </div>
             </div>

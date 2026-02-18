@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
-import { ArrowLeft, Loader2, MessageSquare, Store, Wallet } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { ArrowLeft, Loader2, MessageSquare, Phone } from 'lucide-react';
 import { toast } from 'sonner';
 import api from '../api/axios';
 import { useCart } from '../context/CartContext';
@@ -10,11 +10,8 @@ import CircuitLoader from '../components/others/CircuitLoader';
 export default function CheckoutPage() {
   const { items, summary, fetchCart, loading: cartLoading } = useCart();
   const { user } = useAuth();
-  const [searchParams] = useSearchParams();
 
   const [phone, setPhone] = useState('');
-  const [notes, setNotes] = useState('');
-  const [paymentMethod, setPaymentMethod] = useState('LOCAL');
   const [submitting, setSubmitting] = useState(false);
   const [checkoutResult, setCheckoutResult] = useState(null);
 
@@ -25,41 +22,36 @@ export default function CheckoutPage() {
     fetchCart();
   }, [fetchCart]);
 
-  useEffect(() => {
-    const paymentStatus = searchParams.get('payment');
-    if (!paymentStatus) return;
-    if (paymentStatus === 'success') toast.success('Pago aprobado. Pedido confirmado.');
-    if (paymentStatus === 'pending') toast.message('Pago pendiente de confirmación.');
-    if (paymentStatus === 'failure') toast.error('No se pudo completar el pago.');
-  }, [searchParams]);
+  const formatArs = (value) =>
+    new Intl.NumberFormat('es-AR', {
+      style: 'currency',
+      currency: 'ARS',
+      maximumFractionDigits: 0
+    }).format(Number(value) || 0);
+
+  const trimmedPhone = phone.trim();
+  const hasValidOptionalPhone = !trimmedPhone || trimmedPhone.length >= 6;
+  const checkoutPhonePayload = trimmedPhone || 'NO_INFORMADO';
 
   const onSubmit = async (e) => {
     e.preventDefault();
     if (!hasItems) return;
-    if (!phone.trim()) {
-      toast.error('Completá tu teléfono');
+    if (!hasValidOptionalPhone) {
+      toast.error('Si ingresas telefono, debe tener al menos 6 caracteres');
       return;
     }
 
     try {
       setSubmitting(true);
       const res = await api.post('/checkout', {
-        paymentMethod,
-        phone: phone.trim(),
-        notes: notes.trim()
+        phone: checkoutPhonePayload
       });
 
       setCheckoutResult(res.data);
       await fetchCart();
-
-      if (paymentMethod === 'MERCADO_PAGO' && res.data?.mercadoPago?.initPoint) {
-        window.location.href = res.data.mercadoPago.initPoint;
-        return;
-      }
-
-      toast.success('Pedido generado. Coordiná por WhatsApp');
+      toast.success('Pedido generado. Continua por WhatsApp');
     } catch (error) {
-      toast.error(error.response?.data?.error || 'No se pudo generar el checkout');
+      toast.error(error.response?.data?.error || 'No se pudo generar el pedido');
     } finally {
       setSubmitting(false);
     }
@@ -73,10 +65,10 @@ export default function CheckoutPage() {
         <div className="mb-8">
           <Link to="/catalogo" className="inline-flex items-center gap-2 text-gray-400 hover:text-cyan-400 transition-colors">
             <ArrowLeft size={18} />
-            Volver al catálogo
+            Volver al catalogo
           </Link>
           <h1 className="mt-3 text-4xl md:text-5xl font-black font-cyber uppercase tracking-tight">Checkout</h1>
-          <p className="text-gray-400 mt-2">Finalizá tu compra, {displayName}.</p>
+          <p className="text-gray-400 mt-2">Finaliza tu compra, {displayName}.</p>
         </div>
 
         {!isCliente ? (
@@ -85,61 +77,38 @@ export default function CheckoutPage() {
           </section>
         ) : (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <section className="lg:col-span-2 bg-[#0d0d12] border border-white/10 rounded-2xl p-5 md:p-6">
-            <h2 className="text-xl font-bold mb-4">Datos de compra</h2>
+          <section className="lg:col-span-2 rounded-2xl border border-cyan-500/20 bg-[#0d0d12] p-5 md:p-6">
+            <h2 className="text-xl font-bold mb-2">Datos de compra</h2>
+            <p className="text-sm text-gray-400 mb-5">Generamos tu pedido y lo continuaremos por WhatsApp para coordinar pago y envio/retiro.</p>
 
             <form onSubmit={onSubmit} className="space-y-5">
-              <div>
-                <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Teléfono de contacto</label>
+              <div className="rounded-xl border border-white/10 bg-black/20 p-4">
+                <label className="text-xs uppercase tracking-wider text-gray-500 mb-2 inline-flex items-center gap-2">
+                  <Phone size={14} className="text-cyan-400" />
+                  Telefono de contacto (opcional)
+                </label>
                 <input
+                  type="tel"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  placeholder="+54 9 ..."
-                  className="w-full h-12 px-4 bg-black/30 border border-white/10 rounded-lg focus:outline-none focus:border-cyan-500/50"
+                  placeholder="Ingresa tu número sin 0 ni 15"
+                  className="w-full h-12 px-4 bg-black/40 border border-white/10 rounded-lg focus:outline-none focus:border-cyan-500/50"
                 />
-              </div>
-
-              <div>
-                <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Notas (opcional)</label>
-                <textarea
-                  value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
-                  rows={4}
-                  placeholder="Horario de retiro / referencia para envío..."
-                  className="w-full px-4 py-3 bg-black/30 border border-white/10 rounded-lg focus:outline-none focus:border-cyan-500/50"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Método de pago</label>
-                <div className="grid sm:grid-cols-2 gap-3">
-                  <button
-                    type="button"
-                    onClick={() => setPaymentMethod('LOCAL')}
-                    className={`p-4 rounded-xl border text-left transition-colors ${paymentMethod === 'LOCAL' ? 'border-cyan-500 bg-cyan-500/10' : 'border-white/10 bg-white/5 hover:border-white/20'}`}
-                  >
-                    <div className="flex items-center gap-2 text-white font-bold"><Store size={18} /> Pago en el local</div>
-                    <p className="text-xs text-gray-400 mt-1">Confirmás pedido y pagás al retirar.</p>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setPaymentMethod('MERCADO_PAGO')}
-                    className={`p-4 rounded-xl border text-left transition-colors ${paymentMethod === 'MERCADO_PAGO' ? 'border-cyan-500 bg-cyan-500/10' : 'border-white/10 bg-white/5 hover:border-white/20'}`}
-                  >
-                    <div className="flex items-center gap-2 text-white font-bold"><Wallet size={18} /> Mercado Pago</div>
-                    <p className="text-xs text-gray-400 mt-1">Te redirigimos al checkout de Mercado Pago.</p>
-                  </button>
-                </div>
+                <p className="mt-2 text-xs text-gray-500">
+                  Podes dejarlo vacio y continuar igual.
+                </p>
+                {!hasValidOptionalPhone && (
+                  <p className="mt-2 text-xs text-red-300">Telefono invalido. Minimo 6 caracteres.</p>
+                )}
               </div>
 
               <button
                 type="submit"
-                disabled={!hasItems || submitting}
-                className="w-full h-12 rounded-lg bg-cyan-600 hover:bg-cyan-500 disabled:opacity-50 disabled:cursor-not-allowed font-black uppercase tracking-wider flex items-center justify-center gap-2"
+                disabled={!hasItems || submitting || !hasValidOptionalPhone}
+                className="w-full h-12 rounded-lg bg-cyan-600 hover:bg-cyan-500 disabled:opacity-50 disabled:cursor-not-allowed font-black uppercase tracking-wider flex items-center justify-center gap-2 shadow-[0_0_24px_rgba(6,182,212,0.25)]"
               >
                 {submitting && <Loader2 size={16} className="animate-spin" />}
-                {paymentMethod === 'LOCAL' ? 'Confirmar pedido' : 'Ir a Mercado Pago'}
+                Generar pedido
               </button>
             </form>
 
@@ -153,13 +122,13 @@ export default function CheckoutPage() {
                   className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm"
                 >
                   <MessageSquare size={16} />
-                  Coordinar envío por WhatsApp
+                  Continuar
                 </a>
               </div>
             )}
           </section>
 
-          <aside className="bg-[#0d0d12] border border-white/10 rounded-2xl p-5 md:p-6 h-fit">
+          <aside className="bg-[#0d0d12] border border-cyan-500/20 rounded-2xl p-5 md:p-6 h-fit">
             <h2 className="text-xl font-bold mb-4">Resumen</h2>
             <div className="space-y-3 max-h-[380px] overflow-y-auto pr-1">
               {cartLoading ? (
@@ -168,12 +137,16 @@ export default function CheckoutPage() {
                 </div>
               ) : hasItems ? (
                 items.map((item) => (
-                  <div key={item.id} className="border border-white/10 rounded-lg p-3 bg-black/20">
-                    <p className="text-[11px] text-cyan-500 font-mono">{item.product.sku}</p>
-                    <p className="text-sm line-clamp-2">{item.product.name}</p>
-                    <div className="mt-1 flex items-center justify-between text-xs text-gray-400">
-                      <span>x{item.quantity}</span>
-                      <span>${Number(item.subtotalArs || 0).toLocaleString('es-AR')}</span>
+                  <div key={item.id} className="border border-white/10 rounded-lg p-3 bg-black/20 flex items-center gap-3">
+                    <div className="w-14 h-14 rounded-lg bg-[#050507] border border-cyan-500/20 p-1 shrink-0 flex items-center justify-center">
+                      <img src={item.product.imageUrl} alt={item.product.name} className="max-h-full object-contain" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm line-clamp-2">{item.product.name}</p>
+                      <div className="mt-1 flex items-center justify-between text-xs text-gray-400">
+                        <span>Cantidad: {item.quantity}</span>
+                        <span>{formatArs(item.subtotalArs)}</span>
+                      </div>
                     </div>
                   </div>
                 ))
@@ -188,8 +161,8 @@ export default function CheckoutPage() {
                 <span>{summary.totalItems}</span>
               </div>
               <div className="flex justify-between text-lg">
-                <span className="font-bold">Total ARS</span>
-                <span className="font-black text-cyan-400">${summary.totalArs.toLocaleString('es-AR')}</span>
+                <span className="font-bold">Total</span>
+                <span className="font-black text-cyan-400">{formatArs(summary.totalArs)}</span>
               </div>
             </div>
           </aside>

@@ -2,9 +2,12 @@ import { Router } from 'express';
 import { Category, PrismaClient } from '@prisma/client';
 import jwt from 'jsonwebtoken';
 import { getDolarRate } from '../utils/dolar';
+import { CATEGORY_IMAGES } from '../config/catalogConstants';
+import { processToWebp } from '../utils/imageProcessor';
 
 const router = Router();
 const prisma = new PrismaClient();
+const GENERIC_IMAGE_URLS = Object.values(CATEGORY_IMAGES);
 
 const productSelect = {
   id: true,
@@ -111,19 +114,42 @@ router.get('/:term', async (req, res) => {
 
 router.put('/:sku', async (req, res) => {
     const { sku } = req.params;
-    const { isActive, gallery, imageUrl } = req.body;
+    const { isActive, gallery, imageUrl, removeWhiteBackground, whiteRemovalLevel } = req.body;
 
     if (!isAdminUser(req)) {
         return res.status(403).json({ error: 'No tienes permisos de administrador' });
     }
+
+    if (Array.isArray(gallery) && gallery.length > 1) {
+      return res.status(400).json({ error: 'Solo se permite una imagen por producto' });
+    }
   
     try {
+      const baseUrl = process.env.BACKEND_URL || `${req.protocol}://${req.get('host')}`;
+      const shouldRemoveWhiteBackground = removeWhiteBackground === undefined
+        ? true
+        : ['1', 'true', 'yes'].includes(String(removeWhiteBackground).toLowerCase());
+      const normalizedWhiteLevel = ['low', 'medium', 'high'].includes(String(whiteRemovalLevel || '').toLowerCase())
+        ? String(whiteRemovalLevel).toLowerCase() as 'low' | 'medium' | 'high'
+        : 'medium';
+
+      const processedMainImage = await processToWebp(
+        typeof imageUrl === 'string' ? imageUrl : undefined,
+        sku,
+        'main',
+        baseUrl,
+        {
+          removeWhiteBackground: shouldRemoveWhiteBackground,
+          whiteRemovalLevel: normalizedWhiteLevel
+        }
+      );
+
       const updated = await prisma.product.update({
         where: { sku },
         data: {
           isActive: isActive !== undefined ? isActive : undefined,
-          gallery: gallery !== undefined ? gallery : undefined,
-          imageUrl: imageUrl !== undefined ? imageUrl : undefined
+          gallery: gallery !== undefined ? [] : undefined,
+          imageUrl: imageUrl !== undefined ? processedMainImage : undefined
         },
         select: productSelect
       });
@@ -141,7 +167,7 @@ router.get('/', async (req, res) => {
   const limit = Number(req.query.limit) || 20;
   const skip = (page - 1) * limit;
 
-  const { category, search, minPrice, maxPrice, sort, brand } = req.query;
+  const { category, search, minPrice, maxPrice, sort, brand, inStockOnly, missingImageOnly } = req.query;
 
   try {
     const isAdmin = isAdminUser(req);
@@ -164,6 +190,16 @@ router.get('/', async (req, res) => {
         equals: brandStr.trim(),
         mode: 'insensitive',
       };
+    }
+
+    const isInStockOnly = ['1', 'true', 'yes'].includes(String(inStockOnly || '').toLowerCase());
+    if (isInStockOnly) {
+      whereClause.quantity = { gt: 0 };
+    }
+
+    const isMissingImageOnly = ['1', 'true', 'yes'].includes(String(missingImageOnly || '').toLowerCase());
+    if (isMissingImageOnly) {
+      whereClause.imageUrl = { in: GENERIC_IMAGE_URLS };
     }
 
     if (minPrice || maxPrice) {

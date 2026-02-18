@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../context/AuthContext';
 import { useCart } from '../../../context/CartContext';
 import { toast } from 'sonner';
+import { getVisiblePriceArs } from '../../../utils/productPricing';
 
 export default function ProductInfo({ product, formatPrice, isAdmin, onAskProductInquiry, inquirySubmitted }) {
   const navigate = useNavigate();
@@ -14,6 +15,7 @@ export default function ProductInfo({ product, formatPrice, isAdmin, onAskProduc
   const isCliente = user?.role === 'CLIENTE';
   const canBuy = isAuthenticated && isCliente && !isAdmin;
   const hasStock = (product.quantity || 0) > 0;
+  const visiblePrice = getVisiblePriceArs(product, isAdmin);
 
   const handleAddToCart = async () => {
     if (!isAuthenticated) return navigate('/login');
@@ -45,12 +47,18 @@ export default function ProductInfo({ product, formatPrice, isAdmin, onAskProduc
       </div>
 
       <div className="py-6 border-y border-white/5 bg-white/2 -mx-4 px-4 md:mx-0 md:px-0 md:bg-transparent md:border-none">
-        <span className=" text-gray-500 font-mono block mb-1">PRECIO FINAL</span>
+        <span className=" text-gray-500 font-mono block mb-1">PRECIO FINAL*</span>
         <div className="flex items-baseline gap-3">
           <span className="text-5xl md:text-6xl font-black text-white tracking-tighter">
-            {formatPrice(product.price)}
+            {formatPrice(visiblePrice)}
           </span>
         </div>
+        <p className={`mt-3 text-sm font-mono ${hasStock ? 'text-cyan-300' : 'text-red-300'}`}>
+          {hasStock ? `Stock disponible: ${product.quantity}` : 'Sin stock'}
+        </p>
+        <p className="mt-1 text-[11px] text-gray-500">
+          * El precio final no incluye envio.
+        </p>
       </div>
 
       <div className="flex flex-col gap-3">
@@ -91,7 +99,7 @@ export default function ProductInfo({ product, formatPrice, isAdmin, onAskProduc
             }`}
           >
             <MessageSquare size={16} />
-            {inquirySubmitted ? 'Consulta enviada' : 'Consultar a un asesor'}
+            {inquirySubmitted ? 'Consulta enviada' : 'Consultar sobre este producto'}
           </button>
         )}
 
