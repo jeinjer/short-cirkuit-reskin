@@ -24,37 +24,38 @@ export const AuthProvider = ({ children }) => {
     }
   }, [errors]);
 
-  useEffect(() => {
-    async function checkLogin() {
+  const refreshUser = async () => {
+    const token = localStorage.getItem('token');
 
-      const token = localStorage.getItem('token');
+    if (!token) {
+      setIsAuthenticated(false);
+      setUser(null);
+      return null;
+    }
 
-      if (!token) {
-        setIsAuthenticated(false);
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const res = await verifyTokenRequest(token); 
-        if (!res.data) { 
-           setIsAuthenticated(false);
-           setLoading(false);
-           return;
-        }
-        
-        setIsAuthenticated(true);
-        setUser(res.data);
-        setLoading(false);
-
-      } catch (error) {
+    try {
+      const res = await verifyTokenRequest(token);
+      if (!res.data) {
         setIsAuthenticated(false);
         setUser(null);
-        setLoading(false);
-        localStorage.removeItem('token');
+        return null;
       }
+      setIsAuthenticated(true);
+      setUser(res.data);
+      return res.data;
+    } catch (error) {
+      setIsAuthenticated(false);
+      setUser(null);
+      localStorage.removeItem('token');
+      return null;
     }
-    
+  };
+
+  useEffect(() => {
+    async function checkLogin() {
+      await refreshUser();
+      setLoading(false);
+    }
     checkLogin();
   }, []);
 
@@ -111,7 +112,7 @@ export const AuthProvider = ({ children }) => {
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
         <AuthContext.Provider value={{ 
             signup, signin, loginWithGoogle, logout, 
-            user, isAuthenticated, errors, loading 
+            user, isAuthenticated, errors, loading, refreshUser
         }}>
         {children}
         </AuthContext.Provider>

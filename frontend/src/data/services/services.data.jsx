@@ -1,41 +1,55 @@
-import React from 'react';
-import { Zap, Shield, Globe, Cpu } from 'lucide-react';
+﻿import React from 'react';
+import { Wrench, Gamepad2, Gauge, ArrowUpCircle, Database } from 'lucide-react';
 
 export const servicesData = [
   {
     id: 1,
-    title: "SOPORTE HIGH-END",
-    desc: "Diagnóstico y overclocking de élite.",
-    fullDesc: "Nuestro equipo de élite no duerme. Ofrecemos diagnóstico remoto y presencial con herramientas de última generación para asegurar que tu setup nunca deje de rendir al máximo.",
-    icon: <Zap className="w-6 h-6 text-yellow-400" />,
-    image: "https://images.unsplash.com/photo-1593640408182-31c70c8268f5?auto=format&fit=crop&q=80&w=800",
-    color: "from-yellow-400 to-orange-500"
+    title: 'Limpieza & Mantenimiento',
+    desc: 'Service completo para evitar ruido y sobrecalentamiento.',
+    fullDesc:
+      'Es el "service" completo para tu computadora. Desarmamos el equipo para quitar el polvo acumulado, cambiamos la pasta que evita que el procesador se recaliente y dejamos los ventiladores como nuevos. Ideal para que tu PC no haga ruido y te dure muchos años más.',
+    icon: <Wrench className="w-6 h-6 text-cyan-300" />,
+    image: '/services/limpieza.webp',
+    color: 'from-cyan-400 to-blue-600'
   },
   {
     id: 2,
-    title: "GARANTÍA BLINDADA",
-    desc: "RMA directo y reemplazo express.",
-    fullDesc: "Olvídate de la letra chica. Nuestra garantía cubre reemplazo directo en componentes defectuosos durante 3 años. Gestionamos el RMA directamente con los fabricantes.",
-    icon: <Shield className="w-6 h-6 text-cyan-400" />,
-    image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=800",
-    color: "from-cyan-400 to-blue-500"
+    title: 'Armado de PCs Gaming',
+    desc: 'Armado profesional según tu presupuesto.',
+    fullDesc:
+      '¿Querés la PC de tus sueños para jugar o streamear? Te asesoramos para elegir los mejores componentes según tu presupuesto. La armamos con total prolijidad, configuramos todo para que rinda al máximo y te la entregamos lista para que solo tengas que instalar tus juegos.',
+    icon: <Gamepad2 className="w-6 h-6 text-fuchsia-300" />,
+    image: '/services/armado.webp',
+    color: 'from-fuchsia-500 to-purple-600'
   },
   {
     id: 3,
-    title: "ENVÍOS GLOBALES",
-    desc: "Logística militar para tu hardware.",
-    fullDesc: "Utilizamos un packaging de grado militar para asegurar que tu GPU o monitor llegue intacto. Tracking en tiempo real y seguro incluido.",
-    icon: <Globe className="w-6 h-6 text-emerald-400" />,
-    image: "https://images.unsplash.com/photo-1566576912906-253c721b0333?auto=format&fit=crop&q=80&w=800",
-    color: "from-emerald-400 to-green-500"
+    title: 'Optimización de Sistema',
+    desc: 'Mejora de rendimiento, limpieza y actualización.',
+    fullDesc:
+      'Hacemos que tu computadora se sienta como el primer día. Eliminamos virus, borramos archivos basura que la ponen lenta y actualizamos todo el software necesario. Es la solución ideal si sentís que Windows tarda mucho en arrancar o los programas se tildan.',
+    icon: <Gauge className="w-6 h-6 text-lime-300" />,
+    image: '/services/optimizacion.webp',
+    color: 'from-lime-400 to-emerald-600'
   },
   {
     id: 4,
-    title: "CUSTOM BUILDS",
-    desc: "Ingeniería y montaje de precisión.",
-    fullDesc: "No es solo armar una PC, es arte. Gestión de cables milimétrica, configuración de curvas de ventilación y pruebas de estrés intensivas.",
-    icon: <Cpu className="w-6 h-6 text-purple-400" />,
-    image: "https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&q=80&w=800",
-    color: "from-purple-400 to-pink-500"
+    title: 'Upgrades & Mejoras',
+    desc: 'Potenciación de tu PC sin gastar de más.',
+    fullDesc:
+      'No siempre hace falta comprar una PC nueva para ir más rápido. Te ayudamos a potenciar la que ya tenés: instalamos discos más veloces, agregamos memoria o mejoramos la placa de video para que puedas trabajar o jugar a otro nivel sin gastar de más.',
+    icon: <ArrowUpCircle className="w-6 h-6 text-sky-300" />,
+    image: '/services/upgrade.webp',
+    color: 'from-sky-400 to-cyan-600'
   },
+  {
+    id: 5,
+    title: 'Recuperación de Datos',
+    desc: 'Rescate de archivos y respaldo preventivo.',
+    fullDesc:
+      '¿Borraste algo sin querer o tu disco dejó de funcionar? Hacemos todo lo posible para rescatar tus fotos, documentos de estudio o archivos de trabajo importantes. Además, te enseñamos cómo hacer copias de seguridad automáticas para que tu información esté siempre protegida.',
+    icon: <Database className="w-6 h-6 text-emerald-300" />,
+    image: '/services/recupero.webp',
+    color: 'from-emerald-400 to-teal-600'
+  }
 ];

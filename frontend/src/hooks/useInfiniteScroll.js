@@ -28,7 +28,7 @@ export const useInfiniteScroll = (itemCount, cardWidth, gap, speed = 0.5) => {
 
     animate();
     return () => cancelAnimationFrame(animationFrameId);
-  }, [isDragging, isModalOpen, totalSetWidth, x, speed]);
+  }, [isDragging, isHovered, isModalOpen, totalSetWidth, x, speed]);
 
   return {
     x,
@@ -36,6 +36,7 @@ export const useInfiniteScroll = (itemCount, cardWidth, gap, speed = 0.5) => {
     isDragging,
     isHovered,
     setIsDragging,
+    setIsHovered,
     setIsModalOpen,
     totalSetWidth
   };

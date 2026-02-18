@@ -1,10 +1,13 @@
 import { Router } from 'express';
-import { createInquiry, getInquiries } from '../controllers/inquiry.controller';
+import { createInquiry, getInquiries, getMyInquiries, markInquiryAsRead, replyInquiry } from '../controllers/inquiry.controller';
 import { authMiddleware, adminMiddleware } from '../middleware/auth.middleware';
 
 const router = Router();
 
 router.post('/', authMiddleware, createInquiry);
+router.get('/me', authMiddleware, getMyInquiries);
 router.get('/', authMiddleware, adminMiddleware, getInquiries);
+router.patch('/:id/read', authMiddleware, adminMiddleware, markInquiryAsRead);
+router.patch('/:id/reply', authMiddleware, adminMiddleware, replyInquiry);
 
 export default router;

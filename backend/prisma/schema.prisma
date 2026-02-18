@@ -20,6 +20,24 @@ enum Role {
   ADMIN
 }
 
+enum OrderStatus {
+  PENDING_PAYMENT
+  PENDING_PICKUP
+  CONFIRMED
+  CANCELLED
+}
+
+enum PaymentMethod {
+  LOCAL
+  MERCADO_PAGO
+}
+
+enum PaymentStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 model SystemConfiguration {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   key       String   @unique
@@ -50,6 +68,7 @@ model Product {
   updatedAt   DateTime @updatedAt
 
   cartItems CartItem[]
+  orderItems OrderItem[]
   inquiries Inquiry[]
 
   @@map("products")
@@ -73,6 +92,7 @@ model User {
   updatedAt DateTime @updatedAt
 
   cartItems CartItem[]
+  orders Order[]
   
   inquiries Inquiry[]
 }
@@ -99,6 +119,48 @@ model Inquiry {
   email     String
   phone     String
   message   String?
+  adminReply String?
+  repliedAt DateTime?
   status    String   @default("PENDING") // PENDING, READ, REPLIED
   createdAt DateTime @default(now())
+}
+
+model Order {
+  id             String        @id @default(auto()) @map("_id") @db.ObjectId
+  userId         String        @db.ObjectId
+  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status         OrderStatus   @default(PENDING_PAYMENT)
+  paymentMethod  PaymentMethod
+  paymentStatus  PaymentStatus @default(PENDING)
+  subtotalUsd    Float
+  subtotalArs    Float
+  exchangeRate   Float
+  phone          String
+  notes          String?
+  whatsappUrl    String?
+  mpPreferenceId String?
+  mpInitPoint    String?
+  stockDiscounted Boolean      @default(false)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  items OrderItem[]
+
+  @@index([userId, createdAt])
+  @@map("orders")
+}
+
+model OrderItem {
+  id           String  @id @default(auto()) @map("_id") @db.ObjectId
+  orderId      String  @db.ObjectId
+  order        Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId    String  @db.ObjectId
+  product      Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  sku          String
+  name         String
+  unitPriceUsd Float
+  quantity     Int
+  subtotalUsd  Float
+
+  @@map("order_items")
 }

@@ -6,7 +6,7 @@ export default function Footer() {
       <div className="container mx-auto px-4 flex flex-col items-center text-center">
           <div className="flex flex-col gap-3 text-xs">
              <p className="text-gray-600">
-               © 2025 Short Cirkuit. Todos los derechos reservados.
+               ®{new Date().getFullYear()} Short Cirkuit. Todos los derechos reservados.
              </p>
              
              <p className="text-gray-500 italic">

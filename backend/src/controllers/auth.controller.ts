@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+﻿import { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { OAuth2Client } from 'google-auth-library';
 import crypto from 'crypto';
@@ -193,3 +193,99 @@ export const verifyToken = async (req: Request, res: Response) => {
     return res.status(401).json({ error: "Token inválido o expirado" });
   }
 };
+export const getMe = async (req: Request, res: Response) => {
+  try {
+    const userId = (req as any).user.id as string;
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+
+    if (!user) return res.status(404).json({ error: "Usuario no encontrado" });
+
+    res.json({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      avatar: user.avatar
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Error al obtener perfil" });
+  }
+};
+
+export const updateMe = async (req: Request, res: Response) => {
+  try {
+    const userId = (req as any).user.id as string;
+    const { name, avatar } = req.body as { name?: string; avatar?: string | null };
+
+    const data: any = {};
+    if (name !== undefined) {
+      const normalized = String(name).trim();
+      if (normalized.length < 2) return res.status(400).json({ error: "Nombre inválido" });
+      data.name = normalized;
+    }
+    if (avatar !== undefined) {
+      if (avatar === null || String(avatar).trim() === '') {
+        data.avatar = null;
+      } else {
+        const value = String(avatar).trim();
+        if (!/^https?:\/\//i.test(value)) {
+          return res.status(400).json({ error: "El avatar debe ser una URL válida" });
+        }
+        data.avatar = value;
+      }
+    }
+
+    if (Object.keys(data).length === 0) {
+      return res.status(400).json({ error: "No hay cambios para actualizar" });
+    }
+
+    const updated = await prisma.user.update({
+      where: { id: userId },
+      data
+    });
+
+    res.json({
+      id: updated.id,
+      name: updated.name,
+      email: updated.email,
+      role: updated.role,
+      avatar: updated.avatar
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Error al actualizar perfil" });
+  }
+};
+
+export const changeMyPassword = async (req: Request, res: Response) => {
+  try {
+    const userId = (req as any).user.id as string;
+    const { currentPassword, newPassword } = req.body as { currentPassword?: string; newPassword?: string };
+
+    if (!newPassword || newPassword.length < 6) {
+      return res.status(400).json({ error: "La nueva contraseña debe tener al menos 6 caracteres" });
+    }
+
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) return res.status(404).json({ error: "Usuario no encontrado" });
+
+    if (user.password) {
+      if (!currentPassword) {
+        return res.status(400).json({ error: "Debes ingresar tu contraseña actual" });
+      }
+      const valid = await comparePassword(currentPassword, user.password);
+      if (!valid) return res.status(400).json({ error: "La contraseña actual es incorrecta" });
+    }
+
+    const hashed = await hashPassword(newPassword);
+    await prisma.user.update({
+      where: { id: userId },
+      data: { password: hashed }
+    });
+
+    res.json({ message: "Contraseña actualizada correctamente" });
+  } catch (error) {
+    res.status(500).json({ error: "Error al cambiar contraseña" });
+  }
+};
+
+

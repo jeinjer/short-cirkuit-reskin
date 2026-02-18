@@ -14,6 +14,7 @@ const productSelect = {
   category: true,
   imageUrl: true,
   inStock: true,
+  quantity: true,
   gallery: true,
   isActive: true,
   costPrice: true,
@@ -37,7 +38,8 @@ const formatProduct = (product: any, isAdmin: boolean, exchangeRate: number) => 
   if (isAdmin) {
     return {
       ...product,
-      price: Math.ceil((product.costPrice || 0) * exchangeRate),
+      // Para admin, precio de venta en ARS debe surgir de priceUsd, no del costo.
+      price: Math.ceil((product.priceUsd || 0) * exchangeRate),
       
       costPrice: product.costPrice,
       priceUsd: product.priceUsd,
@@ -192,6 +194,12 @@ router.get('/', async (req, res) => {
     switch (sort) {
       case 'price_desc': orderBy = { priceUsd: 'desc' }; break;
       case 'price_asc': orderBy = { priceUsd: 'asc' }; break;
+      case 'sale_desc': orderBy = { priceUsd: 'desc' }; break;
+      case 'sale_asc': orderBy = { priceUsd: 'asc' }; break;
+      case 'cost_desc': orderBy = { costPrice: 'desc' }; break;
+      case 'cost_asc': orderBy = { costPrice: 'asc' }; break;
+      case 'stock_desc': orderBy = { quantity: 'desc' }; break;
+      case 'stock_asc': orderBy = { quantity: 'asc' }; break;
       case 'name_asc': orderBy = { name: 'asc' }; break;
       case 'name_desc': orderBy = { name: 'desc' }; break;
     }

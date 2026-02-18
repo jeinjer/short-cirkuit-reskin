@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, Loader, ChevronRight, CornerDownRight } from 'lucide-react';
+import { Search, ChevronRight, CornerDownRight } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { fetchProducts } from '../../api/config';
 import { useCurrency } from '../../context/CurrencyContext';
+import CircuitLoader from '../others/CircuitLoader';
 
 export default function SearchBar() {
   const [query, setQuery] = useState("");
@@ -61,13 +62,13 @@ export default function SearchBar() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && handleViewAll()}
-          onFocus={() => query.length > 1 && !loading && setIsOpen(true)}
+          onFocus={() => query.length > 1 && setIsOpen(true)}
         />
 
       </div>
 
       <AnimatePresence>
-        {isOpen && query.trim().length > 1 && !loading && (
+        {isOpen && query.trim().length > 1 && (
           <motion.div 
             initial={{ opacity: 0, y: -10, scaleY: 0.95 }}
             animate={{ opacity: 1, y: 0, scaleY: 1 }}
@@ -79,7 +80,11 @@ export default function SearchBar() {
                 <span>Búsqueda</span>
             </div>
 
-            {results.length > 0 ? (
+            {loading ? (
+              <div className="p-8 flex justify-center">
+                <CircuitLoader size="sm" label="Buscando productos" />
+              </div>
+            ) : results.length > 0 ? (
               <div className="max-h-[60vh] overflow-y-auto custom-scrollbar">
                 {results.slice(0, 5).map((product, i) => (
                   <Link 
