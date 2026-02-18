@@ -10,6 +10,10 @@ export const createInquiry = async (req: Request, res: Response) => {
       return res.status(400).json({ error: 'productId es requerido' });
     }
 
+    if (!message || typeof message !== 'string' || !message.trim()) {
+      return res.status(400).json({ error: 'El mensaje es obligatorio' });
+    }
+
     const user = await prisma.user.findUnique({
       where: { id: userId },
       select: { name: true, email: true }
@@ -26,7 +30,7 @@ export const createInquiry = async (req: Request, res: Response) => {
         name: user.name || 'Cliente',
         email: user.email,
         phone: '-',
-        message: typeof message === 'string' && message.trim().length > 0 ? message.trim() : null
+        message: message.trim()
       },
       include: { product: true }
     });
@@ -43,9 +47,13 @@ export const getInquiries = async (req: Request, res: Response) => {
     const limit = Math.min(100, Math.max(1, Number(req.query.limit) || 20));
     const skip = (page - 1) * limit;
     const rawStatus = String(req.query.status || '').toUpperCase();
-    const allowedStatuses = ['PENDING', 'READ', 'REPLIED'];
+    const allowedStatuses = ['PENDING', 'REPLIED'];
     const status = allowedStatuses.includes(rawStatus) ? rawStatus : undefined;
-    const where = status ? { status } : undefined;
+    const where = status
+      ? (status === 'PENDING'
+          ? { status: { in: ['PENDING', 'READ'] } }
+          : { status: 'REPLIED' })
+      : undefined;
 
     const rawInquiries = await prisma.inquiry.findMany({
       where,
@@ -59,7 +67,8 @@ export const getInquiries = async (req: Request, res: Response) => {
     });
 
     const hasNextPage = rawInquiries.length > limit;
-    const inquiries = hasNextPage ? rawInquiries.slice(0, limit) : rawInquiries;
+    const inquiries = (hasNextPage ? rawInquiries.slice(0, limit) : rawInquiries)
+      .map((iq) => (iq.status === 'READ' ? { ...iq, status: 'PENDING' } : iq));
 
     res.json({
       data: inquiries,
@@ -84,7 +93,7 @@ export const getMyInquiries = async (req: Request, res: Response) => {
 
     const where = { userId };
 
-    const [inquiries, total] = await Promise.all([
+    const [rawInquiries, total] = await Promise.all([
       prisma.inquiry.findMany({
         where,
         include: {
@@ -103,6 +112,8 @@ export const getMyInquiries = async (req: Request, res: Response) => {
       }),
       prisma.inquiry.count({ where })
     ]);
+
+    const inquiries = rawInquiries.map((iq) => (iq.status === 'READ' ? { ...iq, status: 'PENDING' } : iq));
 
     res.json({
       data: inquiries,
@@ -142,32 +153,5 @@ export const replyInquiry = async (req: Request, res: Response) => {
     res.json(inquiry);
   } catch (error) {
     res.status(500).json({ error: "Error al responder consulta" });
-  }
-};
-
-export const markInquiryAsRead = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-
-    const current = await prisma.inquiry.findUnique({
-      where: { id },
-      select: { id: true, status: true }
-    });
-
-    if (!current) {
-      return res.status(404).json({ error: 'Consulta no encontrada' });
-    }
-
-    if (current.status === 'PENDING') {
-      const inquiry = await prisma.inquiry.update({
-        where: { id },
-        data: { status: 'READ' }
-      });
-      return res.json(inquiry);
-    }
-
-    return res.json(current);
-  } catch (error) {
-    res.status(500).json({ error: "Error al actualizar estado de consulta" });
   }
 };

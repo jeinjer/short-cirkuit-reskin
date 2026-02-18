@@ -27,7 +27,7 @@ const ServiceModal = ({ service, onClose }) => {
   }, [onClose]);
 
   return createPortal(
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-9999 flex items-center justify-center p-4">
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -41,7 +41,7 @@ const ServiceModal = ({ service, onClose }) => {
         initial={{ opacity: 0, scale: 0.95, y: 30 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 30 }}
-        className="relative w-full max-w-4xl bg-[#080808] rounded-2xl overflow-hidden border border-white/10 shadow-2xl flex flex-col md:flex-row z-[10000] max-h-[90vh]"
+        className="relative w-full max-w-4xl bg-[#080808] rounded-2xl overflow-hidden border border-white/10 shadow-2xl flex flex-col md:flex-row z-10000 max-h-[90vh]"
       >
         <div className="w-full md:w-5/12 relative h-56 md:h-auto">
           <div className={`absolute inset-0 bg-linear-to-br ${service.color} mix-blend-overlay opacity-60 z-10`} />
@@ -57,7 +57,7 @@ const ServiceModal = ({ service, onClose }) => {
             className="py-3 px-6 bg-white text-black font-bold font-cyber uppercase tracking-wider text-sm hover:bg-violet-500 hover:text-white transition-colors w-fit flex gap-2 items-center"
           >
             <ArrowLeft size={16} />
-            Volver atras
+            Volver
           </button>
         </div>
       </motion.div>

@@ -1,7 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../../../context/AuthContext';
+import { getVisiblePriceArs, isAdminRole } from '../../../utils/productPricing';
 
 const CatalogProductCard = ({ product, viewMode = 'grid' }) => {
+  const { user } = useAuth();
+  const isAdmin = isAdminRole(user);
   
   const formatPrice = (price) => {
     return new Intl.NumberFormat('es-AR', {
@@ -12,6 +16,7 @@ const CatalogProductCard = ({ product, viewMode = 'grid' }) => {
   };
 
   const isGrid = viewMode === 'grid';
+  const visiblePrice = getVisiblePriceArs(product, isAdmin);
 
   return (
     <Link 
@@ -72,7 +77,7 @@ const CatalogProductCard = ({ product, viewMode = 'grid' }) => {
         <div className={`mt-auto ${isGrid ? 'pt-3 border-t border-white/5' : ''}`}>
             <span className="text-xs text-gray-500 font-mono block mb-0.5">PRECIO FINAL</span>
             <span className={`font-black text-white tracking-tight ${isGrid ? 'text-2xl' : 'text-3xl'}`}>
-              {formatPrice(product.price)}
+              {formatPrice(visiblePrice)}
             </span>
         </div>
       </div>

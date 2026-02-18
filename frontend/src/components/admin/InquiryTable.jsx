@@ -5,13 +5,11 @@ import CircuitLoader from '../others/CircuitLoader';
 
 const inquiryStatusLabel = {
   PENDING: 'Pendiente',
-  READ: 'Leida',
   REPLIED: 'Respondida'
 };
 
 const STATUS_FILTERS = [
   { key: 'PENDING', label: 'Pendientes' },
-  { key: 'READ', label: 'Leidas' },
   { key: 'REPLIED', label: 'Respondidas' }
 ];
 
@@ -102,21 +100,6 @@ export default function InquiryTable({
     const inquiryId = inquiry.id;
     const isExpanded = !!expandedById[inquiryId];
     setExpandedById((prev) => ({ ...prev, [inquiryId]: !isExpanded }));
-
-    if (isExpanded || inquiry.status !== 'PENDING') return;
-
-    try {
-      await api.patch(`/inquiries/${inquiryId}/read`);
-      if (statusFilter === 'PENDING') {
-        setInquiries((prev) => prev.filter((item) => item.id !== inquiryId));
-      } else {
-        setInquiries((prev) =>
-          prev.map((item) => (item.id === inquiryId ? { ...item, status: 'READ' } : item))
-        );
-      }
-    } catch {
-      toast.error('No se pudo marcar como leida');
-    }
   };
 
   return (

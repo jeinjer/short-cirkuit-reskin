@@ -50,15 +50,14 @@ const AVATAR_OPTIONS = [
 ];
 
 const orderStatusLabel = {
-  PENDING_PAYMENT: 'Pendiente de pago',
-  PENDING_PICKUP: 'Pendiente de coordinación',
+  PENDING_PAYMENT: 'Pendiente',
+  PENDING_PICKUP: 'Pendiente',
   CONFIRMED: 'Confirmado',
   CANCELLED: 'Cancelado'
 };
 
 const inquiryStatusLabel = {
   PENDING: 'Pendiente',
-  READ: 'Leída',
   REPLIED: 'Respondida'
 };
 
@@ -71,11 +70,30 @@ const orderStatusStyles = {
 
 const inquiryStatusStyles = {
   PENDING: 'border-yellow-500/40 text-yellow-300 bg-yellow-500/10',
-  READ: 'border-cyan-500/40 text-cyan-300 bg-cyan-500/10',
   REPLIED: 'border-emerald-500/40 text-emerald-300 bg-emerald-500/10'
 };
 
 const isPendingOrder = (status) => status === 'PENDING_PAYMENT' || status === 'PENDING_PICKUP';
+const formatArs = (value) =>
+  new Intl.NumberFormat('es-AR', {
+    style: 'currency',
+    currency: 'ARS',
+    maximumFractionDigits: 0
+  }).format(Number(value) || 0);
+const formatDateTimeAr = (value) =>
+  new Date(value).toLocaleString('es-AR', {
+    timeZone: 'America/Argentina/Buenos_Aires'
+  });
+const getOrderExchangeRate = (order) => {
+  const explicitRate = Number(order?.exchangeRate);
+  if (explicitRate > 0) return explicitRate;
+
+  const totalUsd = Number(order?.subtotalUsd);
+  const totalArs = Number(order?.subtotalArs);
+  if (totalUsd > 0 && totalArs > 0) return totalArs / totalUsd;
+
+  return 0;
+};
 
 export default function ProfilePage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -173,7 +191,7 @@ export default function ProfilePage() {
   const copyOrderId = async (id) => {
     try {
       await navigator.clipboard.writeText(id);
-      toast.success('número de pedido copiado');
+      toast.success('Número de pedido copiado');
     } catch {
       toast.error('No se pudo copiar');
     }
@@ -333,28 +351,25 @@ export default function ProfilePage() {
                   <article key={order.id} className="border border-white/10 rounded-xl p-4 bg-black/20">
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
                       <div>
-                        <p className="font-mono text-cyan-300 break-all text-sm">{order.id}</p>
-                        <p className="text-xs text-gray-500 mt-1">{new Date(order.createdAt).toLocaleString('es-AR')}</p>
+                        <p className="font-mono text-cyan-300 break-all text-sm">#{order.id}</p>
+                        <p className="text-xs text-gray-500 mt-1">{formatDateTimeAr(order.createdAt)}</p>
                       </div>
                       <div className="flex gap-2 flex-wrap">
                         <span className={`text-xs px-2 py-1 rounded border ${orderStatusStyles[order.status] || 'border-white/20 text-gray-300 bg-white/5'}`}>
                           {orderStatusLabel[order.status] || order.status}
                         </span>
-                        <span className="text-xs px-2 py-1 rounded border border-white/20 text-gray-300 bg-white/5">
-                          {order.paymentMethod === 'LOCAL' ? 'Pago en local' : `MP: ${order.paymentStatus}`}
-                        </span>
                       </div>
                     </div>
 
                     <div className="mt-3 flex items-center justify-between">
-                      <span className="text-sm text-gray-300">Total: <strong className="text-white">${Number(order.subtotalArs || 0).toLocaleString('es-AR')}</strong></span>
+                      <span className="text-sm text-gray-300">Total: <strong className="text-white">{formatArs(order.subtotalArs)}</strong></span>
                       <div className="flex gap-2">
                         <button
                           onClick={() => copyOrderId(order.id)}
                           className="h-10 px-3 rounded-lg border border-cyan-500/40 bg-cyan-500/10 text-cyan-200 hover:bg-cyan-500/20 inline-flex items-center gap-2 text-sm font-semibold cursor-pointer"
                         >
                           <Copy size={15} />
-                          Copiar pedido
+                          Copiar num. pedido
                         </button>
                         <button
                           onClick={() => setExpandedOrderId(expandedOrderId === order.id ? null : order.id)}
@@ -373,9 +388,9 @@ export default function ProfilePage() {
                             <div key={item.id} className="flex items-center justify-between text-sm border-b border-white/5 pb-2">
                               <div>
                                 <p className="text-white">{item.name}</p>
-                                <p className="text-xs text-cyan-300 font-mono">{item.sku} x{item.quantity}</p>
+                                <p className="text-xs text-cyan-300 font-mono">Cantidad: {item.quantity}</p>
                               </div>
-                              <p className="text-gray-300">${Number(item.subtotalUsd || 0).toFixed(2)} USD</p>
+                              <p className="text-gray-300">{formatArs((Number(item.subtotalUsd) || 0) * getOrderExchangeRate(order))}</p>
                             </div>
                           ))}
                         </div>
@@ -384,13 +399,12 @@ export default function ProfilePage() {
                           <div className="bg-cyan-500/5 border border-cyan-500/20 rounded-xl p-4">
                             <div className="flex items-center gap-2 text-cyan-200 font-semibold mb-2">
                               <ShieldCheck size={16} />
-                              Cómo continuar por WhatsApp
+                              Cómo seguir con tu pedido
                             </div>
                             <ol className="space-y-1 text-sm text-gray-300 list-decimal pl-5">
-                              <li>Copia el número de pedido.</li>
-                              <li>Haz clic en "Continuar por WhatsApp".</li>
-                              <li>Envia el mensaje prearmado (solo ID).</li>
-                              <li>Validamos en admin y avanzamos con estado/entrega.</li>
+                              <li>Haz clic en "Continuar".</li>
+                              <li>Envia el mensaje prearmado.</li>
+                              <li>Validaremos el pedido y nos pondremos en contacto lo antes posible.</li>
                             </ol>
                             {order.whatsappUrl && (
                               <a
@@ -400,7 +414,7 @@ export default function ProfilePage() {
                                 className="mt-3 h-10 px-3 rounded-lg border border-emerald-500/40 bg-emerald-500/10 text-emerald-200 hover:bg-emerald-500/20 inline-flex items-center gap-2 text-sm font-semibold cursor-pointer"
                               >
                                 <MessageSquare size={15} />
-                                Continuar por WhatsApp
+                                Continuar
                               </a>
                             )}
                           </div>
@@ -455,7 +469,7 @@ export default function ProfilePage() {
                       <div>
                         <p className="text-sm text-white">{inq.product?.name || 'Producto'}</p>
                         <p className="text-xs text-cyan-300 font-mono">{inq.product?.sku || '-'}</p>
-                        <p className="text-xs text-gray-500 mt-1">{new Date(inq.createdAt).toLocaleString('es-AR')}</p>
+                        <p className="text-xs text-gray-500 mt-1">{formatDateTimeAr(inq.createdAt)}</p>
                       </div>
                       <span className={`text-xs px-2 py-1 rounded border ${inquiryStatusStyles[inq.status] || 'border-white/20 text-gray-300 bg-white/5'}`}>
                         {inquiryStatusLabel[inq.status] || inq.status}
@@ -472,7 +486,7 @@ export default function ProfilePage() {
                           <p className="text-sm text-gray-200">{inq.adminReply}</p>
                           {inq.repliedAt && (
                             <p className="text-xs text-gray-400 mt-2">
-                              {new Date(inq.repliedAt).toLocaleString('es-AR')}
+                              {formatDateTimeAr(inq.repliedAt)}
                             </p>
                           )}
                         </div>

@@ -3,7 +3,8 @@ import { Search, ChevronRight, CornerDownRight } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { fetchProducts } from '../../api/config';
-import { useCurrency } from '../../context/CurrencyContext';
+import { useAuth } from '../../context/AuthContext';
+import { getVisiblePriceArs, isAdminRole } from '../../utils/productPricing';
 import CircuitLoader from '../others/CircuitLoader';
 
 export default function SearchBar() {
@@ -12,8 +13,15 @@ export default function SearchBar() {
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
-  const { formatPrice } = useCurrency();
+  const { user } = useAuth();
   const containerRef = useRef(null);
+  const isAdmin = isAdminRole(user);
+
+  const formatArs = (price) => new Intl.NumberFormat('es-AR', {
+    style: 'currency',
+    currency: 'ARS',
+    maximumFractionDigits: 0
+  }).format(price);
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(async () => {
@@ -105,7 +113,7 @@ export default function SearchBar() {
                     </div>
 
                     <div className="text-right">
-                       <span className="block text-cyan-300 font-bold font-mono">{formatPrice(product.price)}</span>
+                       <span className="block text-cyan-300 font-bold font-mono">{formatArs(getVisiblePriceArs(product, isAdmin))}</span>
                     </div>
                     
                     <CornerDownRight size={14} className="text-gray-700 group-hover:text-cyan-500 transition-colors" />

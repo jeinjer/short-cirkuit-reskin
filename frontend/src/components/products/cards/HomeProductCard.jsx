@@ -1,8 +1,13 @@
 import React from 'react';
 import { CheckCircle2, AlertCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../../../context/AuthContext';
+import { getVisiblePriceArs, isAdminRole } from '../../../utils/productPricing';
 
 const HomeProductCard = ({ product }) => {
+  const { user } = useAuth();
+  const isAdmin = isAdminRole(user);
+
   const formatPrice = (price) => {
     return new Intl.NumberFormat('es-AR', {
       style: 'currency',
@@ -10,6 +15,8 @@ const HomeProductCard = ({ product }) => {
       maximumFractionDigits: 0
     }).format(price);
   };
+
+  const visiblePrice = getVisiblePriceArs(product, isAdmin);
 
   return (
     <div className="cursor-pointer group relative flex flex-col h-full bg-[#08080a] border border-white/10 hover:border-cyan-500/50 transition-all duration-500 rounded-xl overflow-hidden hover:shadow-[0_0_30px_rgba(6,182,212,0.15)]">
@@ -55,7 +62,7 @@ const HomeProductCard = ({ product }) => {
         <div className="flex items-end justify-center mt-auto pt-4 border-t border-white/5 group-hover:border-cyan-500/20 transition-colors">
           <div className="flex flex-col">
             <span className="text-2xl md:text-3xl font-black text-white tracking-tight">
-              {formatPrice(product.price)}
+              {formatPrice(visiblePrice)}
             </span>
           </div>
 

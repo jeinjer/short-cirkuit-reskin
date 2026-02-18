@@ -1,17 +1,16 @@
 import React from 'react';
-import { X, MessageSquare } from 'lucide-react';
+import { X } from 'lucide-react';
 
 const statusLabel = {
-  PENDING_PAYMENT: 'Pendiente pago',
-  PENDING_PICKUP: 'Pendiente retiro',
+  PENDING_PAYMENT: 'Pendiente',
+  PENDING_PICKUP: 'Pendiente',
   CONFIRMED: 'Confirmado',
   CANCELLED: 'Cancelado'
 };
 
-const paymentStatusLabel = {
-  PENDING: 'Pendiente',
-  APPROVED: 'Aprobado',
-  REJECTED: 'Rechazado'
+const getPaymentLabel = (paymentStatus) => {
+  if (!paymentStatus) return '-';
+  return paymentStatus === 'APPROVED' ? 'Realizado' : 'Pendiente';
 };
 
 export default function ViewOrderModal({ order, onClose }) {
@@ -31,16 +30,16 @@ export default function ViewOrderModal({ order, onClose }) {
             <p className="text-[11px] text-gray-500 uppercase">Cliente</p>
             <p className="text-white">{order.user?.name || 'Sin nombre'}</p>
             <p className="text-xs text-gray-400">{order.user?.email}</p>
+            <p className="text-xs text-gray-400 mt-1">Teléfono: {order.phone || '-'}</p>
           </div>
           <div className="bg-white/5 p-3 rounded-xl border border-white/10">
             <p className="text-[11px] text-gray-500 uppercase">Estado</p>
             <p className="text-white">{statusLabel[order.status] || order.status}</p>
-            <p className="text-xs text-gray-400">{paymentStatusLabel[order.paymentStatus] || order.paymentStatus}</p>
+            <p className="text-xs text-gray-400">{getPaymentLabel(order.paymentStatus)}</p>
           </div>
           <div className="bg-white/5 p-3 rounded-xl border border-white/10">
             <p className="text-[11px] text-gray-500 uppercase">Pago</p>
-            <p className="text-white">{order.paymentMethod === 'LOCAL' ? 'En local' : 'Mercado Pago'}</p>
-            <p className="text-xs text-gray-400">Tel: {order.phone || '-'}</p>
+            <p className="text-white">{getPaymentLabel(order.paymentStatus)}</p>
           </div>
         </div>
 
@@ -72,12 +71,6 @@ export default function ViewOrderModal({ order, onClose }) {
             <p className="text-2xl font-black text-cyan-400">${Number(order.subtotalArs || 0).toLocaleString('es-AR')}</p>
           </div>
           <div className="flex items-center gap-2">
-            {order.whatsappUrl && (
-              <a href={order.whatsappUrl} target="_blank" rel="noreferrer" className="h-10 px-4 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm inline-flex items-center gap-2">
-                <MessageSquare size={16} />
-                WhatsApp
-              </a>
-            )}
             <button onClick={onClose} className="h-10 px-4 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-gray-200 font-bold text-sm">
               Cerrar
             </button>

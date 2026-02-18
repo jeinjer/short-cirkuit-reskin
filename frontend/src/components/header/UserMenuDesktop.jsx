@@ -93,19 +93,19 @@ export default function UserMenuDesktop() {
                                       </div>
                                     )}
                                   </div>
-                                  <p className="text-[10px] text-gray-500 font-mono uppercase tracking-widest">Panel de Control</p>
+                                  <p className="text-[11px] text-gray-500 font-mono uppercase tracking-widest">Panel de Control</p>
                                 </div>
                             </div>
                             
                             <Link to="/perfil" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-4 py-2 text-gray-300 hover:text-cyan-400 hover:bg-cyan-500/5 transition-colors group">
                                 <LayoutDashboard size={16} className="text-gray-500 group-hover:text-cyan-400"/> 
-                                <span className="font-tech font-medium text-lg">Mi Perfil</span>
+                                <span className="font-tech font-medium uppercase">Mi Perfil</span>
                             </Link>
 
                             {isAdmin && (
                                 <Link to="/admin" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-4 py-2 text-cyan-500/80 hover:text-cyan-400 hover:bg-cyan-500/5 transition-colors group">
                                     <LayoutDashboard size={16} /> 
-                                    <span className="font-tech font-medium text-lg">Panel de Admin</span>
+                                    <span className="font-tech font-medium uppercase">Panel de Admin</span>
                                 </Link>
                             )}
                             
@@ -113,7 +113,7 @@ export default function UserMenuDesktop() {
                             
                             <button onClick={() => { logout(); setIsOpen(false); }} className="w-full flex items-center gap-3 px-4 py-2 text-red-400/80 hover:text-red-400 hover:bg-red-500/5 transition-colors cursor-pointer">
                                 <LogOut size={16} /> 
-                                <span className="font-tech font-medium text-lg">Cerrar sesión</span>
+                                <span className="font-tech font-medium text-sm uppercase">Cerrar sesión</span>
                             </button>
                         </>
                     )}

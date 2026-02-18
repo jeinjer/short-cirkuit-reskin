@@ -6,14 +6,23 @@ const prisma = new PrismaClient();
 
 router.get('/', async (_req, res) => {
   try {
-    const [usersCount, productsCount] = await Promise.all([
+    const [usersCount, productsCount, outOfStockCount] = await Promise.all([
       prisma.user.count(),
-      prisma.product.count()
+      prisma.product.count(),
+      prisma.product.count({
+        where: {
+          OR: [
+            { inStock: false },
+            { quantity: { lte: 0 } }
+          ]
+        }
+      })
     ]);
 
     res.json({
       users: usersCount,
-      products: productsCount
+      products: productsCount,
+      sinStock: outOfStockCount
     });
   } catch (error) {
     console.error('Error stats:', error);

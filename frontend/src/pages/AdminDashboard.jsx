@@ -27,18 +27,20 @@ const QUERY_TAB = {
   ordenes: 'orders'
 };
 
-const INQUIRY_STATUSES = ['PENDING', 'READ', 'REPLIED'];
+const INQUIRY_STATUSES = ['PENDING', 'REPLIED'];
 
 export default function AdminDashboard() {
   const [searchParams, setSearchParams] = useSearchParams();
   const { user } = useAuth();
   
-  const [stats, setStats] = useState({ users: 0, products: 0 });
+  const [stats, setStats] = useState({ users: 0, products: 0, sinStock: 0 });
   const [dolarValue, setDolarValue] = useState(0);
   const [products, setProducts] = useState([]);
   const [meta, setMeta] = useState({});
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [inStockOnly, setInStockOnly] = useState(false);
+  const [missingImageOnly, setMissingImageOnly] = useState(false);
   const [page, setPage] = useState(() => Math.max(1, Number(searchParams.get('page')) || 1));
   const [productPageInput, setProductPageInput] = useState('1');
   const [refreshTrigger, setRefreshTrigger] = useState(0);
@@ -169,7 +171,14 @@ export default function AdminDashboard() {
       setLoading(true);
       try {
         const res = await api.get('/products', {
-            params: { search, page, limit: 20, sort: `${productSort.field}_${productSort.direction}` }
+            params: {
+              search,
+              page,
+              limit: 20,
+              sort: `${productSort.field}_${productSort.direction}`,
+              inStockOnly: inStockOnly ? 1 : undefined,
+              missingImageOnly: missingImageOnly ? 1 : undefined
+            }
         });
         setProducts(res.data.data);
         setMeta(res.data.meta);
@@ -179,7 +188,7 @@ export default function AdminDashboard() {
     };
     const timer = setTimeout(() => fetchTable(), 500); 
     return () => clearTimeout(timer);
-  }, [search, page, refreshTrigger, activeTab, productSort]);
+  }, [search, page, refreshTrigger, activeTab, productSort, inStockOnly, missingImageOnly]);
 
   useEffect(() => {
     if (activeTab !== 'orders') return;
@@ -324,7 +333,16 @@ export default function AdminDashboard() {
 
         {activeTab === 'products' ? (
             <>
-                <AdminToolbar search={search} setSearch={setSearch} setPage={setPage} />
+                <AdminToolbar
+                    search={search}
+                    setSearch={setSearch}
+                    setPage={setPage}
+                    inStockOnly={inStockOnly}
+                    setInStockOnly={setInStockOnly}
+                    missingImageOnly={missingImageOnly}
+                    setMissingImageOnly={setMissingImageOnly}
+                />
+
                 <ProductTable 
                     products={products} 
                     loading={loading} 
