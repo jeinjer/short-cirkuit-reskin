@@ -44,8 +44,12 @@ export default function UserMenuDesktop() {
                           {user?.name?.split(' ')[0]}
                       </span>
                   </div>
-                  <div className="h-8 w-8 bg-cyan-900/20 border border-cyan-500/50 flex items-center justify-center rounded-sm">
-                      <User size={16} className="text-cyan-400" />
+                  <div className="h-8 w-8 bg-cyan-900/15 border border-cyan-500/35 flex items-center justify-center rounded-sm overflow-hidden backdrop-blur-sm">
+                      {user?.avatar ? (
+                        <img src={user.avatar} alt="Avatar" className="h-full w-full object-cover opacity-85" />
+                      ) : (
+                        <User size={16} className="text-cyan-400/90" />
+                      )}
                   </div>
                   <ChevronDown size={12} className={`text-gray-500 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
               </>
@@ -79,18 +83,29 @@ export default function UserMenuDesktop() {
                     ) : (
                         <>
                             <div className="px-4 py-2 border-b border-white/5 mb-2">
-                                <p className="text-[10px] text-gray-500 font-mono uppercase tracking-widest">Panel de Control</p>
+                                <div className="flex items-center gap-2">
+                                  <div className="h-7 w-7 rounded-full overflow-hidden border border-cyan-500/30 bg-cyan-900/15">
+                                    {user?.avatar ? (
+                                      <img src={user.avatar} alt="Avatar" className="h-full w-full object-cover opacity-85" />
+                                    ) : (
+                                      <div className="h-full w-full flex items-center justify-center">
+                                        <User size={13} className="text-cyan-400/90" />
+                                      </div>
+                                    )}
+                                  </div>
+                                  <p className="text-[10px] text-gray-500 font-mono uppercase tracking-widest">Panel de Control</p>
+                                </div>
                             </div>
                             
                             <Link to="/perfil" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-4 py-2 text-gray-300 hover:text-cyan-400 hover:bg-cyan-500/5 transition-colors group">
                                 <LayoutDashboard size={16} className="text-gray-500 group-hover:text-cyan-400"/> 
                                 <span className="font-tech font-medium text-lg">Mi Perfil</span>
                             </Link>
-                            
+
                             {isAdmin && (
-                                <Link to="/admin" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-4 py-2 text-yellow-500/80 hover:text-yellow-400 hover:bg-yellow-500/5 transition-colors group">
+                                <Link to="/admin" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-4 py-2 text-cyan-500/80 hover:text-cyan-400 hover:bg-cyan-500/5 transition-colors group">
                                     <LayoutDashboard size={16} /> 
-                                    <span className="font-tech font-medium text-lg">Admin Console</span>
+                                    <span className="font-tech font-medium text-lg">Panel de Admin</span>
                                 </Link>
                             )}
                             
@@ -98,7 +113,7 @@ export default function UserMenuDesktop() {
                             
                             <button onClick={() => { logout(); setIsOpen(false); }} className="w-full flex items-center gap-3 px-4 py-2 text-red-400/80 hover:text-red-400 hover:bg-red-500/5 transition-colors cursor-pointer">
                                 <LogOut size={16} /> 
-                                <span className="font-tech font-medium text-lg">Desconectar</span>
+                                <span className="font-tech font-medium text-lg">Cerrar sesión</span>
                             </button>
                         </>
                     )}

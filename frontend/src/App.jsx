@@ -15,15 +15,17 @@ import ProductDetail from './pages/ProductDetail';
 import LoginPage from './pages/Login';
 import RegisterPage from './pages/Register';
 import Catalog from './pages/Catalog';
-import ContactPage from './pages/Contact';
 import ResetPasswordPage from './pages/ResetPassword';
 import ForgotPasswordPage from './pages/ForgotPassword';
 import AdminDashboard from './pages/AdminDashboard';
+import CheckoutPage from './pages/Checkout';
+import ProfilePage from './pages/Profile';
 
 import NotFoundPage from './pages/404';
 
 import { CurrencyProvider } from './context/CurrencyContext';
 import { AuthProvider } from './context/AuthContext';
+import { CartProvider } from './context/CartContext';
 
 export default function App() {
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -32,6 +34,7 @@ export default function App() {
   return (
     <AuthProvider>
       <CurrencyProvider>
+      <CartProvider>
       <Router>
         <ScrollToTop />
         <div className="min-h-screen bg-[#050507] text-gray-200 font-sans flex flex-col">
@@ -52,7 +55,8 @@ export default function App() {
               <Route path="/reset-password" element={<ResetPasswordPage />} />
 
               <Route element={<ClientRoute />}>
-                <Route path="/contacto" element={<ContactPage />} />
+                <Route path="/checkout" element={<CheckoutPage />} />
+                <Route path="/perfil" element={<ProfilePage />} />
               </Route>
 
               <Route element={<AdminRoute />}>
@@ -76,6 +80,7 @@ export default function App() {
           </AnimatePresence>
         </div>
       </Router>
+      </CartProvider>
     </CurrencyProvider>
     <Toaster 
          richColors 

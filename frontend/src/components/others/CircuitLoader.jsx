@@ -1,119 +1,69 @@
-import React from "react";
-import { motion } from "framer-motion";
+﻿import React from 'react';
+import { motion } from 'framer-motion';
 
-export default function ElectricBoltLoader({ size = "lg" }) {
+export default function CircuitLoader({ size = 'lg', label = 'Cargando...' }) {
   const sizeClasses = {
-    sm: "w-16 h-16",
-    md: "w-24 h-24",
-    lg: "w-36 h-36",
-    xl: "w-48 h-48",
+    sm: 'w-12 h-12',
+    md: 'w-16 h-16',
+    lg: 'w-24 h-24',
+    xl: 'w-32 h-32'
   };
 
-  const hexPath = "M50 4 L94 26 L94 74 L50 96 L6 74 L6 26 Z";
-  
-  const boltPath = `
-    M 62 18
-    L 48 40
-    L 58 42
-    L 38 72
-  `;
-
-  const hexPulse = {
-    animate: {
-      opacity: [0.4, 0.8, 0.4],
-      transition: { duration: 2.5, repeat: Infinity, ease: "easeInOut" },
-    },
-  };
-
-  const boltStrike = {
-    hidden: { opacity: 0, pathLength: 0 },
-    animate: {
-      opacity: [0, 1, 1, 0],
-      pathLength: [0, 1, 1, 1],
-      transition: {
-        duration: 1.2,
-        times: [0, 0.2, 0.8, 1],
-        repeat: Infinity,
-        repeatDelay: 0.8,
-        ease: "easeOut",
-      },
-    },
-  };
+  const boltPath = 'M56 6 L24 56 H45 L34 94 L76 42 H54 L56 6 Z';
 
   return (
-    <div className={`relative flex items-center justify-center ${sizeClasses[size]}`}>
-      <svg
-        viewBox="0 0 100 100"
-        className="w-full h-full"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <defs>
-          <linearGradient id="hexStroke" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#22d3ee" />
-            <stop offset="100%" stopColor="#38bdf8" />
-          </linearGradient>
-
-          <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation="2.5" result="blur" />
-            <feMerge>
-              <feMergeNode in="blur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
-        </defs>
-
-        <path
-          d={hexPath}
-          stroke="#0f172a"
-          strokeWidth="1"
-          fill="rgba(6,182,212,0.04)"
-        />
-        <motion.path
-          d={hexPath}
-          stroke="url(#hexStroke)"
-          strokeWidth="2"
-          strokeLinecap="round"
-          variants={hexPulse}
-          animate="animate"
+    <div className="flex flex-col items-center justify-center gap-3">
+      <div className={`relative ${sizeClasses[size] || sizeClasses.lg}`}>
+        <motion.div
+          className="absolute inset-0 rounded-full border border-cyan-400/20"
+          animate={{ scale: [0.9, 1.1, 0.9], opacity: [0.2, 0.5, 0.2] }}
+          transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
         />
 
-        <motion.g variants={boltStrike} initial="hidden" animate="animate">
-          <path
+        <svg viewBox="0 0 100 100" className="w-full h-full" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="boltFill" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#67e8f9" />
+              <stop offset="100%" stopColor="#06b6d4" />
+            </linearGradient>
+            <filter id="boltGlow" x="-40%" y="-40%" width="180%" height="180%">
+              <feGaussianBlur stdDeviation="2.5" result="blur" />
+              <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
+
+          <motion.path
+            d={boltPath}
+            fill="url(#boltFill)"
+            stroke="#e0f2fe"
+            strokeWidth="1.2"
+            strokeLinejoin="round"
+            filter="url(#boltGlow)"
+            animate={{
+              opacity: [0.7, 1, 0.7],
+              scale: [0.98, 1.04, 0.98]
+            }}
+            transition={{ duration: 0.9, repeat: Infinity, ease: 'easeInOut' }}
+            style={{ transformOrigin: '50% 50%' }}
+          />
+
+          <motion.path
             d={boltPath}
             stroke="#22d3ee"
-            strokeWidth="6"
-            strokeLinecap="round"
+            strokeWidth="1"
             strokeLinejoin="round"
-            opacity="0.35"
-            filter="url(#softGlow)"
+            fill="none"
+            initial={{ pathLength: 0, opacity: 0 }}
+            animate={{ pathLength: [0, 1, 1], opacity: [0, 1, 0] }}
+            transition={{ duration: 1.2, repeat: Infinity, ease: 'easeOut' }}
           />
-          <path
-            d={boltPath}
-            stroke="#ffffff"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </motion.g>
+        </svg>
+      </div>
 
-        <motion.circle
-          cx="38"
-          cy="72"
-          r="2.5"
-          fill="#22d3ee"
-          variants={boltStrike}
-          initial="hidden"
-          animate="animate"
-          filter="url(#softGlow)"
-        />
-      </svg>
-
-      <motion.div
-        className="absolute w-1/2 h-1/2 rounded-full bg-cyan-400/20 blur-[32px]"
-        animate={{ opacity: [0.2, 0.4, 0.2], scale: [0.9, 1.05, 0.9] }}
-        transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-      />
+      {label ? <p className="text-xs font-mono uppercase tracking-widest text-cyan-300/80">{label}</p> : null}
     </div>
   );
 }

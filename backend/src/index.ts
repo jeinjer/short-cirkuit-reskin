@@ -9,6 +9,9 @@ import internalRouter from './routes/sync.routes';
 import authRouter from './routes/auth.routes';
 import statsRouter from './routes/stats.routes';
 import inquiriesRouter from './routes/inquiries.routes'
+import cartRouter from './routes/cart.routes';
+import checkoutRouter from './routes/checkout.routes';
+import ordersRouter from './routes/orders.routes';
 
 const app = express();
 
@@ -31,7 +34,7 @@ app.use(
       return callback(new Error('Not allowed by CORS'));
     },
     credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
   })
 );
@@ -44,6 +47,9 @@ app.use('/api/internal', internalRouter);
 app.use('/api/dolar', dolarRouter);
 app.use('/api/stats', statsRouter);
 app.use('/api/inquiries', inquiriesRouter);
+app.use('/api/cart', cartRouter);
+app.use('/api/checkout', checkoutRouter);
+app.use('/api/orders', ordersRouter);
 
 app.use('/api/products', productsRouter);
 app.use('/api/filters', filtersRouter);

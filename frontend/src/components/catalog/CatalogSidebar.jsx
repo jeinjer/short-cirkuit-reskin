@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Filter, X } from 'lucide-react';
 import { categories } from '../../data/categories/categories.data';
+import CircuitLoader from '../others/CircuitLoader';
 
 export default function CatalogSidebar({ 
   searchParams, 
@@ -83,12 +84,9 @@ export default function CatalogSidebar({
               </div>
               <div className="p-2 flex flex-col gap-0.5 max-h-64 overflow-y-auto custom-scrollbar">
                   {filtersLoading && !hasBrands ? (
-                      [...Array(5)].map((_, i) => (
-                          <div key={i} className="flex items-center gap-3 p-2">
-                              <div className="w-4 h-4 bg-white/10 rounded-sm animate-pulse" />
-                              <div className="h-4 bg-white/10 rounded w-24 animate-pulse" />
-                          </div>
-                      ))
+                      <div className="py-6 flex justify-center">
+                          <CircuitLoader size="sm" label="Cargando marcas" />
+                      </div>
                   ) : (
                       <div className={`transition-opacity duration-200 ${filtersLoading ? 'opacity-50 pointer-events-none' : 'opacity-100'}`}>
                           {filtersData.brands.map((item, idx) => {

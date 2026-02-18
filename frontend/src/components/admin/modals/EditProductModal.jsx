@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, Upload } from 'lucide-react';
 import { toast } from 'sonner';
+import CircuitLoader from '../../others/CircuitLoader';
 
 export default function EditProductModal({ product, onClose, onSave }) {
     const [images, setImages] = useState(product.gallery || []);
@@ -61,7 +62,11 @@ export default function EditProductModal({ product, onClose, onSave }) {
                     </div>
 
                     <div className="grid grid-cols-4 gap-2">
-                        {loading && <div className="col-span-4 text-center text-xs text-cyan-500 animate-pulse">Procesando...</div>}
+                        {loading && (
+                          <div className="col-span-4 py-3 flex justify-center">
+                            <CircuitLoader size="sm" label="Procesando imagenes" />
+                          </div>
+                        )}
                         
                         {mainImage && (
                             <div className="relative aspect-square bg-white rounded-lg overflow-hidden border-2 border-cyan-500 shadow-lg shadow-cyan-500/20">

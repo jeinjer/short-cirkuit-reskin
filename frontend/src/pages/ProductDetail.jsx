@@ -1,25 +1,34 @@
-import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import { ArrowLeft } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { toast } from 'sonner';
 import api from '../api/axios';
 import CircuitLoader from '../components/others/CircuitLoader';
 import ImageGallery from '../components/products/details/ImageGallery';
 import ProductInfo from '../components/products/details/ProductInfo';
 import FullscreenViewer from '../components/products/details/FullscreenViewer';
 
+const askedProductSkus = new Set();
+
 export default function ProductDetail() {
   const { sku } = useParams();
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [images, setImages] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [showInquiryBox, setShowInquiryBox] = useState(false);
+  const [inquiryMessage, setInquiryMessage] = useState('');
+  const [inquirySubmitting, setInquirySubmitting] = useState(false);
+  const [inquirySubmitted, setInquirySubmitted] = useState(false);
+  const inquiryRef = useRef(null);
 
   const isAdmin = user?.role === 'ADMIN';
+  const isCliente = user?.role === 'CLIENTE';
   
 
   const formatPrice = (price) => {
@@ -58,6 +67,51 @@ export default function ProductDetail() {
     fetchProduct();
   }, [sku]);
 
+  useEffect(() => {
+    setShowInquiryBox(false);
+    setInquiryMessage('');
+    setInquirySubmitting(false);
+    setInquirySubmitted(askedProductSkus.has(sku));
+  }, [sku]);
+
+  const openInquiryBox = () => {
+    if (!isAuthenticated) {
+      navigate('/login');
+      return;
+    }
+
+    if (!isCliente) {
+      toast.error('Solo clientes pueden enviar consultas');
+      return;
+    }
+
+    setShowInquiryBox(true);
+    setTimeout(() => {
+      inquiryRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 80);
+  };
+
+  const submitInquiry = async (e) => {
+    e.preventDefault();
+    if (!product?.id) return;
+
+    try {
+      setInquirySubmitting(true);
+      await api.post('/inquiries', {
+        productId: product.id,
+        message: inquiryMessage.trim() || null
+      });
+      setInquiryMessage('');
+      askedProductSkus.add(product.sku);
+      setInquirySubmitted(true);
+      toast.success('Consulta enviada. Te responderemos en tu perfil.');
+    } catch (error) {
+      toast.error('Error al enviar la consulta');
+    } finally {
+      setInquirySubmitting(false);
+    }
+  };
+
   if (loading) return (
     <div className="min-h-screen bg-[#020203] flex flex-col items-center justify-center">
       <CircuitLoader size="lg" />
@@ -94,9 +148,54 @@ export default function ProductDetail() {
                     product={product} 
                     formatPrice={formatPrice} 
                     isAdmin={isAdmin} 
+                    onAskProductInquiry={openInquiryBox}
+                    inquirySubmitted={inquirySubmitted}
                 />
             </div>
         </div>
+
+        {showInquiryBox && (
+          <section ref={inquiryRef} className="mt-12 max-w-3xl mx-auto rounded-2xl border border-cyan-500/20 bg-cyan-500/5 p-6">
+            <h2 className="text-xl font-black font-cyber uppercase tracking-wider text-cyan-200">Consulta por este producto</h2>
+            <p className="text-sm text-gray-300 mt-2">
+              Tu consulta quedará vinculada a <span className="text-white font-semibold">{product.name}</span> ({product.sku}) y la respuesta se verá en tu perfil.
+            </p>
+
+            {inquirySubmitted ? (
+              <div className="mt-4 rounded-lg border border-emerald-500/30 bg-emerald-500/10 p-4">
+                <p className="text-sm text-emerald-200 font-semibold">Consulta enviada correctamente.</p>
+                <p className="text-xs text-gray-300 mt-1">
+                  Para este producto no volveremos a mostrar el formulario hasta que recargues la página.
+                </p>
+              </div>
+            ) : (
+              <form onSubmit={submitInquiry} className="mt-4 space-y-3">
+                <textarea
+                  value={inquiryMessage}
+                  onChange={(e) => setInquiryMessage(e.target.value)}
+                  placeholder="Escribe tu consulta (opcional)"
+                  className="w-full h-32 p-3 rounded-lg bg-black/50 border border-white/15 focus:border-cyan-500/40 outline-none"
+                />
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <button
+                    type="button"
+                    onClick={() => navigate(-1)}
+                    className="h-11 px-4 rounded-lg border border-white/20 bg-white/5 hover:bg-white/10 font-semibold"
+                  >
+                    Volver atrás
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={inquirySubmitting}
+                    className="h-11 px-4 rounded-lg bg-cyan-600 hover:bg-cyan-500 disabled:opacity-60 font-bold"
+                  >
+                    {inquirySubmitting ? 'Enviando...' : 'Enviar consulta'}
+                  </button>
+                </div>
+              </form>
+            )}
+          </section>
+        )}
       </div>
 
       <AnimatePresence>
@@ -111,3 +210,5 @@ export default function ProductDetail() {
     </div>
   );
 }
+
+

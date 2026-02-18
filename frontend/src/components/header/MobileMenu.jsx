@@ -70,8 +70,12 @@ export default function MobileMenu() {
                         ) : (
                             <div className="bg-cyan-900/10 border border-cyan-500/20 rounded-xl p-4">
                                 <div className="flex items-center gap-3 mb-3">
-                                    <div className="w-10 h-10 bg-cyan-500 rounded-full flex items-center justify-center text-white shrink-0">
-                                        <User size={20}/>
+                                    <div className="w-10 h-10 bg-cyan-500/20 border border-cyan-500/30 rounded-full flex items-center justify-center text-white shrink-0 overflow-hidden backdrop-blur-sm">
+                                        {user?.avatar ? (
+                                          <img src={user.avatar} alt="Avatar" className="w-full h-full object-cover opacity-85" />
+                                        ) : (
+                                          <User size={20} className="text-cyan-300/90" />
+                                        )}
                                     </div>
                                     <div className="overflow-hidden">
                                         <p className="text-[10px] text-cyan-400 uppercase font-bold tracking-wider">Bienvenido</p>

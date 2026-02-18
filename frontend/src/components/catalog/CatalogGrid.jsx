@@ -1,6 +1,6 @@
 import React from 'react';
 import CatalogProductCard from '../products/cards/CatalogProductCard';
-import SkeletonProduct from '../others/SkeletonProduct';
+import CircuitLoader from '../others/CircuitLoader';
 
 export default function CatalogGrid({ 
   loading, 
@@ -11,8 +11,8 @@ export default function CatalogGrid({
   
   if (loading) {
     return (
-      <div className={viewMode === 'grid' ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" : "flex flex-col gap-6"}>
-          {[...Array(8)].map((_, i) => <SkeletonProduct key={i} viewMode={viewMode} />)}
+      <div className="py-20 flex justify-center">
+        <CircuitLoader label="Cargando productos" />
       </div>
     );
   }
