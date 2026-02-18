@@ -1,5 +1,5 @@
 ﻿import React from 'react';
-import { Wrench, Gamepad2, Gauge, ArrowUpCircle, Database } from 'lucide-react';
+import { Wrench, Gamepad2, Gauge, ArrowUpCircle, Database, Network } from 'lucide-react';
 
 export const servicesData = [
   {
@@ -51,5 +51,15 @@ export const servicesData = [
     icon: <Database className="w-6 h-6 text-emerald-300" />,
     image: '/services/recupero.webp',
     color: 'from-emerald-400 to-teal-600'
+  },
+  {
+    id: 6,
+    title: 'Armado de Redes',
+    desc: 'Instalación y configuración de redes para hogar y oficina.',
+    fullDesc:
+      'Diseñamos y armamos tu red para que tengas conexión estable y segura en todos tus dispositivos. Configuramos según el espacio y dejamos todo listo para trabajar, estudiar o jugar sin cortes.',
+    icon: <Network className="w-6 h-6 text-indigo-300" />,
+    image: '/services/redes.webp',
+    color: 'from-indigo-400 to-blue-600'
   }
 ];

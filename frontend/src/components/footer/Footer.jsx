@@ -1,11 +1,11 @@
 import React from 'react';
 import { MessageCircle, ArrowUpRight } from 'lucide-react';
 
-const SALES_PHONE = import.meta.env.VITE_WHATSAPP_SALES_PHONE || '5493541536165';
-const SUPPORT_PHONE = import.meta.env.VITE_WHATSAPP_SUPPORT_PHONE || '5493541536165';
-const SALES_PHONE_LABEL = import.meta.env.VITE_WHATSAPP_SALES_PHONE_LABEL || '+54 9 3541 53-6165';
-const SUPPORT_PHONE_LABEL = import.meta.env.VITE_WHATSAPP_SUPPORT_PHONE_LABEL || '+54 9 3541 53-6165';
-const LINKEDIN_URL = import.meta.env.VITE_LINKEDIN_URL || 'https://www.linkedin.com/in/stefanotommasi15/';
+const SALES_PHONE = import.meta.env.VITE_WHATSAPP_SALES_PHONE;
+const SUPPORT_PHONE = import.meta.env.VITE_WHATSAPP_SUPPORT_PHONE;
+const SALES_PHONE_LABEL = import.meta.env.VITE_WHATSAPP_SALES_PHONE_LABEL;
+const SUPPORT_PHONE_LABEL = import.meta.env.VITE_WHATSAPP_SUPPORT_PHONE_LABEL;
+const LINKEDIN_URL = import.meta.env.VITE_LINKEDIN_URL;
 
 export default function Footer() {
   const whatsappContacts = [
