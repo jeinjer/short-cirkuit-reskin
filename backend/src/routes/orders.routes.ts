@@ -1,10 +1,10 @@
 import { Router } from 'express';
-import { OrderStatus, PaymentMethod, PaymentStatus, PrismaClient } from '@prisma/client';
+import { OrderStatus, PaymentMethod, PaymentStatus } from '@prisma/client';
 import { adminMiddleware, authMiddleware } from '../middleware/auth.middleware';
+import { prisma } from '../prisma';
 import { discountStockForOrder, restockForOrder } from '../utils/orders';
 
 const router = Router();
-const prisma = new PrismaClient();
 
 router.use(authMiddleware, adminMiddleware);
 

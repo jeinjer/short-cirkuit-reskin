@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-const API_URL_PRD = import.meta.env.VITE_API_URL;
 const API_URL_DEV = 'http://localhost:3000/api';
+const API_URL_PRD = '/api';
 
 const baseURL = import.meta.env.DEV ? API_URL_DEV : API_URL_PRD;
 

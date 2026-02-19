@@ -1,5 +1,5 @@
-import { PrismaClient } from '@prisma/client';
 import { CATEGORY_IMAGES } from '../config/catalogConstants';
+import { prisma } from '../prisma';
 import { 
   parseCSVLine, 
   debeExcluir, 
@@ -11,7 +11,6 @@ import {
 require('dotenv').config();
 
 const fetchFn: typeof fetch = (globalThis as any).fetch;
-const prisma = new PrismaClient();
 const CSV_URL = process.env.CSV_URL;
 
 export async function syncCatalogFromVendor() {

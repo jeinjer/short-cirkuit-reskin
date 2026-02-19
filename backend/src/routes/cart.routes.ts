@@ -1,10 +1,9 @@
 import { Router } from 'express';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '../prisma';
 import { authMiddleware } from '../middleware/auth.middleware';
 import { getDolarRate } from '../utils/dolar';
 
 const router = Router();
-const prisma = new PrismaClient();
 
 const cartItemSelect = {
   id: true,

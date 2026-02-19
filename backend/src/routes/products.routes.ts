@@ -1,12 +1,12 @@
 import { Router } from 'express';
-import { Category, PrismaClient } from '@prisma/client';
+import { Category } from '@prisma/client';
 import jwt from 'jsonwebtoken';
 import { getDolarRate } from '../utils/dolar';
 import { CATEGORY_IMAGES } from '../config/catalogConstants';
 import { processToWebp } from '../utils/imageProcessor';
+import { prisma } from '../prisma';
 
 const router = Router();
-const prisma = new PrismaClient();
 const GENERIC_IMAGE_URLS = Object.values(CATEGORY_IMAGES);
 
 const productSelect = {
