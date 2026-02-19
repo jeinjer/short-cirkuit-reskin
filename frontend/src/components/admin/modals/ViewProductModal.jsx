@@ -24,10 +24,10 @@ export default function ViewProductModal({ product, onClose, priceCurrency = 'AR
   };
 
   return (
-    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200" onClick={onClose}>
-      <div className="bg-[#13131a] border border-white/10 rounded-2xl w-full max-w-2xl p-6 relative shadow-2xl" onClick={(e) => e.stopPropagation()}>
+    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4 animate-in fade-in duration-200" onClick={onClose}>
+      <div className="bg-[#13131a] border border-white/10 rounded-2xl w-full max-w-2xl p-4 sm:p-6 relative shadow-2xl max-h-[92vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
         <button onClick={onClose} className="absolute top-4 right-4 text-gray-500 hover:text-white cursor-pointer"><X /></button>
-        <div className="flex flex-col md:flex-row gap-6">
+        <div className="flex flex-col md:flex-row gap-4 sm:gap-6">
           <div className="w-full md:w-1/2 bg-[#050507] rounded-xl p-4 flex items-center justify-center min-h-[200px] border border-cyan-500/20">
             <img src={product.imageUrl} className="max-h-64 object-contain" alt="" />
           </div>

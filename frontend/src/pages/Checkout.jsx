@@ -60,14 +60,14 @@ export default function CheckoutPage() {
   const displayName = useMemo(() => user?.name?.split(' ')[0] || 'Cliente', [user]);
 
   return (
-    <main className="min-h-screen bg-[#050507] text-white pt-28 pb-16">
+    <main className="min-h-screen bg-[#050507] text-white pt-24 md:pt-28 pb-12 md:pb-16 overflow-x-clip">
       <div className="container mx-auto px-4 max-w-6xl">
         <div className="mb-8">
           <Link to="/catalogo" className="inline-flex items-center gap-2 text-gray-400 hover:text-cyan-400 transition-colors">
             <ArrowLeft size={18} />
             Volver al catalogo
           </Link>
-          <h1 className="mt-3 text-4xl md:text-5xl font-black font-cyber uppercase tracking-tight">Checkout</h1>
+          <h1 className="mt-3 text-3xl sm:text-4xl md:text-5xl font-black font-cyber uppercase tracking-tight">Checkout</h1>
           <p className="text-gray-400 mt-2">Finaliza tu compra, {displayName}.</p>
         </div>
 
@@ -76,7 +76,7 @@ export default function CheckoutPage() {
             <p className="text-gray-300">Solo los usuarios con rol cliente pueden realizar compras desde checkout.</p>
           </section>
         ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 md:gap-6">
           <section className="lg:col-span-2 rounded-2xl border border-cyan-500/20 bg-[#0d0d12] p-5 md:p-6">
             <h2 className="text-xl font-bold mb-2">Datos de compra</h2>
             <p className="text-sm text-gray-400 mb-5">Generamos tu pedido y lo continuaremos por WhatsApp para coordinar pago y envio/retiro.</p>

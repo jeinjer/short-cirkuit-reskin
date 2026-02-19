@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Search } from 'lucide-react';
 
 export default function AdminToolbar({
@@ -22,7 +22,7 @@ export default function AdminToolbar({
                 onChange={(e) => { setSearch(e.target.value); setPage(1); }}
             />
         </div>
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           <label className={`h-9 px-3 rounded-lg border text-xs font-bold uppercase tracking-wide cursor-pointer inline-flex items-center gap-2 transition-colors ${
             inStockOnly ? 'border-cyan-500/40 bg-cyan-500/10 text-cyan-200' : 'border-white/15 bg-white/5 text-gray-300 hover:bg-white/10'
           }`}>

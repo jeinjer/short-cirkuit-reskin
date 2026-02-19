@@ -198,7 +198,7 @@ export default function InquiryTable({
       )}
 
       {(page > 1 || meta.has_next_page) && (
-        <div className="flex items-center justify-center gap-3 pt-2">
+        <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
           <button
             onClick={() => safeSetPage(Math.max(1, page - 1))}
             disabled={page <= 1}

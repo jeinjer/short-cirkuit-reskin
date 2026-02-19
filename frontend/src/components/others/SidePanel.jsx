@@ -38,7 +38,7 @@ export default function SidePanel({ onClose, title }) {
         animate="visible"
         exit="exit"
         transition={{ type: 'tween', duration: 0.3, ease: 'easeOut' }}
-        className="fixed right-0 top-0 h-full w-[92%] sm:w-[440px] bg-[#06070b] border-l border-cyan-500/20 z-70 shadow-2xl flex flex-col"
+        className="fixed right-0 top-0 h-full w-full max-w-[420px] sm:max-w-[440px] bg-[#06070b] border-l border-cyan-500/20 z-70 shadow-2xl flex flex-col"
       >
         <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(to_right,rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.04)_1px,transparent_1px)] bg-[size:2.8rem_2.8rem] opacity-25" />
         <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_top,rgba(6,182,212,0.15),transparent_55%)]" />
@@ -157,17 +157,17 @@ export default function SidePanel({ onClose, title }) {
                 <span className="font-black text-cyan-400">${summary.totalArs.toLocaleString('es-AR')}</span>
               </div>
 
-              <div className="flex gap-2">
+              <div className="flex flex-col gap-2">
                 <button
                   onClick={clearCart}
-                  className="flex-1 h-11 rounded-lg border border-white/15 hover:border-white/30 bg-white/5 text-gray-300 hover:text-white text-sm font-bold cursor-pointer"
+                  className="flex-1 min-h-[58px] sm:min-h-[52px] rounded-lg border border-white/15 hover:border-white/30 bg-white/5 text-gray-300 hover:text-white text-sm font-bold cursor-pointer px-4"
                 >
                   Vaciar
                 </button>
                 <Link
                   to="/checkout"
                   onClick={onClose}
-                  className="flex-1 h-11 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-sm font-black flex items-center justify-center gap-2"
+                  className="flex-1 min-h-[58px] sm:min-h-[52px] rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-sm font-black flex items-center justify-center gap-2 px-4"
                 >
                   Finalizar <ArrowRight size={16} />
                 </Link>

@@ -87,9 +87,9 @@ export default function Catalog() {
   };
 
   return (
-    <div className="min-h-screen bg-[#050507] pt-28 pb-12 px-4 font-sans selection:bg-cyan-500/30">
+    <div className="min-h-screen bg-[#050507] pt-24 md:pt-28 pb-10 md:pb-12 px-4 font-sans selection:bg-cyan-500/30 overflow-x-clip">
       <div className="fixed inset-0 bg-[linear-gradient(to_right,#111_1px,transparent_1px),linear-gradient(to_bottom,#111_1px,transparent_1px)] bg-size-[4rem_4rem] mask-[radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none z-0" />
-      <div className="container mx-auto flex flex-col lg:flex-row gap-8 relative z-10">
+      <div className="container mx-auto flex flex-col lg:flex-row gap-5 md:gap-8 relative z-10">
 
         <CatalogSidebar 
             searchParams={searchParams}
