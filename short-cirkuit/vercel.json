@@ -13,7 +13,7 @@
   "crons": [
     {
       "path": "/api/internal/sync-catalog",
-      "schedule": "0 14 * * *"
+      "schedule": "0 11 * * *"
     }
   ]
 }
