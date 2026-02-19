@@ -36,8 +36,8 @@ const MetricCard = ({ icon, label, value, tone = 'cyan' }) => {
 
   return (
     <div className="relative overflow-hidden bg-[#0f1117] p-4 rounded-xl border border-cyan-500/20 min-h-[92px]">
-      <div className={`absolute inset-0 bg-gradient-to-br ${t.glow} to-transparent pointer-events-none`} />
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.04)_1px,transparent_1px)] bg-[size:2.2rem_2.2rem] opacity-20 pointer-events-none" />
+      <div className={`absolute inset-0 bg-linear-to-br ${t.glow} to-transparent pointer-events-none`} />
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.04)_1px,transparent_1px)] bg-size-[2.2rem_2.2rem] opacity-20 pointer-events-none" />
 
       <div className={`relative flex items-center gap-2 mb-2 ${t.icon}`}>
         {React.cloneElement(icon, { size: 16 })}
