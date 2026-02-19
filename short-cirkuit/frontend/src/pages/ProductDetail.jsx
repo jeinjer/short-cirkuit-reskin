@@ -19,6 +19,7 @@ export default function ProductDetail() {
   
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [requestError, setRequestError] = useState(null);
   const [images, setImages] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
   const [showInquiryBox, setShowInquiryBox] = useState(false);
@@ -43,6 +44,7 @@ export default function ProductDetail() {
   useEffect(() => {
     if (!sku) return;
     const fetchProduct = async () => {
+      setRequestError(null);
       try {
         const res = await api.get(`/products/${sku}`);
         const prod = res.data;
@@ -60,6 +62,13 @@ export default function ProductDetail() {
         setImages(imgs);
 
       } catch (err) {
+        setProduct(null);
+        const status = err?.response?.status;
+        if (status === 404) {
+          setRequestError('not_found');
+        } else {
+          setRequestError('generic');
+        }
         console.error("Error fetching product:", err);
       } finally {
         setLoading(false);
@@ -124,6 +133,64 @@ export default function ProductDetail() {
       <CircuitLoader size="lg" />
     </div>
   );
+
+  if (requestError === 'not_found') {
+    return (
+      <div className="min-h-screen bg-[#050507] flex items-center justify-center px-4">
+        <div className="w-full max-w-xl rounded-2xl border border-white/10 bg-white/5 p-6 sm:p-8 text-center">
+          <h1 className="text-2xl sm:text-3xl font-black uppercase tracking-wider text-white">
+            Producto no disponible
+          </h1>
+          <p className="mt-3 text-gray-300">
+            Este producto no existe o no está disponible en este momento.
+          </p>
+          <div className="mt-6 flex flex-col sm:flex-row gap-3">
+            <button
+              onClick={() => navigate('/catalogo')}
+              className="h-11 px-5 rounded-lg bg-cyan-600 hover:bg-cyan-500 font-bold flex-1"
+            >
+              Ir al catálogo
+            </button>
+            <button
+              onClick={() => navigate('/')}
+              className="h-11 px-5 rounded-lg border border-white/20 bg-white/5 hover:bg-white/10 font-semibold flex-1"
+            >
+              Volver al inicio
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (requestError === 'generic') {
+    return (
+      <div className="min-h-screen bg-[#050507] flex items-center justify-center px-4">
+        <div className="w-full max-w-xl rounded-2xl border border-white/10 bg-white/5 p-6 sm:p-8 text-center">
+          <h1 className="text-2xl sm:text-3xl font-black uppercase tracking-wider text-white">
+            Error al cargar producto
+          </h1>
+          <p className="mt-3 text-gray-300">
+            Ocurrió un problema al consultar este producto. Inténtalo nuevamente.
+          </p>
+          <div className="mt-6 flex flex-col sm:flex-row gap-3">
+            <button
+              onClick={() => window.location.reload()}
+              className="h-11 px-5 rounded-lg bg-cyan-600 hover:bg-cyan-500 font-bold flex-1"
+            >
+              Reintentar
+            </button>
+            <button
+              onClick={() => navigate('/catalogo')}
+              className="h-11 px-5 rounded-lg border border-white/20 bg-white/5 hover:bg-white/10 font-semibold flex-1"
+            >
+              Ir al catálogo
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (!product) return null;
   
