@@ -1,5 +1,5 @@
 ﻿import { Request, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '../prisma';
 import { OAuth2Client } from 'google-auth-library';
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
@@ -7,8 +7,6 @@ import jwt from 'jsonwebtoken';
 import { generateToken, hashPassword, comparePassword } from '../utils/auth';
 import { sendResetEmail } from '../utils/mailer';
 import { registerSchema, loginSchema, googleLoginSchema, forgotPasswordSchema, resetPasswordSchema } from '../schemas/auth.schema';
-
-const prisma = new PrismaClient();
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 export const register = async (req: Request, res: Response) => {

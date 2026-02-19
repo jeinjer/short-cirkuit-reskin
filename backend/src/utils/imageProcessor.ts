@@ -6,6 +6,7 @@ import { v2 as cloudinary } from 'cloudinary';
 const UPLOADS_DIR = path.resolve(process.cwd(), 'uploads', 'products');
 const SUPPORTED_URL_PROTOCOLS = ['http:', 'https:'];
 const CLOUDINARY_FOLDER = process.env.CLOUDINARY_FOLDER || 'products';
+const IS_PRODUCTION = process.env.NODE_ENV === 'production' || process.env.VERCEL === '1';
 
 const cloudinaryEnabled = Boolean(
   process.env.CLOUDINARY_CLOUD_NAME &&
@@ -239,6 +240,10 @@ export const processToWebp = async (
     });
 
     return uploadResult.secure_url;
+  }
+
+  if (IS_PRODUCTION) {
+    throw new Error('Cloudinary no est\u00e1 configurado en producci\u00f3n. Configura CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY y CLOUDINARY_API_SECRET.');
   }
 
   await ensureUploadsDir();

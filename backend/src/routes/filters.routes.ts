@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import { Category, PrismaClient } from '@prisma/client';
+import { Category } from '@prisma/client';
+import { prisma } from '../prisma';
 
 const router = Router();
-const prisma = new PrismaClient();
 
 router.get('/', async (req, res) => {
   const { category, search, minPrice, maxPrice } = req.query;

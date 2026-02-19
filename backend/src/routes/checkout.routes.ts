@@ -1,10 +1,10 @@
 import { Router } from 'express';
-import { PaymentMethod, PaymentStatus, PrismaClient } from '@prisma/client';
+import { PaymentMethod, PaymentStatus } from '@prisma/client';
 import { authMiddleware } from '../middleware/auth.middleware';
+import { prisma } from '../prisma';
 import { getDolarRate } from '../utils/dolar';
 
 const router = Router();
-const prisma = new PrismaClient();
 
 const WHATSAPP_ADMIN_PHONE = process.env.WHATSAPP_ADMIN_PHONE || '5493541XXXXXX';
 

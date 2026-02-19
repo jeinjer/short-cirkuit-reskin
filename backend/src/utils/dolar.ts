@@ -1,6 +1,4 @@
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { prisma } from '../prisma';
 const CONFIG_KEY = 'dolar_venta';
 
 let memoryCache = { value: 0, expires: 0 };
