@@ -130,8 +130,13 @@ export const getMyInquiries = async (req: Request, res: Response) => {
 
 export const replyInquiry = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
+    const rawId = req.params.id;
+    const id = Array.isArray(rawId) ? rawId[0] : rawId;
     const { reply } = req.body as { reply?: string };
+
+    if (!id) {
+      return res.status(400).json({ error: 'id requerido' });
+    }
 
     if (!reply || !reply.trim()) {
       return res.status(400).json({ error: 'La respuesta es requerida' });
