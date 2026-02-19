@@ -88,7 +88,9 @@ export default function ProductDetail() {
 
     setShowInquiryBox(true);
     setTimeout(() => {
-      inquiryRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const targetTop = inquiryRef.current?.getBoundingClientRect().top ?? 0;
+      const scrollTop = window.scrollY + targetTop - 110;
+      window.scrollTo({ top: Math.max(0, scrollTop), behavior: 'smooth' });
     }, 80);
   };
 
@@ -127,11 +129,11 @@ export default function ProductDetail() {
   
 
   return (
-    <div className="min-h-screen bg-[#050507] font-sans text-white selection:bg-cyan-500/30 pb-20">
+    <div className="min-h-screen bg-[#050507] font-sans text-white selection:bg-cyan-500/30 pb-16 md:pb-20 overflow-x-clip">
       <div className="fixed inset-0 bg-[linear-gradient(to_right,#111_1px,transparent_1px),linear-gradient(to_bottom,#111_1px,transparent_1px)] bg-size-[4rem_4rem] mask-[radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none z-0" />
       
-      <div className="relative z-10 pt-32 px-4 md:px-8 max-w-[1400px] mx-auto">
-        <div className="mb-8">
+      <div className="relative z-10 pt-24 md:pt-32 px-4 md:px-8 max-w-[1400px] mx-auto">
+        <div className="mb-6 md:mb-8">
             <button 
                 onClick={() => navigate(-1)}
                 className="group cursor-pointer flex items-center gap-3 px-0 text-gray-400 hover:text-cyan-400 transition-colors w-fit"
@@ -143,7 +145,7 @@ export default function ProductDetail() {
             </button>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 lg:gap-20 items-start">
             <div className="w-full">
                 <ImageGallery images={images} onImageClick={setSelectedImage} />
             </div>
@@ -160,7 +162,7 @@ export default function ProductDetail() {
         </div>
 
         {showInquiryBox && (
-          <section ref={inquiryRef} className="mt-12 max-w-3xl mx-auto rounded-2xl border border-cyan-500/20 bg-cyan-500/5 p-6">
+          <section ref={inquiryRef} className="mt-10 md:mt-12 max-w-3xl mx-auto rounded-2xl border border-cyan-500/20 bg-cyan-500/5 p-4 sm:p-6">
             <h2 className="text-xl font-black font-cyber uppercase tracking-wider text-cyan-200">Consulta por este producto</h2>
             <p className="text-sm text-gray-300 mt-2">
               Tu consulta quedará visible en la sección de "Mis consultas" en "Mi perfil".
@@ -179,18 +181,18 @@ export default function ProductDetail() {
                   required
                   className="w-full h-32 p-3 rounded-lg bg-black/50 border border-white/15 focus:border-cyan-500/40 outline-none"
                 />
-                <div className="flex flex-col sm:flex-row gap-2">
+                <div className="flex flex-row gap-2">
                   <button
                     type="button"
                     onClick={() => navigate(-1)}
-                    className="h-11 px-4 rounded-lg border border-white/20 bg-white/5 hover:bg-white/10 font-semibold"
+                    className="h-11 px-4 rounded-lg border border-white/20 bg-white/5 hover:bg-white/10 font-semibold flex-1"
                   >
                     Cerrar
                   </button>
                   <button
                     type="submit"
                     disabled={inquirySubmitting || !trimmedInquiryMessage}
-                    className="h-11 px-4 rounded-lg bg-cyan-600 hover:bg-cyan-500 disabled:opacity-60 font-bold"
+                    className="h-11 px-4 rounded-lg bg-cyan-600 hover:bg-cyan-500 disabled:opacity-60 font-bold flex-1"
                   >
                     {inquirySubmitting ? 'Enviando...' : 'Enviar'}
                   </button>

@@ -61,14 +61,14 @@ export default function ResetPasswordPage() {
   };
 
   return (
-    <AuthLayout containerClassName="px-3 pt-24 md:p-4" initialY={20}>
+    <AuthLayout containerClassName="px-3 md:p-4" initialY={20}>
         {!success ? (
           <>
             <div className="text-center mb-6">
               <div className="inline-flex items-center justify-center w-11 h-11 rounded-full bg-cyan-500/10 text-cyan-300 mb-3 border border-cyan-500/35">
                 <KeyRound size={20} />
               </div>
-              <h1 className="text-3xl font-black font-cyber text-white tracking-tight uppercase">Nueva contraseña</h1>
+              <h1 className="text-2xl sm:text-3xl font-black font-cyber text-white tracking-tight uppercase">Nueva contraseña</h1>
               <p className="text-xs text-gray-500 mt-2 font-mono uppercase tracking-wide">Define una clave segura</p>
             </div>
 
@@ -103,7 +103,7 @@ export default function ResetPasswordPage() {
                   </div>
 
                   {password.length > 0 && (
-                    <div className="bg-black/30 p-2.5 rounded-lg border border-white/8 grid grid-cols-2 gap-x-3 gap-y-1 mt-1">
+                    <div className="bg-black/30 p-2.5 rounded-lg border border-white/8 grid grid-cols-1 sm:grid-cols-2 gap-x-3 gap-y-1 mt-1">
                       <div className="space-y-0.5">
                         {typeValidations.map((val, index) => (
                           <div key={index} className={`flex items-center gap-1.5 text-[10px] ${val.valid ? 'text-cyan-300' : 'text-red-400'}`}>

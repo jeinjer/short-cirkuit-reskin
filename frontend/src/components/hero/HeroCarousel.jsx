@@ -26,7 +26,7 @@ export default function HeroCarousel() {
   };
 
   return (
-    <section className="relative w-full min-h-[90vh] flex flex-col justify-center overflow-hidden border-b border-white/5 bg-[#050507]">
+    <section className="relative w-full min-h-[88vh] md:min-h-[90vh] flex flex-col justify-center overflow-hidden border-b border-white/5 bg-[#050507]">
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden z-0">
          <h1 className="text-[15vw] leading-none font-black text-white/5 whitespace-nowrap tracking-tighter font-cyber">
            SHORT CIRKUIT
@@ -34,9 +34,9 @@ export default function HeroCarousel() {
       </div>
 
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-size-[4rem_4rem] mask-[radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] z-0 pointer-events-none" />
-      <div className="container mx-auto px-4 relative z-10 pt-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div className="space-y-8 relative z-20">
+      <div className="container mx-auto px-4 relative z-10 pt-6 sm:pt-8 md:pt-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center">
+          <div className="space-y-6 md:space-y-8 relative z-20">
             
             <motion.div 
               initial={{ opacity: 0, x: -20 }}
@@ -54,7 +54,7 @@ export default function HeroCarousel() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.2 }}
-              className="text-6xl sm:text-7xl lg:text-8xl font-black text-white tracking-tighter leading-[0.9] font-cyber"
+              className="text-4xl sm:text-6xl lg:text-8xl font-black text-white tracking-tighter leading-[0.9] font-cyber"
             >
               <br />
               <span className="text-transparent bg-clip-text bg-linear-to-r from-cyan-400 via-blue-500 to-blue-900 animate-pulse">
@@ -66,7 +66,7 @@ export default function HeroCarousel() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.7, delay: 0.4 }}
-              className="text-gray-400 text-lg max-w-lg border-l-2 border-white/10 pl-6 py-2 font-tech tracking-wide"
+              className="text-gray-400 text-sm sm:text-base md:text-lg max-w-lg border-l-2 border-white/10 pl-4 sm:pl-6 py-2 font-tech tracking-wide"
             >
               Servicio técnico especializado en hardware y software. <br />
               Armado de PC a medida, mantenimiento y optimización. <br />
@@ -77,11 +77,11 @@ export default function HeroCarousel() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.6 }}
-              className="flex flex-wrap gap-6 pt-4"
+              className="flex flex-col sm:flex-row sm:flex-wrap gap-3 sm:gap-6 pt-2 md:pt-4"
             >
               <button 
                 onClick={scrollToCatalog}
-                className="group relative px-8 py-4 bg-transparent overflow-hidden cursor-pointer"
+                className="group relative w-full sm:w-auto px-6 sm:px-8 py-3.5 sm:py-4 bg-transparent overflow-hidden cursor-pointer"
               >
                 <div className="absolute inset-0 w-full h-full bg-cyan-600 transform skew-x-12 group-hover:skew-x-0 transition-transform duration-300 origin-right" />
                 <div className="absolute inset-0 w-full h-full bg-cyan-400 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
@@ -94,7 +94,7 @@ export default function HeroCarousel() {
               
               <button 
                   onClick={scrollToServices}
-                  className="cursor-pointer group relative px-10 py-4 bg-transparent text-white font-bold font-cyber uppercase tracking-wider transition-all duration-300"
+                  className="cursor-pointer group relative w-full sm:w-auto px-6 sm:px-10 py-3.5 sm:py-4 bg-transparent text-white font-bold font-cyber uppercase tracking-wider transition-all duration-300"
               >
                 <span className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-white/30 group-hover:border-cyan-500 group-hover:w-full group-hover:h-full transition-all duration-500 ease-in-out" />
                 <span className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-white/30 group-hover:border-purple-500 group-hover:w-full group-hover:h-full transition-all duration-500 ease-in-out" />
@@ -107,10 +107,10 @@ export default function HeroCarousel() {
             </motion.div>
           </div>
 
-          <div className="relative h-[500px] lg:h-[700px] flex items-center justify-center group pointer-events-none md:pointer-events-auto">
+          <div className="hidden md:flex relative h-[420px] lg:h-[700px] items-center justify-center group pointer-events-none md:pointer-events-auto">
              
-             <div className="absolute w-[400px] h-[400px] lg:w-[650px] lg:h-[650px] border border-cyan-500/10 rounded-full animate-[spin_20s_linear_infinite]" />
-             <div className="absolute w-[350px] h-[350px] lg:w-[550px] lg:h-[550px] border border-dashed border-cyan-500/20 rounded-full animate-[spin_30s_linear_infinite_reverse]" />
+             <div className="absolute w-[240px] h-[240px] sm:w-[320px] sm:h-[320px] lg:w-[650px] lg:h-[650px] border border-cyan-500/10 rounded-full animate-[spin_20s_linear_infinite]" />
+             <div className="absolute w-[200px] h-[200px] sm:w-[280px] sm:h-[280px] lg:w-[550px] lg:h-[550px] border border-dashed border-cyan-500/20 rounded-full animate-[spin_30s_linear_infinite_reverse]" />
              
              <div className="relative z-20 w-full h-full flex items-center justify-center p-4 animate-[float_6s_ease-in-out_infinite]">
                 <AnimatePresence mode='wait'>
@@ -122,11 +122,11 @@ export default function HeroCarousel() {
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 1.1 }}
                         transition={{ duration: 0.5 }}
-                        className="max-w-full max-h-[400px] lg:max-h-[600px] object-contain drop-shadow-[0_0_50px_rgba(6,182,212,0.4)] brightness-110"
+                        className="max-w-full max-h-[260px] sm:max-h-[340px] lg:max-h-[600px] object-contain drop-shadow-[0_0_50px_rgba(6,182,212,0.4)] brightness-110"
                     />
                 </AnimatePresence>
                 
-                <div className="absolute bottom-10 flex gap-2">
+                <div className="absolute bottom-2 sm:bottom-6 lg:bottom-10 flex gap-2">
                     {heroImages.map((_, idx) => (
                         <div 
                             key={idx}
@@ -140,7 +140,7 @@ export default function HeroCarousel() {
                initial={{ opacity: 0, x: 50 }}
                animate={{ opacity: 1, x: 0 }}
                transition={{ delay: 1, duration: 0.8 }}
-               className="absolute top-[15%] right-0 lg:-right-8 z-30 bg-[#0a0a0f]/90 backdrop-blur-md border border-cyan-500/30 p-4 rounded-xl shadow-[0_0_20px_rgba(6,182,212,0.15)] animate-[float_4s_ease-in-out_infinite]"
+               className="hidden md:block absolute top-[15%] right-0 lg:-right-8 z-30 bg-[#0a0a0f]/90 backdrop-blur-md border border-cyan-500/30 p-4 rounded-xl shadow-[0_0_20px_rgba(6,182,212,0.15)] animate-[float_4s_ease-in-out_infinite]"
              >
                 <div className="flex items-center gap-3">
                    <div className="p-2 bg-cyan-900/20 rounded-lg text-cyan-400">
@@ -157,7 +157,7 @@ export default function HeroCarousel() {
                initial={{ opacity: 0, x: -50 }}
                animate={{ opacity: 1, x: 0 }}
                transition={{ delay: 1.2, duration: 0.8 }}
-               className="absolute bottom-[20%] left-0 lg:-left-8 z-30 bg-[#0a0a0f]/90 backdrop-blur-md border border-purple-500/30 p-4 rounded-xl shadow-[0_0_20px_rgba(168,85,247,0.15)] animate-[float_5s_ease-in-out_infinite]" 
+               className="hidden md:block absolute bottom-[20%] left-0 lg:-left-8 z-30 bg-[#0a0a0f]/90 backdrop-blur-md border border-purple-500/30 p-4 rounded-xl shadow-[0_0_20px_rgba(168,85,247,0.15)] animate-[float_5s_ease-in-out_infinite]" 
                style={{ animationDelay: '1s' }}
              >
                 <div className="flex items-center gap-3">

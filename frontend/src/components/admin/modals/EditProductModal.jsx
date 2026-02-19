@@ -262,8 +262,8 @@ export default function EditProductModal({ product, onClose, onSave }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={onClose}>
-      <div className="bg-[#13131a] border border-white/10 rounded-2xl w-full max-w-xl p-6 relative shadow-2xl" onClick={(e) => e.stopPropagation()}>
+    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4" onClick={onClose}>
+      <div className="bg-[#13131a] border border-white/10 rounded-2xl w-full max-w-xl p-4 sm:p-6 relative shadow-2xl max-h-[92vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
         <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_top,rgba(6,182,212,0.12),transparent_55%)] rounded-2xl" />
         <button onClick={onClose} className="absolute top-4 right-4 text-gray-500 hover:text-white cursor-pointer"><X /></button>
 

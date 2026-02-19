@@ -10,12 +10,33 @@ const CarouselTrack = ({
   onHoverStart, 
   onHoverEnd, 
   onCardClick,
-  cardWidth
+  cardWidth,
+  cardHeight,
+  isMobileMode = false
 }) => {
   const maskStyle = {
     maskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)',
     WebkitMaskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)'
   };
+
+  if (isMobileMode) {
+    return (
+      <div className="relative w-full z-20 px-4">
+        <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          {items.map((service, index) => (
+            <ServiceCard
+              key={`${service.id}-mobile-${index}`}
+              service={service}
+              width={cardWidth}
+              cardHeight={cardHeight}
+              isMobileMode
+              onClick={() => onCardClick(service)}
+            />
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div 
@@ -39,6 +60,7 @@ const CarouselTrack = ({
             key={`${service.id}-clone-${index}`} 
             service={service} 
             width={cardWidth}
+            cardHeight={cardHeight}
             onClick={() => onCardClick(service)}
           />
         ))}

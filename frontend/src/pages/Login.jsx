@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { GoogleLogin, useGoogleLogin } from '@react-oauth/google'; 
-import { Mail, Lock, Zap, AlertCircle, ArrowRight, Eye, EyeOff } from 'lucide-react';
+import { Mail, Lock, AlertCircle, ArrowRight, Eye, EyeOff } from 'lucide-react';
 import { toast } from 'sonner';
 import AuthLayout from '../components/auth/AuthLayout';
 
@@ -40,10 +40,7 @@ export default function LoginPage() {
   return (
     <AuthLayout>
         <div className="text-center mb-6">
-          <Link to="/" className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-cyan-500/35 bg-cyan-500/10 text-cyan-300 text-[11px] font-mono mb-3 hover:bg-cyan-500/20 transition-colors uppercase tracking-wider cursor-pointer">
-            <Zap size={12} className="fill-cyan-400" /> <span className="tracking-widest font-bold">Short Cirkuit</span>
-          </Link>
-          <h1 className="text-3xl font-black font-cyber text-white tracking-tight uppercase">Inicio de sesión</h1>
+          <h1 className="text-2xl sm:text-3xl font-black font-cyber text-white tracking-tight uppercase">Inicio de sesión</h1>
           <p className="text-xs text-gray-500 mt-2 font-mono uppercase tracking-wide">Acceso de usuario</p>
         </div>
 

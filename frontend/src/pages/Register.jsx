@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { GoogleLogin } from '@react-oauth/google';
-import { Mail, Lock, Zap, AlertCircle, ArrowRight, User, Eye, EyeOff, Check, X } from 'lucide-react';
+import { Mail, Lock, AlertCircle, ArrowRight, User, Eye, EyeOff, Check, X } from 'lucide-react';
 import { toast } from 'sonner';
 import AuthLayout from '../components/auth/AuthLayout';
 
@@ -55,9 +55,6 @@ export default function RegisterPage() {
   return (
     <AuthLayout>
         <div className="text-center mb-5">
-          <Link to="/" className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-cyan-500/35 bg-cyan-500/10 text-cyan-300 text-[11px] font-mono mb-3 hover:bg-cyan-500/20 transition-colors uppercase tracking-wider cursor-pointer">
-            <Zap size={12} className="fill-cyan-400" /> <span className="tracking-widest font-bold">Short Cirkuit</span>
-          </Link>
           <h1 className="text-3xl font-black font-cyber text-white tracking-tight uppercase">Registro</h1>
           <p className="text-xs text-gray-500 mt-2 font-mono uppercase tracking-wide">Crear cuenta cliente</p>
         </div>
@@ -114,10 +111,10 @@ export default function RegisterPage() {
             </div>
 
             {password.length > 0 && (
-              <div className="bg-black/30 p-2.5 rounded-lg border border-white/8 grid grid-cols-2 gap-x-3 gap-y-1">
+              <div className="bg-black/30 p-2.5 rounded-lg border border-white/8 grid grid-cols-1 sm:grid-cols-2 gap-x-3 gap-y-1">
                 <div className="space-y-0.5">
                   {typeValidations.map((val, index) => (
-                    <div key={index} className={`flex items-center gap-1.5 text-[11px] ${val.valid ? 'text-cyan-300' : 'text-red-400'}`}>
+                    <div key={index} className={`flex items-center gap-1.5 text-[10px] sm:text-[11px] ${val.valid ? 'text-cyan-300' : 'text-red-400'}`}>
                       {val.valid ? <Check size={10} /> : <X size={10} />}
                       <span className={val.valid ? 'font-bold' : ''}>{val.label}</span>
                     </div>
@@ -126,7 +123,7 @@ export default function RegisterPage() {
 
                 <div className="space-y-0.5 border-l border-white/10 pl-3">
                   {lengthValidations.map((val, index) => (
-                    <div key={index} className={`flex items-center gap-1.5 text-[11px] ${val.valid ? 'text-cyan-300' : 'text-red-400'}`}>
+                    <div key={index} className={`flex items-center gap-1.5 text-[10px] sm:text-[11px] ${val.valid ? 'text-cyan-300' : 'text-red-400'}`}>
                       {val.valid ? <Check size={10} /> : <X size={10} />}
                       <span className={val.valid ? 'font-bold' : ''}>{val.label}</span>
                     </div>
@@ -155,7 +152,7 @@ export default function RegisterPage() {
               </button>
             </div>
             {!passwordsMatch && confirmPassword.length > 0 && (
-              <span className="text-red-500 text-[11px] ml-1 flex items-center gap-1">
+              <span className="text-red-500 text-[10px] sm:text-[11px] ml-1 flex items-center gap-1">
                 <X size={10} /> Las contraseñas no coinciden
               </span>
             )}
@@ -173,7 +170,7 @@ export default function RegisterPage() {
 
         <div className="my-4 flex items-center gap-4">
           <div className="h-px bg-white/10 flex-1"></div>
-          <span className="text-gray-600 text-[11px] font-mono uppercase tracking-wider">o registrarse con</span>
+          <span className="text-gray-600 text-[10px] sm:text-[11px] font-mono uppercase tracking-wider">o registrarse con</span>
           <div className="h-px bg-white/10 flex-1"></div>
         </div>
 

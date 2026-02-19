@@ -37,7 +37,7 @@ export default function NotFoundPage() {
   return (
     <div className="min-h-screen bg-[#050507] flex items-center justify-center p-4 relative overflow-hidden">
       <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,var(--tw-gradient-stops))] from-[#13132b] via-[#050507] to-[#050507] z-0"></div>
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-cyan-500/5 blur-[150px] rounded-full pointer-events-none"></div>
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] h-[320px] sm:w-[480px] sm:h-[480px] md:w-[600px] md:h-[600px] bg-cyan-500/5 blur-[150px] rounded-full pointer-events-none"></div>
 
       <motion.div 
         initial={{ opacity: 0, scale: 0.9 }}
@@ -49,13 +49,15 @@ export default function NotFoundPage() {
             <motion.div 
                  animate={{ opacity: [0.2, 0.5, 0.2] }}
                  transition={{ duration: 2, repeat: Infinity }}
-                 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-cyan-500/10 rounded-full blur-2xl"
+                 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-44 h-44 sm:w-64 sm:h-64 bg-cyan-500/10 rounded-full blur-2xl"
             />
 
             <motion.div variants={plugVariants} animate="shake" className="relative z-20">
-                <Unplug size={180} className="text-gray-700 drop-shadow-[0_0_15px_rgba(0,0,0,0.8)]" strokeWidth={1.5} />
+                <Unplug size={130} className="sm:hidden text-gray-700 drop-shadow-[0_0_15px_rgba(0,0,0,0.8)]" strokeWidth={1.5} />
+                <Unplug size={180} className="hidden sm:block text-gray-700 drop-shadow-[0_0_15px_rgba(0,0,0,0.8)]" strokeWidth={1.5} />
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-red-500/30">
-                    <WifiOff size={80} />
+                    <WifiOff size={58} className="sm:hidden" />
+                    <WifiOff size={80} className="hidden sm:block" />
                 </div>
             </motion.div>
 
@@ -78,16 +80,16 @@ export default function NotFoundPage() {
             ))}
         </div>
 
-        <h1 className="text-8xl font-black text-transparent bg-clip-text bg-linear-to-r from-red-500 via-cyan-400 to-blue-600 relative inline-block">
+        <h1 className="text-6xl sm:text-8xl font-black text-transparent bg-clip-text bg-linear-to-r from-red-500 via-cyan-400 to-blue-600 relative inline-block">
             <span className="absolute top-0 left-0 -ml-1 -mt-1 text-red-500/30 blur-sm opacity-70 animate-pulse">404</span>
             404
         </h1>
 
-        <h2 className="text-3xl text-white font-black mt-6 uppercase tracking-wider drop-shadow-lg">
+        <h2 className="text-2xl sm:text-3xl text-white font-black mt-6 uppercase tracking-wider drop-shadow-lg">
           ¡Cortocircuito Detectado!
         </h2>
 
-        <p className="text-gray-400 mt-6 text-lg max-w-md mx-auto leading-relaxed">
+        <p className="text-gray-400 mt-6 text-base sm:text-lg max-w-md mx-auto leading-relaxed">
           Ups... parece que la página que buscas no está disponible. 
         </p>
 

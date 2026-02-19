@@ -63,6 +63,11 @@ export default function AdminDashboard() {
   const [priceCurrency, setPriceCurrency] = useState('ARS');
   const [productSort, setProductSort] = useState({ field: 'sale', direction: 'asc' });
 
+  const primeTabLoadingState = (tab) => {
+    if (tab === 'products') setLoading(true);
+    if (tab === 'orders') setOrdersLoading(true);
+  };
+
   useEffect(() => {
     const fetchMetrics = async () => {
       try {
@@ -80,6 +85,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     const queryTab = QUERY_TAB[searchParams.get('tab')];
     if (queryTab && queryTab !== activeTab) {
+      primeTabLoadingState(queryTab);
       setActiveTab(queryTab);
       return;
     }
@@ -148,6 +154,8 @@ export default function AdminDashboard() {
   }, [inquiriesPage, inquiriesStatus, activeTab]);
 
   const selectTab = (nextTab) => {
+    if (nextTab === activeTab) return;
+    primeTabLoadingState(nextTab);
     setActiveTab(nextTab);
     const next = new URLSearchParams();
     next.set('tab', TAB_QUERY[nextTab] || TAB_QUERY.products);
@@ -289,19 +297,19 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-[#050507] pt-24 px-4 pb-12 text-gray-200 font-sans">
+    <div className="min-h-screen bg-[#050507] pt-20 md:pt-24 px-4 pb-10 md:pb-12 text-gray-200 font-sans overflow-x-clip">
       <div className="container mx-auto max-w-7xl">
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-4">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-6 md:mb-8 gap-4">
             <div>
                 <h1 className="text-3xl font-black font-cyber text-cyan-500 uppercase tracking-tighter">Panel de Control</h1>
             </div>
             <AdminStats stats={stats} dolarValue={dolarValue} />
         </div>
 
-        <div className="flex gap-2 mb-6 border-b border-white/5 pb-px">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-6 border-b border-white/5 pb-2">
             <button 
                 onClick={() => selectTab('products')}
-                className={`flex items-center gap-2 px-6 py-3 font-cyber text-sm tracking-widest uppercase transition-all relative ${
+                className={`flex items-center justify-center gap-2 px-4 py-3 font-cyber text-xs sm:text-sm tracking-widest uppercase transition-all relative rounded-lg border ${
                     activeTab === 'products' ? 'text-cyan-400' : 'text-gray-500 hover:text-gray-300'
                 }`}
             >
@@ -311,7 +319,7 @@ export default function AdminDashboard() {
             </button>
             <button 
                 onClick={() => selectTab('inquiries')}
-                className={`flex items-center gap-2 px-6 py-3 font-cyber text-sm tracking-widest uppercase transition-all relative ${
+                className={`flex items-center justify-center gap-2 px-4 py-3 font-cyber text-xs sm:text-sm tracking-widest uppercase transition-all relative rounded-lg border ${
                     activeTab === 'inquiries' ? 'text-cyan-400' : 'text-gray-500 hover:text-gray-300'
                 }`}
             >
@@ -321,7 +329,7 @@ export default function AdminDashboard() {
             </button>
             <button 
                 onClick={() => selectTab('orders')}
-                className={`flex items-center gap-2 px-6 py-3 font-cyber text-sm tracking-widest uppercase transition-all relative ${
+                className={`flex items-center justify-center gap-2 px-4 py-3 font-cyber text-xs sm:text-sm tracking-widest uppercase transition-all relative rounded-lg border ${
                     activeTab === 'orders' ? 'text-cyan-400' : 'text-gray-500 hover:text-gray-300'
                 }`}
             >
@@ -355,7 +363,7 @@ export default function AdminDashboard() {
                     productSort={productSort}
                     onSortChange={handleSortChange}
                 />
-                <div className="bg-[#13131a] p-4 rounded-b-2xl border border-white/5 border-t-0 flex justify-center items-center gap-4">
+                <div className="bg-[#13131a] p-4 rounded-b-2xl border border-white/5 border-t-0 flex flex-wrap justify-center items-center gap-3">
                     <button 
                         disabled={page === 1} 
                         onClick={() => setPage(p => p-1)} 
@@ -415,7 +423,7 @@ export default function AdminDashboard() {
                     onQuickUpdate={quickUpdateOrder}
                     onView={setViewOrder}
                 />
-                <div className="bg-[#13131a] p-4 rounded-b-2xl border border-white/5 border-t-0 flex justify-center items-center gap-4">
+                <div className="bg-[#13131a] p-4 rounded-b-2xl border border-white/5 border-t-0 flex flex-wrap justify-center items-center gap-3">
                     <button 
                         disabled={ordersPage === 1} 
                         onClick={() => setOrdersPage(p => p-1)} 
@@ -465,5 +473,10 @@ export default function AdminDashboard() {
     </div>
   );
 }
+
+
+
+
+
 
 

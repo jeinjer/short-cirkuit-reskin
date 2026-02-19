@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { ArrowDown, ArrowUp, Eye, Edit, Power } from 'lucide-react';
 import CircuitLoader from '../others/CircuitLoader';
 
@@ -30,7 +30,27 @@ export default function ProductTable({ products, loading, onView, onEdit, onTogg
 
   return (
     <div className="bg-[#13131a] border-x border-b border-white/5">
-      <div className="flex items-center justify-end p-3 border-b border-white/5">
+      <div className="flex items-center justify-between p-3 border-b border-white/5 gap-3">
+        <div className="md:hidden flex flex-wrap gap-2">
+          {[
+            { key: 'name', label: 'Nombre' },
+            { key: 'cost', label: 'Costo' },
+            { key: 'sale', label: 'Venta' },
+            { key: 'stock', label: 'Stock' }
+          ].map((item) => (
+            <button
+              key={item.key}
+              onClick={() => onSortChange(item.key)}
+              className={`h-8 px-2.5 rounded-lg border text-[10px] uppercase tracking-wide ${
+                productSort?.field === item.key
+                  ? 'border-cyan-500/40 bg-cyan-500/10 text-cyan-200'
+                  : 'border-white/15 bg-white/5 text-gray-300'
+              }`}
+            >
+              {item.label}
+            </button>
+          ))}
+        </div>
         <div className="inline-flex items-center rounded-lg border border-white/10 overflow-hidden">
           <button
             onClick={() => setPriceCurrency('ARS')}
@@ -103,21 +123,21 @@ export default function ProductTable({ products, loading, onView, onEdit, onTogg
 
       <div className="md:hidden flex flex-col gap-4 p-4">
         {products.map((p) => (
-          <div key={p.id} className="bg-white/5 p-4 rounded-xl border border-white/5 flex gap-4 shadow-sm">
-            <div className="w-20 h-20 bg-[#050507] rounded-lg p-1 shrink-0 flex items-center justify-center border border-cyan-500/20">
+          <div key={p.id} className="bg-white/5 p-4 rounded-xl border border-white/5 flex gap-3 shadow-sm">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-[#050507] rounded-lg p-1 shrink-0 flex items-center justify-center border border-cyan-500/20">
               <img src={p.imageUrl} alt="" className="max-h-full object-contain" />
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex justify-between items-start mb-1">
-                <span className="text-cyan-400 font-mono text-xs bg-cyan-900/20 px-1.5 py-0.5 rounded border border-cyan-500/30">{p.sku}</span>
                 <StatusButton p={p} onToggle={onToggle} small />
               </div>
               <h3 className="text-white font-bold text-sm line-clamp-2 mb-2 leading-tight">{p.name}</h3>
+              <p className="text-xs text-gray-400 mb-2">Stock: <span className="text-cyan-300 font-semibold">{p.quantity || 0}</span></p>
 
               <div className="flex justify-between items-end mt-2">
                 <div className="flex flex-col">
                   <span className="text-[10px] text-gray-500 uppercase">Venta ({showArs ? 'ARS' : 'USD'})</span>
-                  <span className="text-green-400 font-bold text-lg leading-none">{formatPrice(p.priceUsd, p.price)}</span>
+                  <span className="text-green-400 font-bold text-base sm:text-lg leading-none">{formatPrice(p.priceUsd, p.price)}</span>
                 </div>
                 <ActionButtons p={p} onView={onView} onEdit={onEdit} />
               </div>

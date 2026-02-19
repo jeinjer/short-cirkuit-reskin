@@ -7,7 +7,7 @@ export default function AdminStats({ stats, dolarValue }) {
       <MetricCard icon={<Users />} label="Usuarios" value={stats.users} tone="cyan" />
       <MetricCard icon={<Package />} label="Productos" value={stats.products} tone="violet" />
       <MetricCard icon={<AlertTriangle />} label="Sin Stock" value={stats.sinStock} tone="amber" />
-      <MetricCard icon={<DollarSign />} label="Dolar Blue" value={`$${dolarValue}`} tone="emerald" />
+      <MetricCard icon={<DollarSign />} label="Dólar" value={`$${dolarValue}`} tone="emerald" />
     </div>
   );
 }

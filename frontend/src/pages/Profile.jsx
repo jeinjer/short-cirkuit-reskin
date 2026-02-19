@@ -112,6 +112,7 @@ export default function ProfilePage() {
 
   const [selectedAvatar, setSelectedAvatar] = useState('');
   const [savingProfile, setSavingProfile] = useState(false);
+  const [isSwitchingTab, setIsSwitchingTab] = useState(false);
 
   const firstName = useMemo(() => user?.name?.split(' ')[0] || 'Cliente', [user]);
 
@@ -184,8 +185,10 @@ export default function ProfilePage() {
 
   const selectTab = (nextTab) => {
     if (isAdmin) return;
+    setIsSwitchingTab(true);
     setTab(nextTab);
     setSearchParams({ tab: TAB_QUERY[nextTab] });
+    setTimeout(() => setIsSwitchingTab(false), 180);
   };
 
   const copyOrderId = async (id) => {
@@ -227,11 +230,11 @@ export default function ProfilePage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#050507] text-white pt-28 pb-16">
+    <main className="min-h-screen bg-[#050507] text-white pt-24 md:pt-28 pb-12 md:pb-16 overflow-x-clip">
       <div className="container mx-auto px-4 max-w-6xl space-y-6">
         <section className="rounded-2xl border border-cyan-500/20 bg-linear-to-b from-cyan-500/10 to-transparent p-6">
           <p className="text-cyan-300 text-xs uppercase tracking-widest font-mono">Perfil</p>
-          <h1 className="text-4xl md:text-5xl font-black font-cyber uppercase tracking-tight mt-2">Mi cuenta</h1>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black font-cyber uppercase tracking-tight mt-2">Mi cuenta</h1>
           <p className="text-gray-300 mt-3 max-w-3xl">
             Hola {firstName}. {isAdmin ? 'Gestiona tu perfil desde esta sección.' : 'Gestiona tu perfil, pedidos y consultas desde secciones separadas.'}
           </p>
@@ -266,7 +269,13 @@ export default function ProfilePage() {
         </section>
         )}
 
-        {tab === TABS.ACCOUNT && (
+        {isSwitchingTab && !isAdmin && (
+          <section className="bg-[#0f0f15] border border-white/10 rounded-2xl p-8 flex justify-center">
+            <CircuitLoader size="sm" label="Cargando sección" />
+          </section>
+        )}
+
+        {!isSwitchingTab && tab === TABS.ACCOUNT && (
           <section className="bg-[#0f0f15] border border-white/10 rounded-2xl p-5">
             <div className="flex items-center gap-2 text-cyan-300 font-bold mb-4">
               <UserCircle2 size={18} />
@@ -301,7 +310,7 @@ export default function ProfilePage() {
               <div className="md:col-span-2 space-y-4">
                 <div>
                   <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Elegí tu avatar</label>
-                  <div className="grid grid-cols-4 gap-2">
+                  <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-4 gap-2">
                     {AVATAR_OPTIONS.map((avatar) => (
                       <button
                         key={avatar}
@@ -327,7 +336,7 @@ export default function ProfilePage() {
           </section>
         )}
 
-        {!isAdmin && tab === TABS.ORDERS && (
+        {!isSwitchingTab && !isAdmin && tab === TABS.ORDERS && (
           <section className="bg-[#0f0f15] border border-white/10 rounded-2xl p-5">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2 text-cyan-300 font-bold">
@@ -449,7 +458,7 @@ export default function ProfilePage() {
           </section>
         )}
 
-        {!isAdmin && tab === TABS.INQUIRIES && (
+        {!isSwitchingTab && !isAdmin && tab === TABS.INQUIRIES && (
           <section className="bg-[#0f0f15] border border-white/10 rounded-2xl p-5">
             <div className="flex items-center gap-2 text-cyan-300 font-bold mb-3">
               <MessageSquare size={18} />

@@ -29,14 +29,14 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <AuthLayout containerClassName="px-3 pt-24 md:p-4" initialY={24}>
+    <AuthLayout containerClassName="px-3 md:p-4" initialY={24}>
         {!success ? (
           <>
             <div className="text-center mb-7">
               <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-cyan-500/10 text-cyan-300 mb-4 border border-cyan-500/35">
                 <Zap size={22} />
               </div>
-              <h1 className="text-3xl font-black font-cyber text-white tracking-tight uppercase">Recuperar acceso</h1>
+              <h1 className="text-2xl sm:text-3xl font-black font-cyber text-white tracking-tight uppercase">Recuperar acceso</h1>
               <p className="text-xs text-gray-500 mt-2 font-mono uppercase tracking-wide">Te enviaremos un enlace por correo</p>
             </div>
 

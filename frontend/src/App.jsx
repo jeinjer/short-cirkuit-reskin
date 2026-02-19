@@ -37,7 +37,7 @@ export default function App() {
       <CartProvider>
       <Router>
         <ScrollToTop />
-        <div className="min-h-screen bg-[#050507] text-gray-200 font-sans flex flex-col">
+        <div className="min-h-screen bg-[#050507] text-gray-200 font-sans flex flex-col overflow-x-clip">
           <Header 
             onOpenCart={() => setIsCartOpen(true)}
             searchQuery={searchQuery}

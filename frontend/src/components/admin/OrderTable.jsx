@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Eye } from 'lucide-react';
 import CircuitLoader from '../others/CircuitLoader';
 
@@ -7,6 +7,19 @@ const statusLabel = {
   PENDING_PICKUP: 'Pendiente',
   CONFIRMED: 'Confirmado',
   CANCELLED: 'Cancelado'
+};
+
+const statusTone = {
+  PENDING_PAYMENT: 'border-amber-500/35 text-amber-200 bg-amber-500/10',
+  PENDING_PICKUP: 'border-cyan-500/35 text-cyan-200 bg-cyan-500/10',
+  CONFIRMED: 'border-emerald-500/35 text-emerald-200 bg-emerald-500/10',
+  CANCELLED: 'border-rose-500/35 text-rose-200 bg-rose-500/10'
+};
+
+const paymentTone = {
+  APPROVED: 'border-emerald-500/35 text-emerald-200 bg-emerald-500/10',
+  PENDING: 'border-amber-500/35 text-amber-200 bg-amber-500/10',
+  NONE: 'border-white/20 text-gray-300 bg-white/5'
 };
 
 const getPaymentLabel = (paymentStatus) => {
@@ -27,7 +40,7 @@ const paymentOptions = [
 
 export default function OrderTable({ orders, loading, onQuickUpdate, onView }) {
   if (loading) return <div className="bg-[#13131a] p-12 flex justify-center border-x border-white/5"><CircuitLoader /></div>;
-  if (orders.length === 0) return <div className="bg-[#13131a] p-8 text-center text-gray-500 border-x border-white/5">No hay órdenes</div>;
+  if (orders.length === 0) return <div className="bg-[#13131a] p-8 text-center text-gray-500 border-x border-white/5">No hay Ã³rdenes</div>;
 
   return (
     <div className="bg-[#13131a] border-x border-b border-white/5">
@@ -102,31 +115,54 @@ export default function OrderTable({ orders, loading, onQuickUpdate, onView }) {
             <p className="font-mono text-[11px] text-cyan-400 break-all">{o.id}</p>
             <p className="text-white mt-1">{o.user?.name}</p>
             <p className="text-xs text-gray-500">{o.user?.email}</p>
-            <div className="mt-2 flex justify-between text-xs">
-              <span className="text-gray-400">{statusLabel[o.status] || o.status}</span>
-              <span className="text-cyan-300">${Number(o.subtotalArs || 0).toLocaleString('es-AR')}</span>
+            <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
+              <div className="rounded-lg border border-white/10 bg-black/25 p-2">
+                <p className="text-[10px] uppercase tracking-wide text-gray-500 mb-1">Estado orden</p>
+                <span className={`inline-flex px-2 py-1 rounded border ${statusTone[o.status] || 'border-white/20 text-gray-300 bg-white/5'}`}>
+                  {statusLabel[o.status] || o.status}
+                </span>
+              </div>
+              <div className="rounded-lg border border-white/10 bg-black/25 p-2">
+                <p className="text-[10px] uppercase tracking-wide text-gray-500 mb-1">Estado pago</p>
+                <span className={`inline-flex px-2 py-1 rounded border ${paymentTone[o.paymentStatus || 'NONE'] || paymentTone.NONE}`}>
+                  {getPaymentLabel(o.paymentStatus)}
+                </span>
+              </div>
             </div>
-            <div className="mt-3 grid grid-cols-2 gap-2">
-              <select
-                value={o.paymentStatus || ''}
-                disabled={o.status === 'CANCELLED'}
-                onChange={(e) => onQuickUpdate(o, { paymentStatus: e.target.value || null })}
-                className="h-10 px-2 rounded-lg bg-black/40 border border-white/20 text-xs text-white disabled:opacity-60 disabled:cursor-not-allowed"
-              >
-                <option value="">{getPaymentLabel(o.paymentStatus)}</option>
-                {paymentOptions.map((opt) => (
-                  <option key={opt.value} value={opt.value}>{opt.label}</option>
-                ))}
-              </select>
-              <select
-                value={o.status === 'PENDING_PICKUP' ? 'PENDING_PAYMENT' : o.status}
-                onChange={(e) => onQuickUpdate(o, { status: e.target.value })}
-                className="h-10 px-2 rounded-lg bg-black/40 border border-white/20 text-xs text-white"
-              >
-                {statusOptions.map((opt) => (
-                  <option key={opt.value} value={opt.value}>{opt.label}</option>
-                ))}
-              </select>
+            <div className="mt-2 flex justify-between text-xs">
+              <span className="text-gray-400">Total</span>
+              <span className="text-cyan-300 font-semibold">${Number(o.subtotalArs || 0).toLocaleString('es-AR')}</span>
+            </div>
+            <div className="mt-3 rounded-lg border border-white/10 bg-black/20 p-2.5 space-y-2">
+              <p className="text-[10px] uppercase tracking-wide text-gray-500">Actualizar estados</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <label className="space-y-1">
+                  <span className="text-[10px] uppercase tracking-wide text-gray-400">Pago</span>
+                  <select
+                    value={o.paymentStatus || ''}
+                    disabled={o.status === 'CANCELLED'}
+                    onChange={(e) => onQuickUpdate(o, { paymentStatus: e.target.value || null })}
+                    className="h-10 w-full px-2 rounded-lg bg-black/40 border border-white/20 text-xs text-white disabled:opacity-60 disabled:cursor-not-allowed"
+                  >
+                    <option value="">{getPaymentLabel(o.paymentStatus)}</option>
+                    {paymentOptions.map((opt) => (
+                      <option key={opt.value} value={opt.value}>{opt.label}</option>
+                    ))}
+                  </select>
+                </label>
+                <label className="space-y-1">
+                  <span className="text-[10px] uppercase tracking-wide text-gray-400">Orden</span>
+                  <select
+                    value={o.status === 'PENDING_PICKUP' ? 'PENDING_PAYMENT' : o.status}
+                    onChange={(e) => onQuickUpdate(o, { status: e.target.value })}
+                    className="h-10 w-full px-2 rounded-lg bg-black/40 border border-white/20 text-xs text-white"
+                  >
+                    {statusOptions.map((opt) => (
+                      <option key={opt.value} value={opt.value}>{opt.label}</option>
+                    ))}
+                  </select>
+                </label>
+              </div>
             </div>
             <div className="mt-3 flex gap-2">
               <button onClick={() => onView(o)} className="flex-1 py-2 rounded-lg bg-cyan-500/15 text-cyan-300 text-xs font-bold border border-cyan-500/30">Detalle</button>

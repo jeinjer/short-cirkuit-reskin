@@ -47,7 +47,7 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-[#020203] text-white font-sans selection:bg-cyan-500/30 selection:text-cyan-100 overflow-hidden relative">
+    <main className="min-h-screen bg-[#020203] text-white font-sans selection:bg-cyan-500/30 selection:text-cyan-100 overflow-x-clip relative">
       <div className="fixed inset-0 bg-[linear-gradient(to_right,#111_1px,transparent_1px),linear-gradient(to_bottom,#111_1px,transparent_1px)] bg-size-[4rem_4rem] mask-[radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none z-0" />
       
       {!searchTerm && (
@@ -76,7 +76,7 @@ export default function Home() {
 
       <motion.section 
         id="catalogo-section" 
-        className="py-24 relative min-h-screen scroll-mt-32 z-10"
+        className="py-16 sm:py-20 md:py-24 relative min-h-screen scroll-mt-24 md:scroll-mt-32 z-10"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-50px" }}
@@ -85,12 +85,12 @@ export default function Home() {
         
         <div className="container mx-auto px-4 relative z-10">
           
-            <div className="flex flex-col items-center mb-16 text-center">
-                <h2 className="text-4xl md:text-6xl font-black font-cyber text-white mb-4 uppercase tracking-tight">
+            <div className="flex flex-col items-center mb-10 sm:mb-16 text-center">
+                <h2 className="text-3xl sm:text-4xl md:text-6xl font-black font-cyber text-white mb-4 uppercase tracking-tight">
                     {searchTerm ? `Resultados: "${searchTerm}"` : 'Nuestro catálogo'}
                 </h2>
                 <div className="h-1.5 w-32 bg-linear-to-r from-cyan-600 to-blue-700 rounded-full shadow-[0_0_15px_rgba(6,182,212,0.5)]" />
-                <p className="mt-4 text-gray-400 text-lg max-w-2xl">
+                <p className="mt-4 text-gray-400 text-base md:text-lg max-w-2xl">
                     {searchTerm 
                         ? 'Buscando productos...' 
                         : 'Selecciona una categoría para filtrar los resultados.'}
@@ -104,7 +104,7 @@ export default function Home() {
                  />
             )}
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 lg:gap-8">
                 {loading ? (
                   <div className="col-span-full flex flex-col justify-center items-center h-96 gap-4">
                      <CircuitLoader />
@@ -135,10 +135,10 @@ export default function Home() {
             </div>
 
             {!loading && products.length > 0 && (
-                 <div className="flex justify-center mt-24">
+                 <div className="flex justify-center mt-14 sm:mt-20 md:mt-24">
                     <Link 
                       to={`/catalogo${selectedCategory ? `?category=${selectedCategory}` : ''}`}
-                      className="group relative inline-flex items-center justify-center px-12 py-5 bg-[#050505] text-white font-black font-cyber tracking-widest uppercase overflow-hidden transition-all duration-300"
+                      className="group relative inline-flex items-center justify-center px-7 sm:px-10 md:px-12 py-4 md:py-5 bg-[#050505] text-white font-black font-cyber tracking-widest uppercase overflow-hidden transition-all duration-300"
                       style={{ clipPath: 'polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%)' }}
                     >
                       <div className="absolute inset-0 bg-cyan-600 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out z-0" />
