@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion as Motion } from 'framer-motion';
 import ServiceCard from './ServiceCard';
 
 const CarouselTrack = ({ 
@@ -45,7 +45,7 @@ const CarouselTrack = ({
       onMouseLeave={onHoverEnd}
       style={maskStyle}
     >
-      <motion.div
+      <Motion.div
         style={{ x, cursor: "grab" }}
         className="flex gap-8 px-8 absolute left-0"
         drag="x"
@@ -64,7 +64,7 @@ const CarouselTrack = ({
             onClick={() => onCardClick(service)}
           />
         ))}
-      </motion.div>
+      </Motion.div>
     </div>
   );
 };

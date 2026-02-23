@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Filter, X, ChevronDown, ChevronUp } from 'lucide-react';
 import { categories } from '../../data/categories/categories.data';
 import CircuitLoader from '../others/CircuitLoader';

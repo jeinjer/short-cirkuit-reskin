@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { Eye } from 'lucide-react';
 import CircuitLoader from '../others/CircuitLoader';
 
@@ -40,7 +40,7 @@ const paymentOptions = [
 
 export default function OrderTable({ orders, loading, onQuickUpdate, onView }) {
   if (loading) return <div className="bg-[#13131a] p-12 flex justify-center border-x border-white/5"><CircuitLoader /></div>;
-  if (orders.length === 0) return <div className="bg-[#13131a] p-8 text-center text-gray-500 border-x border-white/5">No hay Ã³rdenes</div>;
+  if (orders.length === 0) return <div className="bg-[#13131a] p-8 text-center text-gray-500 border-x border-white/5">No hay órdenes</div>;
 
   return (
     <div className="bg-[#13131a] border-x border-b border-white/5">

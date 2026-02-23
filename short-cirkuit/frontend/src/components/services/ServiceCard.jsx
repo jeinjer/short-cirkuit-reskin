@@ -1,9 +1,9 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion as Motion } from 'framer-motion';
 
 const ServiceCard = ({ service, onClick, width, cardHeight = 400, isMobileMode = false }) => {
   return (
-    <motion.div
+    <Motion.div
       onClick={onClick}
       style={{ width: width, minWidth: width, height: cardHeight }}
       className="group relative rounded-xl overflow-hidden cursor-pointer bg-[#0a0a0a] border border-white/5 snap-start"
@@ -35,7 +35,7 @@ const ServiceCard = ({ service, onClick, width, cardHeight = 400, isMobileMode =
 
             <div className={`w-full h-px bg-white/40 ${isMobileMode ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'} transition-transform origin-left duration-500`} />
       </div>
-    </motion.div>
+    </Motion.div>
   );
 };
 

@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Search, ChevronRight, CornerDownRight } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion as Motion, AnimatePresence } from 'framer-motion';
 import { fetchProducts } from '../../api/config';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../context/useAuth';
 import { getVisiblePriceArs, isAdminRole } from '../../utils/productPricing';
 import CircuitLoader from '../others/CircuitLoader';
 
@@ -31,7 +31,7 @@ export default function SearchBar() {
           const res = await fetchProducts({ search: query });
           setResults(res.data || []);
           setIsOpen(true);
-        } catch (error) {
+        } catch {
           setResults([]);
           setIsOpen(true);
         } finally {
@@ -77,7 +77,7 @@ export default function SearchBar() {
 
       <AnimatePresence>
         {isOpen && query.trim().length > 1 && (
-          <motion.div 
+          <Motion.div 
             initial={{ opacity: 0, y: -10, scaleY: 0.95 }}
             animate={{ opacity: 1, y: 0, scaleY: 1 }}
             exit={{ opacity: 0, y: -10 }}
@@ -131,7 +131,7 @@ export default function SearchBar() {
                  <div className="text-gray-500 font-mono text-sm">Sin resultados para <span className="text-white">"{query}"</span></div>
               </div>
             )}
-          </motion.div>
+          </Motion.div>
         )}
       </AnimatePresence>
     </div>

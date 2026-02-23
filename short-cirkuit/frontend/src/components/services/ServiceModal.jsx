@@ -1,6 +1,6 @@
-﻿import React, { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { motion } from 'framer-motion';
+import { motion as Motion } from 'framer-motion';
 import { ArrowLeft } from 'lucide-react';
 
 const ServiceModal = ({ service, onClose }) => {
@@ -28,7 +28,7 @@ const ServiceModal = ({ service, onClose }) => {
 
   return createPortal(
     <div className="fixed inset-0 z-9999 flex items-center justify-center p-3 sm:p-4">
-      <motion.div
+      <Motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -36,7 +36,7 @@ const ServiceModal = ({ service, onClose }) => {
         className="absolute inset-0 bg-black/80 backdrop-blur-xl"
       />
 
-      <motion.div
+      <Motion.div
         layoutId={`modal-${service.id}`}
         initial={{ opacity: 0, scale: 0.95, y: 30 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -60,7 +60,7 @@ const ServiceModal = ({ service, onClose }) => {
             Volver
           </button>
         </div>
-      </motion.div>
+      </Motion.div>
     </div>,
     document.body
   );

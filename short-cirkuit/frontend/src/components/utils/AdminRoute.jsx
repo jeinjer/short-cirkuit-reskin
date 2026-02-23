@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../context/useAuth';
 import CircuitLoader from '../others/CircuitLoader';
 
 const AdminRoute = () => {

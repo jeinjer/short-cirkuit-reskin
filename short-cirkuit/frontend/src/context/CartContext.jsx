@@ -1,15 +1,9 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import api from '../api/axios';
-import { useAuth } from './AuthContext';
-
-const CartContext = createContext(null);
-
-export const useCart = () => {
-  const ctx = useContext(CartContext);
-  if (!ctx) throw new Error('useCart must be used within CartProvider');
-  return ctx;
-};
+import { getApiErrorMessage } from '../utils/apiErrors';
+import { CartContext } from './cartContext.base';
+import { useAuth } from './useAuth';
 
 export const CartProvider = ({ children }) => {
   const { isAuthenticated, user, loading: authLoading } = useAuth();
@@ -39,7 +33,7 @@ export const CartProvider = ({ children }) => {
       setLoading(true);
       const res = await api.get('/cart');
       syncCart(res.data);
-    } catch (error) {
+    } catch {
       clearLocalCart();
     } finally {
       setLoading(false);
@@ -61,8 +55,7 @@ export const CartProvider = ({ children }) => {
       toast.success('Producto agregado al carrito');
       return true;
     } catch (error) {
-      const msg = error.response?.data?.error || 'No se pudo agregar al carrito';
-      toast.error(msg);
+      toast.error(getApiErrorMessage(error, 'No se pudo agregar al carrito'));
       return false;
     }
   };
@@ -72,8 +65,7 @@ export const CartProvider = ({ children }) => {
       const res = await api.patch(`/cart/items/${productId}`, { quantity });
       syncCart(res.data);
     } catch (error) {
-      const msg = error.response?.data?.error || 'No se pudo actualizar el carrito';
-      toast.error(msg);
+      toast.error(getApiErrorMessage(error, 'No se pudo actualizar el carrito'));
     }
   };
 
@@ -82,8 +74,7 @@ export const CartProvider = ({ children }) => {
       const res = await api.delete(`/cart/items/${productId}`);
       syncCart(res.data);
     } catch (error) {
-      const msg = error.response?.data?.error || 'No se pudo quitar el producto';
-      toast.error(msg);
+      toast.error(getApiErrorMessage(error, 'No se pudo quitar el producto'));
     }
   };
 
@@ -91,24 +82,24 @@ export const CartProvider = ({ children }) => {
     try {
       const res = await api.delete('/cart');
       syncCart(res.data);
-    } catch (error) {
+    } catch {
       toast.error('No se pudo vaciar el carrito');
     }
   };
 
-  const value = useMemo(() => ({
-    items,
-    summary,
-    loading,
-    fetchCart,
-    addToCart,
-    updateCartItem,
-    removeCartItem,
-    clearCart
-  }), [items, summary, loading, fetchCart]);
-
   return (
-    <CartContext.Provider value={value}>
+    <CartContext.Provider
+      value={{
+        items,
+        summary,
+        loading,
+        fetchCart,
+        addToCart,
+        updateCartItem,
+        removeCartItem,
+        clearCart
+      }}
+    >
       {children}
     </CartContext.Provider>
   );

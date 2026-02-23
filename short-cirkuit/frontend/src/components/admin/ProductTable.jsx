@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { ArrowDown, ArrowUp, Eye, Edit, Power } from 'lucide-react';
 import CircuitLoader from '../others/CircuitLoader';
 
