@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { Wrench, Gamepad2, Gauge, ArrowUpCircle, Database, Network } from 'lucide-react';
 
 export const servicesData = [

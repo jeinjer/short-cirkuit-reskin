@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import api from '../../api/axios';
 import CircuitLoader from '../others/CircuitLoader';
@@ -27,7 +27,7 @@ export default function InquiryTable({
   const [loading, setLoading] = useState(true);
   const [expandedById, setExpandedById] = useState({});
 
-  const loadInquiries = async (targetPage = page, targetStatus = statusFilter) => {
+  const loadInquiries = useCallback(async (targetPage = page, targetStatus = statusFilter) => {
     try {
       setLoading(true);
       const res = await api.get('/inquiries', {
@@ -35,16 +35,16 @@ export default function InquiryTable({
       });
       setInquiries(res.data?.data || []);
       setMeta(res.data?.meta || { page: targetPage, limit: 10, has_next_page: false, status: targetStatus });
-    } catch (error) {
+    } catch {
       toast.error('No se pudieron cargar las consultas');
     } finally {
       setLoading(false);
     }
-  };
+  }, [page, statusFilter]);
 
   useEffect(() => {
     loadInquiries(page, statusFilter);
-  }, [page, statusFilter]);
+  }, [page, statusFilter, loadInquiries]);
 
   useEffect(() => {
     setPageInput(String(page));
@@ -89,7 +89,7 @@ export default function InquiryTable({
       setReplyById((prev) => ({ ...prev, [inquiryId]: '' }));
       toast.success('Consulta respondida');
       await loadInquiries(page, statusFilter);
-    } catch (error) {
+    } catch {
       toast.error('No se pudo responder la consulta');
     } finally {
       setSavingId(null);

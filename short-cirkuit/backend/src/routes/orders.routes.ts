@@ -68,8 +68,8 @@ router.get('/', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Error al listar ordenes:', error);
-    return res.status(500).json({ error: 'Error al listar ordenes' });
+    console.error('Error al listar órdenes:', error);
+    return res.status(500).json({ error: 'Error al listar órdenes' });
   }
 });
 

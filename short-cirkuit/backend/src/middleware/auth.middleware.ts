@@ -1,4 +1,3 @@
-// backend/src/middleware/auth.middleware.ts
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
@@ -12,7 +11,7 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
-    (req as any).user = decoded; // Inyectamos el usuario en la request
+    (req as any).user = decoded;
     next();
   } catch (error) {
     return res.status(403).json({ error: "Token inválido" });

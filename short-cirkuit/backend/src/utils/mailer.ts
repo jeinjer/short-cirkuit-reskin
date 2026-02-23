@@ -7,11 +7,8 @@ export const sendResetEmail = async (email: string, token: string) => {
   const resetLink = `${frontendUrl}/reset-password?token=${token}`;
 
   try {
-    // cambiar el 'from'
-    // a algo como 'soporte@shortcirkuit.com'.
-
     const { data, error } = await resend.emails.send({
-      from: 'Short Cirkuit <onboarding@resend.dev>',
+      from: 'Short Cirkuit <onboarding@resend.dev>', // cambiar
       to: [email],
       subject: "Restablecer tu contraseña",
       html: `
@@ -19,7 +16,7 @@ export const sendResetEmail = async (email: string, token: string) => {
           <div style="max-width: 500px; margin: 0 auto; background-color: #13131a; padding: 30px; border-radius: 15px; border: 1px solid #333;">
             
             <h2 style="color: #06b6d4; text-align: center; margin-bottom: 30px; font-weight: 900; text-transform: uppercase;">
-              ⚡ Short Cirkuit
+              Short Cirkuit
             </h2>
             
             <p style="color: #d1d5db; font-size: 16px; line-height: 1.5;">Hola,</p>

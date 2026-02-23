@@ -1,9 +1,9 @@
-﻿import React from 'react';
-import { motion } from 'framer-motion';
+import React from 'react';
+import { motion as Motion } from 'framer-motion';
 import { ShoppingCart, MessageSquare } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../context/AuthContext';
-import { useCart } from '../../../context/CartContext';
+import { useAuth } from '../../../context/useAuth';
+import { useCart } from '../../../context/useCart';
 import { toast } from 'sonner';
 import { getVisiblePriceArs } from '../../../utils/productPricing';
 
@@ -25,7 +25,7 @@ export default function ProductInfo({ product, formatPrice, isAdmin, onAskProduc
   };
 
   return (
-    <motion.div
+    <Motion.div
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay: 0.2 }}
@@ -49,14 +49,14 @@ export default function ProductInfo({ product, formatPrice, isAdmin, onAskProduc
       <div className="py-5 sm:py-6 border-y border-white/5 bg-white/2 -mx-4 px-4 md:mx-0 md:px-0 md:bg-transparent md:border-none">
         <span className=" text-gray-500 font-mono block mb-1 text-xs sm:text-sm">PRECIO FINAL*</span>
         <div className="flex items-baseline gap-3">
-          <span className="text-4xl sm:text-5xl md:text-6xl font-black text-white tracking-tighter break-words">
+          <span className="text-4xl sm:text-5xl md:text-6xl font-black text-white tracking-tighter wrap-break-word">
             {formatPrice(visiblePrice)}
           </span>
         </div>
         <p className={`mt-3 text-sm font-mono ${hasStock ? 'text-cyan-300' : 'text-red-300'}`}>
           {hasStock ? `Stock disponible: ${product.quantity}` : 'Sin stock'}
         </p>
-        <p className="mt-1 text-[11px] text-gray-500">* El precio final no incluye envio.</p>
+        <p className="mt-1 text-[11px] text-gray-500">* El precio final no incluye envío.</p>
       </div>
 
       <div className="flex flex-col gap-3">
@@ -81,7 +81,7 @@ export default function ProductInfo({ product, formatPrice, isAdmin, onAskProduc
           >
             <ShoppingCart className="relative z-10 text-white" size={20} />
             <span className="relative z-10 font-black font-cyber text-xs sm:text-xl tracking-wider sm:tracking-widest uppercase">
-              {isAuthenticated ? 'Agregar al Carrito' : 'Inicia sesion para comprar'}
+              {isAuthenticated ? 'Agregar al Carrito' : 'Iniciá sesión para comprar'}
             </span>
           </button>
         ) : null}
@@ -100,6 +100,6 @@ export default function ProductInfo({ product, formatPrice, isAdmin, onAskProduc
           </button>
         )}
       </div>
-    </motion.div>
+    </Motion.div>
   );
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import { ShoppingCart } from 'lucide-react';
-import { useAuth } from '../../context/AuthContext';
-import { useCart } from '../../context/CartContext';
+import { useAuth } from '../../context/useAuth';
+import { useCart } from '../../context/useCart';
 import { useNavigate } from 'react-router-dom';
 
 export default function CartButton({ onClick }) {

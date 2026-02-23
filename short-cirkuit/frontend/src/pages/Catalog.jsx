@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { fetchProducts, fetchDynamicFilters } from '../api/config';
-import { useCurrency } from '../context/CurrencyContext';
-import { useAuth } from '../context/AuthContext';
+import { useCurrency } from '../context/useCurrency';
+import { useAuth } from '../context/useAuth';
+import useCatalogPageData from '../hooks/pages/useCatalogPageData';
 
 import CatalogSidebar from '../components/catalog/CatalogSidebar';
 import CatalogHeader from '../components/catalog/CatalogHeader';
@@ -10,11 +10,6 @@ import CatalogGrid from '../components/catalog/CatalogGrid';
 import CatalogPagination from '../components/catalog/CatalogPagination';
 
 export default function Catalog() {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [filtersLoading, setFiltersLoading] = useState(true); 
-  const [filtersData, setFiltersData] = useState({ brands: [] });
-  const [meta, setMeta] = useState({ page: 1, last_page: 1, total: 0 });
   const [viewMode, setViewMode] = useState('grid');
   
   const [searchParams, setSearchParams] = useSearchParams();
@@ -27,40 +22,13 @@ export default function Catalog() {
   const page = parseInt(searchParams.get('page') || '1');
   const sort = searchParams.get('sort') || 'price_asc';
 
-  useEffect(() => {
-    const loadFilters = async () => {
-        setFiltersLoading(true); 
-        try {
-            const params = { category, search, brand: selectedBrand };
-            const data = await fetchDynamicFilters(params);
-            if (data) setFiltersData(prev => ({ ...prev, brands: data.brands || [] }));
-        } catch (error) {
-            console.error("Error loading filters:", error);
-        } finally {
-            setFiltersLoading(false);
-        }
-    };
-    loadFilters();
-  }, [category, search, selectedBrand]);
-
-  useEffect(() => {
-    const loadData = async () => {
-      setLoading(true);
-      try {
-        const params = Object.fromEntries([...searchParams]);
-        params.limit = 12; 
-        
-        const res = await fetchProducts(params);
-        setProducts(res.data || []);
-        setMeta(res.meta || { page: 1, last_page: 1, total: 0 });
-      } catch (error) {
-        console.error("Error:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadData();
-  }, [searchParams, isAuthenticated]);
+  const { products, loading, filtersLoading, filtersData, meta } = useCatalogPageData({
+    searchParams,
+    category,
+    search,
+    selectedBrand,
+    isAuthenticated
+  });
 
   const handleSortChange = (value) => {
     const newParams = new URLSearchParams(searchParams);

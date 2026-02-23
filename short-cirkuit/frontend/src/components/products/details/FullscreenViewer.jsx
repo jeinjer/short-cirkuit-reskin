@@ -1,10 +1,10 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion as Motion } from 'framer-motion';
 import { X } from 'lucide-react';
 
 export default function FullscreenViewer({ image, onClose }) {
   return (
-    <motion.div 
+    <Motion.div 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -18,12 +18,12 @@ export default function FullscreenViewer({ image, onClose }) {
         <X size={32} />
       </button>
 
-      <motion.img 
+      <Motion.img 
         src={image}
         layoutId={`product-image-${image}`} 
         className="max-w-full max-h-full object-contain drop-shadow-2xl rounded-lg"
         onClick={(e) => e.stopPropagation()} 
       />
-    </motion.div>
+    </Motion.div>
   );
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion as Motion } from 'framer-motion';
 import BackToHomeButton from '../others/BackToHomeButton';
 
 export default function AuthLayout({ children, cardClassName = '', containerClassName = '', initialY = 24 }) {
@@ -11,13 +11,13 @@ export default function AuthLayout({ children, cardClassName = '', containerClas
       <div className="absolute bottom-[-24%] right-[-12%] w-[560px] h-[560px] rounded-full bg-blue-500/10 blur-[120px] pointer-events-none z-0" />
 
       <div className="relative z-10 w-full max-w-md flex flex-col items-center gap-4">
-        <motion.div
+        <Motion.div
           initial={{ opacity: 0, y: initialY }}
           animate={{ opacity: 1, y: 0 }}
           className={`w-full bg-[#0b0c12]/95 border border-cyan-500/20 rounded-2xl p-6 md:p-8 shadow-[0_0_40px_rgba(0,0,0,0.55)] backdrop-blur-xl ${cardClassName}`}
         >
           {children}
-        </motion.div>
+        </Motion.div>
         <BackToHomeButton />
       </div>
     </div>

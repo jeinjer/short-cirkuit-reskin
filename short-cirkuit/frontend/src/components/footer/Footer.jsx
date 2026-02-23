@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { MessageCircle, ArrowUpRight } from 'lucide-react';
 
 const SALES_PHONE = import.meta.env.VITE_WHATSAPP_SALES_PHONE;
