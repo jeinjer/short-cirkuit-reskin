@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
+import api from '../api/axios';
 import { formatArs, formatUsd } from '../utils/formatters';
 import { CurrencyContext } from './currencyContext.base';
-
-const API_URL = import.meta.env.VITE_API_URL;
 
 export const CurrencyProvider = ({ children }) => {
   const [dolarRate, setDolarRate] = useState(null);
@@ -11,9 +10,8 @@ export const CurrencyProvider = ({ children }) => {
   useEffect(() => {
     const fetchRate = async () => {
       try {
-        const res = await fetch(`${API_URL}/dolar`);
-        const data = await res.json();
-        setDolarRate(data.rate);
+        const res = await api.get('/dolar');
+        setDolarRate(res.data.rate);
       } catch (error) {
         console.error('Error cargando dolar:', error);
         setDolarRate(1200);
