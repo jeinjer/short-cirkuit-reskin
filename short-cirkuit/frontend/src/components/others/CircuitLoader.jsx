@@ -1,5 +1,5 @@
-﻿import React from 'react';
-import { motion } from 'framer-motion';
+import React from 'react';
+import { motion as Motion } from 'framer-motion';
 
 export default function CircuitLoader({ size = 'lg', label = 'Cargando...' }) {
   const sizeClasses = {
@@ -14,7 +14,7 @@ export default function CircuitLoader({ size = 'lg', label = 'Cargando...' }) {
   return (
     <div className="flex flex-col items-center justify-center gap-3">
       <div className={`relative ${sizeClasses[size] || sizeClasses.lg}`}>
-        <motion.div
+        <Motion.div
           className="absolute inset-0 rounded-full border border-cyan-400/20"
           animate={{ scale: [0.9, 1.1, 0.9], opacity: [0.2, 0.5, 0.2] }}
           transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
@@ -35,7 +35,7 @@ export default function CircuitLoader({ size = 'lg', label = 'Cargando...' }) {
             </filter>
           </defs>
 
-          <motion.path
+          <Motion.path
             d={boltPath}
             fill="url(#boltFill)"
             stroke="#e0f2fe"
@@ -50,7 +50,7 @@ export default function CircuitLoader({ size = 'lg', label = 'Cargando...' }) {
             style={{ transformOrigin: '50% 50%' }}
           />
 
-          <motion.path
+          <Motion.path
             d={boltPath}
             stroke="#22d3ee"
             strokeWidth="1"

@@ -1,10 +1,8 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { formatArs, formatUsd } from '../utils/formatters';
+import { CurrencyContext } from './currencyContext.base';
 
 const API_URL = import.meta.env.VITE_API_URL;
-
-const CurrencyContext = createContext();
-
-export const useCurrency = () => useContext(CurrencyContext);
 
 export const CurrencyProvider = ({ children }) => {
   const [dolarRate, setDolarRate] = useState(null);
@@ -17,8 +15,8 @@ export const CurrencyProvider = ({ children }) => {
         const data = await res.json();
         setDolarRate(data.rate);
       } catch (error) {
-        console.error("Error cargando dolar:", error);
-        setDolarRate(1200); 
+        console.error('Error cargando dolar:', error);
+        setDolarRate(1200);
       } finally {
         setLoading(false);
       }
@@ -27,22 +25,13 @@ export const CurrencyProvider = ({ children }) => {
   }, []);
 
   const formatPrice = (priceUsd, showArs = true) => {
-    if (loading || !dolarRate) return "...";
+    if (loading || !dolarRate) return '...';
 
     if (showArs) {
-      const priceArs = priceUsd * dolarRate;
-      return new Intl.NumberFormat('es-AR', {
-        style: 'currency',
-        currency: 'ARS',
-        maximumFractionDigits: 0
-      }).format(priceArs);
+      return formatArs(priceUsd * dolarRate);
     }
 
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      maximumFractionDigits: 0
-    }).format(priceUsd);
+    return formatUsd(priceUsd);
   };
 
   return (

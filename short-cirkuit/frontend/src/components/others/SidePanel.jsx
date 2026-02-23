@@ -1,9 +1,9 @@
 ﻿import React from 'react';
-import { motion } from 'framer-motion';
+import { motion as Motion } from 'framer-motion';
 import { X, ShoppingCart, Trash2, Minus, Plus, ArrowRight } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
-import { useCart } from '../../context/CartContext';
+import { useAuth } from '../../context/useAuth';
+import { useCart } from '../../context/useCart';
 
 export default function SidePanel({ onClose, title }) {
   const { isAuthenticated } = useAuth();
@@ -24,7 +24,7 @@ export default function SidePanel({ onClose, title }) {
 
   return (
     <>
-      <motion.div
+      <Motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -32,7 +32,7 @@ export default function SidePanel({ onClose, title }) {
         className="fixed inset-0 bg-black/60 z-60 backdrop-blur-[1px]"
       />
 
-      <motion.div
+      <Motion.div
         variants={sidebarVariants}
         initial="hidden"
         animate="visible"
@@ -40,7 +40,7 @@ export default function SidePanel({ onClose, title }) {
         transition={{ type: 'tween', duration: 0.3, ease: 'easeOut' }}
         className="fixed right-0 top-0 h-full w-full max-w-[420px] sm:max-w-[440px] bg-[#06070b] border-l border-cyan-500/20 z-70 shadow-2xl flex flex-col"
       >
-        <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(to_right,rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.04)_1px,transparent_1px)] bg-[size:2.8rem_2.8rem] opacity-25" />
+        <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(to_right,rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.04)_1px,transparent_1px)] bg-size-[2.8rem_2.8rem] opacity-25" />
         <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_top,rgba(6,182,212,0.15),transparent_55%)]" />
 
         <div className="relative p-5 border-b border-cyan-500/20 flex justify-between items-center bg-[#090b11]/90 backdrop-blur-sm">
@@ -175,7 +175,7 @@ export default function SidePanel({ onClose, title }) {
             </div>
           </>
         )}
-      </motion.div>
+      </Motion.div>
     </>
   );
 }

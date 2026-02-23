@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import CatalogProductCard from '../products/cards/CatalogProductCard';
 import CircuitLoader from '../others/CircuitLoader';
 

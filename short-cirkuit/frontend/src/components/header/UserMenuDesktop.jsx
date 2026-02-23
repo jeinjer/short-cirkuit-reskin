@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { User, LogIn, UserPlus, LayoutDashboard, LogOut, ChevronDown } from 'lucide-react';
-import { useAuth } from '../../context/AuthContext';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useAuth } from '../../context/useAuth';
+import { motion as Motion, AnimatePresence } from 'framer-motion';
 
 export default function UserMenuDesktop() {
   const { isAuthenticated, user, logout } = useAuth();
@@ -58,7 +58,7 @@ export default function UserMenuDesktop() {
 
       <AnimatePresence>
         {isOpen && (
-            <motion.div 
+            <Motion.div 
               className="absolute right-0 top-full mt-2 w-64 bg-[#050507] border border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.8)] z-50 overflow-hidden"
               style={{ clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%)' }}
               initial={{ opacity: 0, y: -10, scale: 0.95 }}
@@ -118,7 +118,7 @@ export default function UserMenuDesktop() {
                         </>
                     )}
                 </div>
-            </motion.div>
+            </Motion.div>
         )}
       </AnimatePresence>
     </div>

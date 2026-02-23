@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { Search } from 'lucide-react';
 
 export default function AdminToolbar({
@@ -50,7 +50,7 @@ export default function AdminToolbar({
                 setPage(1);
               }}
             />
-            Sin imagen real
+            Sin imágen real
           </label>
         </div>
     </div>

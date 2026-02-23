@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Link } from 'react-router-dom';
 import { Menu, X, LogIn, UserPlus, User, LayoutDashboard, LogOut, ChevronRight } from 'lucide-react';
-import { useAuth } from '../../context/AuthContext';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useAuth } from '../../context/useAuth';
+import { motion as Motion, AnimatePresence } from 'framer-motion';
 
 export default function MobileMenu() {
   const [isOpen, setIsOpen] = useState(false);
@@ -26,7 +26,7 @@ export default function MobileMenu() {
       {isOpen && (
         <div className="fixed inset-0 z-9999 md:hidden">
 
-            <motion.div 
+            <Motion.div 
               className="absolute inset-0 bg-black/80 backdrop-blur-sm cursor-pointer"
               onClick={handleClose}
               initial={{ opacity: 0 }}
@@ -36,7 +36,7 @@ export default function MobileMenu() {
             />
 
             <div className="absolute inset-0 flex justify-end pointer-events-none">
-                <motion.div 
+                <Motion.div 
                   className="w-[85%] max-w-sm h-full bg-[#0a0a0f] border-l border-white/10 shadow-2xl flex flex-col pointer-events-auto"
                   onClick={(e) => e.stopPropagation()} 
                   initial={{ x: '100%' }}
@@ -130,7 +130,7 @@ export default function MobileMenu() {
                             </button>
                         </div>
                     )}
-                </motion.div>
+                </Motion.div>
             </div>
         </div>
       )}

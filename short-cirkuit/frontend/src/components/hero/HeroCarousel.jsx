@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowRight, Terminal, ShieldCheck , Award, ChevronDown } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion as Motion, AnimatePresence } from 'framer-motion';
 import { heroImages } from '../../data/hero/hero.data';
 
 
@@ -38,7 +38,7 @@ export default function HeroCarousel() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center">
           <div className="space-y-6 md:space-y-8 relative z-20">
             
-            <motion.div 
+            <Motion.div 
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5 }}
@@ -48,9 +48,9 @@ export default function HeroCarousel() {
                <span className="text-gray-400 font-mono text-sm tracking-widest uppercase">
                  Villa Carlos Paz
                </span>
-            </motion.div>
+            </Motion.div>
 
-            <motion.h2 
+            <Motion.h2 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.2 }}
@@ -60,9 +60,9 @@ export default function HeroCarousel() {
               <span className="text-transparent bg-clip-text bg-linear-to-r from-cyan-400 via-blue-500 to-blue-900 animate-pulse">
                 SHORT CIRKUIT
               </span>
-            </motion.h2>
+            </Motion.h2>
 
-            <motion.p 
+            <Motion.p 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.7, delay: 0.4 }}
@@ -71,9 +71,9 @@ export default function HeroCarousel() {
               Servicio técnico especializado en hardware y software. <br />
               Armado de PC a medida, mantenimiento y optimización. <br />
               <span className="text-cyan-400 font-bold">¡Descubrí nuestros productos y servicios!</span>
-            </motion.p>
+            </Motion.p>
 
-            <motion.div 
+            <Motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.6 }}
@@ -104,17 +104,17 @@ export default function HeroCarousel() {
                    <ChevronDown size={16} className="opacity-0 -translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300" />
                 </span>
               </button>
-            </motion.div>
+            </Motion.div>
           </div>
 
           <div className="hidden md:flex relative h-[420px] lg:h-[700px] items-center justify-center group pointer-events-none md:pointer-events-auto">
              
-             <div className="absolute w-[240px] h-[240px] sm:w-[320px] sm:h-[320px] lg:w-[650px] lg:h-[650px] border border-cyan-500/10 rounded-full animate-[spin_20s_linear_infinite]" />
+             <div className="absolute w-60 h-60 sm:w-[320px] sm:h-80 lg:w-[650px] lg:h-[650px] border border-cyan-500/10 rounded-full animate-[spin_20s_linear_infinite]" />
              <div className="absolute w-[200px] h-[200px] sm:w-[280px] sm:h-[280px] lg:w-[550px] lg:h-[550px] border border-dashed border-cyan-500/20 rounded-full animate-[spin_30s_linear_infinite_reverse]" />
              
              <div className="relative z-20 w-full h-full flex items-center justify-center p-4 animate-[float_6s_ease-in-out_infinite]">
                 <AnimatePresence mode='wait'>
-                    <motion.img
+                    <Motion.img
                         key={currentIndex}
                         src={heroImages[currentIndex].src}
                         alt={heroImages[currentIndex].alt}
@@ -136,7 +136,7 @@ export default function HeroCarousel() {
                 </div>
              </div>
 
-             <motion.div 
+             <Motion.div 
                initial={{ opacity: 0, x: 50 }}
                animate={{ opacity: 1, x: 0 }}
                transition={{ delay: 1, duration: 0.8 }}
@@ -151,9 +151,9 @@ export default function HeroCarousel() {
                       <p className="font-bold font-cyber text-lg tracking-wide text-cyan-100 uppercase">De 1 año</p>
                    </div>
                 </div>
-             </motion.div>
+             </Motion.div>
 
-             <motion.div 
+             <Motion.div 
                initial={{ opacity: 0, x: -50 }}
                animate={{ opacity: 1, x: 0 }}
                transition={{ delay: 1.2, duration: 0.8 }}
@@ -169,7 +169,7 @@ export default function HeroCarousel() {
                       <p className="text-white font-bold font-cyber text-lg tracking-wide uppercase">Asegurada</p>
                    </div>
                 </div>
-             </motion.div>
+             </Motion.div>
 
           </div>
 
