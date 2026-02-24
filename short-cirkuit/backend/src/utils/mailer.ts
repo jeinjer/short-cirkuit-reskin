@@ -1,5 +1,34 @@
 import { Resend } from 'resend';
 
+const normalizeOrigin = (value: string) =>
+  value.trim().replace(/^['"]|['"]$/g, '').replace(/\/$/, '');
+
+const getFrontendBaseUrl = () => {
+  const rawCandidates = [
+    process.env.FRONTEND_URL,
+    process.env.FRONTEND_ORIGIN,
+    process.env.FRONTEND_ORIGINS
+  ]
+    .filter(Boolean)
+    .join(',');
+
+  const candidates = rawCandidates
+    .split(',')
+    .map((item) => normalizeOrigin(item))
+    .filter(Boolean);
+
+  for (const candidate of candidates) {
+    try {
+      const url = new URL(candidate);
+      return url.origin;
+    } catch {
+      continue;
+    }
+  }
+
+  return 'https://shortcirkuit.com';
+};
+
 export const sendResetEmail = async (email: string, token: string) => {
   const resendApiKey = process.env.RESEND_API_KEY;
   if (!resendApiKey) {
@@ -7,7 +36,7 @@ export const sendResetEmail = async (email: string, token: string) => {
   }
 
   const resend = new Resend(resendApiKey);
-  const frontendUrl = process.env.FRONTEND_URL || process.env.FRONTEND_ORIGIN || 'http://localhost:5173';
+  const frontendUrl = getFrontendBaseUrl();
   const from = process.env.RESEND_FROM || 'Short Cirkuit <onboarding@resend.dev>';
   const replyTo = process.env.RESEND_REPLY_TO;
   const resetLink = `${frontendUrl}/reset-password?token=${token}`;
