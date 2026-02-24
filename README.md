@@ -187,4 +187,3 @@ Proyecto funcional y estable para uso real, con foco en:
 
 ### Panel de Admin - Pedidos
 ![Mobile home](docs/images/orders_panel.png)
-```
