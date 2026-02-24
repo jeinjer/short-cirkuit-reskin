@@ -1,15 +1,22 @@
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 export const sendResetEmail = async (email: string, token: string) => {
+  const resendApiKey = process.env.RESEND_API_KEY;
+  if (!resendApiKey) {
+    throw new Error('RESEND_API_KEY no configurada');
+  }
+
+  const resend = new Resend(resendApiKey);
   const frontendUrl = process.env.FRONTEND_URL || process.env.FRONTEND_ORIGIN || 'http://localhost:5173';
+  const from = process.env.RESEND_FROM || 'Short Cirkuit <onboarding@resend.dev>';
+  const replyTo = process.env.RESEND_REPLY_TO;
   const resetLink = `${frontendUrl}/reset-password?token=${token}`;
 
   try {
     const { data, error } = await resend.emails.send({
-      from: 'Short Cirkuit <onboarding@resend.dev>', // cambiar
+      from,
       to: [email],
+      ...(replyTo ? { replyTo } : {}),
       subject: "Restablecer tu contraseña",
       html: `
         <div style="font-family: 'Arial', sans-serif; background-color: #050507; color: #ffffff; padding: 40px; border-radius: 10px;">
@@ -45,6 +52,7 @@ export const sendResetEmail = async (email: string, token: string) => {
     return data;
 
   } catch (error) {
+    console.error('Error enviando email con Resend:', error);
     throw new Error("No se pudo enviar el correo");
   }
 };
