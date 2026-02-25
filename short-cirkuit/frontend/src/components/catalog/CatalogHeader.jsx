@@ -13,7 +13,7 @@ export default function CatalogHeader({
     <div className="mb-6 flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-white/5 pb-4 bg-[#0a0a0f]/50 p-4 sm:p-6 rounded-xl border backdrop-blur-sm">
       <div>
         <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white uppercase font-cyber tracking-tight drop-shadow-[0_0_10px_rgba(255,255,255,0.1)] wrap-break-word">
-          {category ? category.replace('_', ' ') : 'Catalogo'}
+          {category ? category.replace('_', ' ') : 'Catálogo'}
         </h1>
         <p className="text-sm text-gray-400 mt-2 font-mono flex items-center gap-2">
           <span className="w-2.5 h-2.5 rounded-full bg-cyan-500 animate-pulse"></span>

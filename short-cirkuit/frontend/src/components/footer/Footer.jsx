@@ -39,7 +39,6 @@ export default function Footer() {
                     <MessageCircle size={14} className="text-cyan-300 shrink-0" />
                     <div className="min-w-0">
                       <p className="text-[10px] uppercase tracking-wide text-gray-400">{contact.label}</p>
-                      <p className="text-xs sm:text-sm font-semibold text-white truncate">{contact.phoneDisplay}</p>
                     </div>
                   </div>
                   <ArrowUpRight size={13} className="text-cyan-300 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 shrink-0" />

@@ -24,7 +24,7 @@ export default function CatalogGrid({
           onClick={onClearFilters}
           className="px-5 sm:px-6 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-cyan-400 text-sm font-bold transition-all"
         >
-          Limpiar busqueda
+          Limpiar búsqueda
         </button>
       </div>
     );
