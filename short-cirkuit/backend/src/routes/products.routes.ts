@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import { Category } from '@prisma/client';
-import jwt from 'jsonwebtoken';
 import { getDolarRate } from '../utils/dolar';
 import { CATEGORY_IMAGES } from '../config/catalogConstants';
 import { processToWebp } from '../utils/imageProcessor';
+import { normalizeCategoryParam } from '../utils/category';
+import { isAdminRequest } from '../utils/requestAuth';
 import { prisma } from '../prisma';
 
 const router = Router();
@@ -22,19 +22,6 @@ const productSelect = {
   isActive: true,
   costPrice: true,
   priceUsd: true
-};
-
-const isAdminUser = (req: any): boolean => {
-  const authHeader = req.headers.authorization;
-  if (!authHeader) return false;
-
-  try {
-    const token = authHeader.split(' ')[1];
-    const decoded: any = jwt.verify(token, process.env.JWT_SECRET || 'secret');
-    return decoded.role === 'ADMIN';
-  } catch (error) {
-    return false;
-  }
 };
 
 const formatProduct = (product: any, isAdmin: boolean, exchangeRate: number) => {
@@ -95,7 +82,7 @@ router.get('/:term', async (req, res) => {
       return res.status(404).json({ error: 'Producto no encontrado' });
     }
 
-    const isAdmin = isAdminUser(req);
+    const isAdmin = isAdminRequest(req);
 
     if (!isAdmin && !rawProduct.isActive) {
         return res.status(404).json({ error: 'Producto no disponible' });
@@ -116,7 +103,7 @@ router.put('/:sku', async (req, res) => {
     const { sku } = req.params;
     const { isActive, gallery, imageUrl, removeWhiteBackground, whiteRemovalLevel } = req.body;
 
-    if (!isAdminUser(req)) {
+    if (!isAdminRequest(req)) {
         return res.status(403).json({ error: 'No tienes permisos de administrador' });
     }
 
@@ -170,17 +157,18 @@ router.get('/', async (req, res) => {
   const { category, search, minPrice, maxPrice, sort, brand, inStockOnly, missingImageOnly } = req.query;
 
   try {
-    const isAdmin = isAdminUser(req);
+    const isAdmin = isAdminRequest(req);
     const whereClause: any = {};
 
     if (!isAdmin) {
         whereClause.isActive = true;
+        whereClause.quantity = { gt: 0 };
     }
 
     if (category && typeof category === 'string') {
-      const catUpper = category.toUpperCase();
-      if (Object.keys(Category).includes(catUpper)) {
-        whereClause.category = catUpper as Category;
+      const normalizedCategory = normalizeCategoryParam(category);
+      if (normalizedCategory) {
+        whereClause.category = normalizedCategory;
       }
     }
 

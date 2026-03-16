@@ -1,6 +1,7 @@
 import { Router } from 'express';
-import { Category } from '@prisma/client';
 import { prisma } from '../prisma';
+import { normalizeCategoryParam } from '../utils/category';
+import { isAdminRequest } from '../utils/requestAuth';
 
 const router = Router();
 
@@ -8,12 +9,18 @@ router.get('/', async (req, res) => {
   const { category, search, minPrice, maxPrice } = req.query;
 
   try {
+    const isAdmin = isAdminRequest(req);
     const whereBase: any = {};
+
+    if (!isAdmin) {
+       whereBase.isActive = true;
+       whereBase.quantity = { gt: 0 };
+    }
   
     if (category) {
-       const catUpper = (category as string).toUpperCase();
-       if (Object.keys(Category).includes(catUpper)) {
-         whereBase.category = catUpper as Category; 
+       const normalizedCategory = normalizeCategoryParam(category as string);
+       if (normalizedCategory) {
+         whereBase.category = normalizedCategory;
        }
     } else {
        whereBase.category = { in: ['NOTEBOOKS', 'COMPUTADORAS', 'MONITORES', 'IMPRESORAS'] };
