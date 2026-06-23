@@ -19,7 +19,7 @@ export default function Footer() {
           <div className="text-center sm:text-left">
             <p className="font-cyber text-lg sm:text-2xl text-white tracking-wider">SHORT <span className="text-cyan-400">CIRKUIT</span></p>
             <p className="mt-2 sm:mt-3 max-w-md text-xs sm:text-sm text-gray-600 mx-auto sm:mx-0">
-              Gob. Loza 1724, Villa Carlos Paz, Cordoba, Argentina.
+              Andrade 249, Villa Carlos Paz, Cordoba, Argentina.
             </p>
           </div>
 
