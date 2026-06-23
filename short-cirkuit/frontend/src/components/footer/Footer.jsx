@@ -5,7 +5,6 @@ const SALES_PHONE = import.meta.env.VITE_WHATSAPP_SALES_PHONE;
 const SUPPORT_PHONE = import.meta.env.VITE_WHATSAPP_SUPPORT_PHONE;
 const SALES_PHONE_LABEL = import.meta.env.VITE_WHATSAPP_SALES_PHONE_LABEL;
 const SUPPORT_PHONE_LABEL = import.meta.env.VITE_WHATSAPP_SUPPORT_PHONE_LABEL;
-const LINKEDIN_URL = import.meta.env.VITE_LINKEDIN_URL;
 
 export default function Footer() {
   const whatsappContacts = [
@@ -51,14 +50,14 @@ export default function Footer() {
             <p className="text-[11px] sm:text-xs uppercase tracking-[0.14em] sm:tracking-[0.18em] text-gray-600">Creditos</p>
             <p className="mt-2 sm:mt-3 text-[10px] sm:text-[11px] uppercase tracking-wider text-gray-500">Desarrollo web</p>
             <a
-              href={LINKEDIN_URL}
+              href="https://tommasys.com"
               target="_blank"
               rel="noopener noreferrer"
               className="mt-1 inline-flex items-center gap-1.5 text-xs sm:text-sm text-gray-300 underline decoration-cyan-400/60 decoration-2 underline-offset-4 transition-colors hover:text-cyan-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/60 rounded-sm break-all lg:break-normal"
-              aria-label="Ir al LinkedIn de Stefano Tommasi"
-              title="Ir a LinkedIn"
+              aria-label="Ir a Tommasys"
+              title="Ir a Tommasys"
             >
-              Stefano Tommasi
+              Tommasys
               <ArrowUpRight size={13} />
             </a>
           </div>
